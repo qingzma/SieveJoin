@@ -18,7 +18,12 @@ FetchContent_MakeAvailable(googletest)
 
 add_library(qdb "")
 target_include_directories(qdb PUBLIC "include")
-target_sources(qdb PRIVATE util/bloom_filter.h)
+target_sources(qdb PRIVATE
+    util/bloom_filter.h
+    table/tpch_table_nation.h
+    table/tpch_table_nation.cc
+    table/tpch_table_nation.h
+    table/tpch_table_nation.cc)
 set_target_properties(qdb PROPERTIES LINKER_LANGUAGE CXX)
 
 add_executable(qentry "")
@@ -29,8 +34,17 @@ target_link_libraries(qentry qdb)
 enable_testing()
 add_executable(qtests "")
 target_include_directories(qtests PUBLIC "include")
-target_sources(qtests PRIVATE util/bloom_filter_test.cpp)
+target_sources(qtests
+    PRIVATE
+    util/bloom_filter_test.cpp
+    table/tpch_table_nation_test.cc
+)
 target_link_libraries(qtests qdb GTest::gtest_main)
+
+if(EXISTS "${PROJECT_SOURCE_DIR}/data/tpch/x0.1/nation.tbl")
+    add_compile_definitions(HAVE_TPCH_01_NATION="${PROJECT_SOURCE_DIR}/data/tpch/x0.1/nation.tbl")
+    message("file found")
+endif()
 
 include(GoogleTest)
 gtest_discover_tests(qtests)
