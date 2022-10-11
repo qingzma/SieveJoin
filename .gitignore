@@ -4,3 +4,7 @@
 build/
 third_party/tpch_2_17_0
 third_party/tpch_2_17_0_skewed
+data/tpch/x0.1/*
+dbgen
+qgen
+dists.dss
