@@ -17,15 +17,18 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 add_library(qdb "")
-target_include_directories(qdb PUBLIC "include")
+target_include_directories(qdb PUBLIC "include" ${CMAKE_SOURCE_DIR})
 target_sources(qdb PRIVATE
     util/bloom_filter.h
+    util/Timer.h
     table/tpch_table_nation.h
     table/tpch_table_nation.cc
     table/tpch_table_nation.h
     table/tpch_table_nation.cc
     table/tpch_table_customer.h
-    table/tpch_table_customer.cc)
+    table/tpch_table_customer.cc
+    table/tpch_table_lineitem.h
+    table/tpch_table_lineitem.cc)
 set_target_properties(qdb PROPERTIES LINKER_LANGUAGE CXX)
 
 add_executable(qentry "")
@@ -41,6 +44,8 @@ target_sources(qtests
     util/bloom_filter_test.cpp
     table/tpch_table_nation_test.cc
     table/tpch_table_customer_test.cc
+
+    table/tpch_table_lineitem_test.cc
 )
 target_link_libraries(qtests qdb GTest::gtest_main)
 
@@ -50,6 +55,10 @@ endif()
 
 if(EXISTS "${PROJECT_SOURCE_DIR}/data/tpch/x0.1/customer.tbl")
     add_compile_definitions(HAVE_TPCH_01_CUSTOMER="${PROJECT_SOURCE_DIR}/data/tpch/x0.1/customer.tbl")
+endif()
+
+if(EXISTS "${PROJECT_SOURCE_DIR}/data/tpch/x0.1/lineitem.tbl")
+    add_compile_definitions(HAVE_TPCH_01_LINEITEM="${PROJECT_SOURCE_DIR}/data/tpch/x0.1/lineitem.tbl")
 endif()
 
 include(GoogleTest)
