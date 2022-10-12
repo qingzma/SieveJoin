@@ -12,7 +12,7 @@
 #include "qjoin/table.h"
 
 namespace qjoin {
-class TpchTableNation final : public Table {
+class TpchTableNation : public Table {
  public:
   static const int N_NATION_KEY = 0;
   static const int N_NATION_NAME = 1;
@@ -25,8 +25,8 @@ class TpchTableNation final : public Table {
   int64_t RowCount() const override;
 
   DATABASE_DATA_TYPES GetColumnType(int col) const override;
-  int64_t Int64At(int64_t row, int col) const override;
-  const char* CharsAt(int64_t row, int col) const override;
+  int64_t Int64At(const int64_t& row, const int& col) const override;
+  const char* CharsAt(const int64_t& row, const int& col) const override;
 
   std::shared_ptr<key_index_> KeyIndex(int col) override;
   const std::vector<db_key_t_>::iterator KeyIterator(int col);

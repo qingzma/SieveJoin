@@ -68,7 +68,7 @@ DATABASE_DATA_TYPES TpchTableNation::GetColumnType(int col) const {
   }
 }
 
-int64_t TpchTableNation::Int64At(int64_t row, int col) const {
+int64_t TpchTableNation::Int64At(const int64_t& row, const int& col) const {
   assert(row < row_count_);
   switch (col) {
     case 0:
@@ -79,7 +79,7 @@ int64_t TpchTableNation::Int64At(int64_t row, int col) const {
       throw std::runtime_error("column type mismatch.");
   }
 }
-const char* TpchTableNation::CharsAt(int64_t row, int col) const {
+const char* TpchTableNation::CharsAt(const int64_t& row, const int& col) const {
   assert(row < row_count_);
   switch (col) {
     case 1:
