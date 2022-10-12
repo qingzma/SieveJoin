@@ -23,7 +23,9 @@ target_sources(qdb PRIVATE
     table/tpch_table_nation.h
     table/tpch_table_nation.cc
     table/tpch_table_nation.h
-    table/tpch_table_nation.cc)
+    table/tpch_table_nation.cc
+    table/tpch_table_customer.h
+    table/tpch_table_customer.cc)
 set_target_properties(qdb PROPERTIES LINKER_LANGUAGE CXX)
 
 add_executable(qentry "")
@@ -38,12 +40,16 @@ target_sources(qtests
     PRIVATE
     util/bloom_filter_test.cpp
     table/tpch_table_nation_test.cc
+    table/tpch_table_customer_test.cc
 )
 target_link_libraries(qtests qdb GTest::gtest_main)
 
 if(EXISTS "${PROJECT_SOURCE_DIR}/data/tpch/x0.1/nation.tbl")
     add_compile_definitions(HAVE_TPCH_01_NATION="${PROJECT_SOURCE_DIR}/data/tpch/x0.1/nation.tbl")
-    message("file found")
+endif()
+
+if(EXISTS "${PROJECT_SOURCE_DIR}/data/tpch/x0.1/customer.tbl")
+    add_compile_definitions(HAVE_TPCH_01_CUSTOMER="${PROJECT_SOURCE_DIR}/data/tpch/x0.1/customer.tbl")
 endif()
 
 include(GoogleTest)
