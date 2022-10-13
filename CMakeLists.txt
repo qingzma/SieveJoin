@@ -18,9 +18,10 @@ FetchContent_MakeAvailable(googletest)
 
 add_library(qdb "")
 target_include_directories(qdb PUBLIC "include" ${CMAKE_SOURCE_DIR})
-target_sources(qdb PRIVATE
+target_sources(qdb PUBLIC
     util/bloom_filter.h
     util/Timer.h
+    util/Timer.cc
     table/tpch_table_nation.h
     table/tpch_table_nation.cc
     table/tpch_table_nation.h
@@ -29,27 +30,19 @@ target_sources(qdb PRIVATE
     table/tpch_table_customer.cc
     table/tpch_table_lineitem.h
     table/tpch_table_lineitem.cc
+    table/tpch_table_orders.h
+    table/tpch_table_orders.cc
+
     table/tpch_table_part.h
     table/tpch_table_part.cc)
 set_target_properties(qdb PROPERTIES LINKER_LANGUAGE CXX)
 
 add_executable(qentry "")
-target_include_directories(qentry PUBLIC "include")
-target_sources(qentry PRIVATE db/db_entry.cpp)
 target_link_libraries(qentry qdb)
+target_include_directories(qentry PUBLIC "include")
+target_sources(qentry PUBLIC db/db_entry.cpp)
 
 enable_testing()
-add_executable(qtests "")
-target_include_directories(qtests PUBLIC "include")
-target_sources(qtests
-    PRIVATE
-    util/bloom_filter_test.cpp
-    table/tpch_table_nation_test.cc
-    table/tpch_table_customer_test.cc
-
-    table/tpch_table_lineitem_test.cc
-)
-target_link_libraries(qtests qdb GTest::gtest_main)
 
 if(EXISTS "${PROJECT_SOURCE_DIR}/data/tpch/x0.1/nation.tbl")
     add_compile_definitions(HAVE_TPCH_01_NATION="${PROJECT_SOURCE_DIR}/data/tpch/x0.1/nation.tbl")
@@ -62,6 +55,22 @@ endif()
 if(EXISTS "${PROJECT_SOURCE_DIR}/data/tpch/x0.1/lineitem.tbl")
     add_compile_definitions(HAVE_TPCH_01_LINEITEM="${PROJECT_SOURCE_DIR}/data/tpch/x0.1/lineitem.tbl")
 endif()
+
+if(EXISTS "${PROJECT_SOURCE_DIR}/data/tpch/x0.1/orders.tbl")
+    add_compile_definitions(HAVE_TPCH_01_ORDERS="${PROJECT_SOURCE_DIR}/data/tpch/x0.1/orders.tbl")
+endif()
+
+add_executable(qtests "")
+target_include_directories(qtests PUBLIC "include")
+target_link_libraries(qtests PUBLIC qdb GTest::gtest_main)
+target_sources(qtests
+    PRIVATE
+    util/bloom_filter_test.cpp
+    table/tpch_table_nation_test.cc
+    table/tpch_table_customer_test.cc
+    table/tpch_table_lineitem_test.cc
+    table/tpch_table_orders_test.cc
+)
 
 include(GoogleTest)
 gtest_discover_tests(qtests)
