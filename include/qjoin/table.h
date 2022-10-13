@@ -14,6 +14,7 @@
 #include <vector>
 
 #include "data_types.h"
+#include "util/Timer.h"
 
 namespace qjoin {
 // declare index structure as multimap
