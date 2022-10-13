@@ -37,7 +37,7 @@ class TpchTablePartsupp : public Table {
 
  public:
   TpchTablePartsupp(std::string filename, size_t row_count);
-  ~TpchTablePartsupp() {}
+  virtual ~TpchTablePartsupp() {}
 
   int ColumnCount() const override { return col_count_; }
   int64_t RowCount() const override { return row_count_; }
