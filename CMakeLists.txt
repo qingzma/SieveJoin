@@ -18,7 +18,8 @@ FetchContent_MakeAvailable(googletest)
 
 add_library(qdb "")
 target_include_directories(qdb PUBLIC "include" ${CMAKE_SOURCE_DIR})
-target_sources(qdb PUBLIC
+target_sources(qdb
+    PUBLIC
     util/bloom_filter.h
     util/Timer.h
     util/Timer.cc
@@ -46,7 +47,9 @@ set_target_properties(qdb PROPERTIES LINKER_LANGUAGE CXX)
 add_executable(qentry "")
 target_link_libraries(qentry qdb)
 target_include_directories(qentry PUBLIC "include")
-target_sources(qentry PUBLIC db/db_entry.cpp)
+target_sources(qentry
+    PUBLIC
+    db/db_entry.cpp)
 
 enable_testing()
 
@@ -95,7 +98,6 @@ target_sources(qtests
     table/tpch_table_partsupp_test.cc
     table/tpch_table_region_test.cc
     table/tpch_table_supplier_test.cc
-
     table/tpch_table_lineitem_test.cc
 )
 
