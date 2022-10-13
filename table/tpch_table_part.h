@@ -26,6 +26,7 @@ class TpchTablePart : public Table {
   DATABASE_DATA_TYPES GetColumnType(int col) const override;
   int64_t Int64At(const int64_t& row, const int& col) const override;
   float FloatAt(const int64_t& row, const int& col) const override;
+  int32_t IntAt(const int64_t& row, const int& col) const override;
 
   std::shared_ptr<key_index_> KeyIndex(int col) override;
   const std::vector<db_key_t_>::iterator KeyIterator(int col);
@@ -37,6 +38,7 @@ class TpchTablePart : public Table {
   std::vector<db_key_t_> part_key_;
   std::vector<int> size_;
   std::vector<float> retail_price_;
+  std::shared_ptr<key_index_> part_index_;
 
   void buildPartkeyIndex();
 

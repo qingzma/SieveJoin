@@ -32,9 +32,9 @@ target_sources(qdb PUBLIC
     table/tpch_table_lineitem.cc
     table/tpch_table_orders.h
     table/tpch_table_orders.cc
-
     table/tpch_table_part.h
-    table/tpch_table_part.cc)
+    table/tpch_table_part.cc
+)
 set_target_properties(qdb PROPERTIES LINKER_LANGUAGE CXX)
 
 add_executable(qentry "")
@@ -70,6 +70,7 @@ target_sources(qtests
     table/tpch_table_customer_test.cc
     table/tpch_table_lineitem_test.cc
     table/tpch_table_orders_test.cc
+    table/tpch_table_part_test.cc
 )
 
 include(GoogleTest)
