@@ -34,6 +34,8 @@ target_sources(qdb PUBLIC
     table/tpch_table_orders.cc
     table/tpch_table_part.h
     table/tpch_table_part.cc
+    table/tpch_table_partsupp.h
+    table/tpch_table_partsupp.cc
 )
 set_target_properties(qdb PROPERTIES LINKER_LANGUAGE CXX)
 
@@ -64,6 +66,10 @@ if(EXISTS "${PROJECT_SOURCE_DIR}/data/tpch/x0.1/part.tbl")
     add_compile_definitions(HAVE_TPCH_01_PART="${PROJECT_SOURCE_DIR}/data/tpch/x0.1/part.tbl")
 endif()
 
+if(EXISTS "${PROJECT_SOURCE_DIR}/data/tpch/x0.1/partsupp.tbl")
+    add_compile_definitions(HAVE_TPCH_01_PARTSUPP="${PROJECT_SOURCE_DIR}/data/tpch/x0.1/partsupp.tbl")
+endif()
+
 add_executable(qtests "")
 target_include_directories(qtests PUBLIC "include")
 target_link_libraries(qtests PUBLIC qdb GTest::gtest_main)
@@ -75,6 +81,7 @@ target_sources(qtests
     table/tpch_table_lineitem_test.cc
     table/tpch_table_orders_test.cc
     table/tpch_table_part_test.cc
+    table/tpch_table_partsupp_test.cc
 )
 
 include(GoogleTest)
