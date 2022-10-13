@@ -1,20 +1,10 @@
-#ifndef QJOIN_UTIL_TIMER_H_
-#define QJOIN_UTIL_TIMER_H_
+#ifndef QJOIN_UTIL_TIMER_H__
+#define QJOIN_UTIL_TIMER_H__
 #include <chrono>
 
 namespace qjoin {
 
-time_t GetEpoch() {
-  struct tm epoch;
-  epoch.tm_year = 70;
-  epoch.tm_hour = 0;
-  epoch.tm_isdst = 0;
-  epoch.tm_mday = 1;
-  epoch.tm_min = 0;
-  epoch.tm_mon = 0;
-  epoch.tm_sec = 0;
-  return mktime(&epoch);
-}
+time_t GetEpoch();
 
 class Timer {
  private:
@@ -72,4 +62,4 @@ class Timer {
 };
 }  // namespace qjoin
 
-#endif  // QJOIN_UTIL_TIMER_H_
+#endif  // QJOIN_UTIL_TIMER_H__
