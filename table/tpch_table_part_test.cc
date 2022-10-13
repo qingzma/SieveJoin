@@ -12,8 +12,8 @@ TEST(TpchTablePart, test_table_loading_part) {
   // std::cout << tbl.Int64At(0, 0) << std::endl;
   // std::cout << tbl.CharsAt(0, 1) << std::endl;
   // std::cout << "table found " << HAVE_TPCH_01_PART << std::endl;
-  EXPECT_EQ(tbl.Int64At(0, 19999), 20000);
-  EXPECT_STREQ(tbl.CharsAt(1, 19999), "royal red metallic dim azure");
+  EXPECT_EQ(tbl.Int64At(19999, 0), 20000);
+  EXPECT_EQ(tbl.Int64At(0, 0), 1);
 #endif  // HAVE_TPCH_01_PART
 }
 

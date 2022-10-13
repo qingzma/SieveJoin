@@ -60,6 +60,10 @@ if(EXISTS "${PROJECT_SOURCE_DIR}/data/tpch/x0.1/orders.tbl")
     add_compile_definitions(HAVE_TPCH_01_ORDERS="${PROJECT_SOURCE_DIR}/data/tpch/x0.1/orders.tbl")
 endif()
 
+if(EXISTS "${PROJECT_SOURCE_DIR}/data/tpch/x0.1/part.tbl")
+    add_compile_definitions(HAVE_TPCH_01_PART="${PROJECT_SOURCE_DIR}/data/tpch/x0.1/part.tbl")
+endif()
+
 add_executable(qtests "")
 target_include_directories(qtests PUBLIC "include")
 target_link_libraries(qtests PUBLIC qdb GTest::gtest_main)
