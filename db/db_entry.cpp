@@ -1,6 +1,8 @@
+#include <tclap/CmdLine.h>
+
 #include <iostream>
 int main(int argc, char** argv) {
-  std::cout << "Welcome to QJoin Demo" << std::endl;
+  std::cout << "Welcome to Quasi Join Demo" << std::endl;
 
   return 0;
 }
