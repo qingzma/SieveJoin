@@ -32,6 +32,7 @@ target_sources(qdb
     util/bloom_filter.h
     util/Timer.h
     util/Timer.cc
+    util/options.cc
     table/tpch_table_nation.h
     table/tpch_table_nation.cc
     table/tpch_table_nation.h
@@ -59,7 +60,10 @@ target_link_libraries(qentry qdb)
 target_include_directories(qentry PUBLIC "include")
 target_sources(qentry
     PUBLIC
-    db/db_entry.cpp)
+    db/db_entry.cpp
+    db/qx.h
+    db/qx.cpp
+)
 
 option(BUILD_QJOIN_TESTS "build unit tests" TRUE)
 
