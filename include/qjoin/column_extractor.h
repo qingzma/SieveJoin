@@ -2,6 +2,7 @@
 #define QJOIN_INCLUDE_QJOIN_COLUMN_EXTRACTOR_H_
 
 #include <algorithm>
+#include <memory>
 #include <string>
 #include <type_traits>
 
