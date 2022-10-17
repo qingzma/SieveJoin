@@ -30,6 +30,7 @@ target_include_directories(qdb PUBLIC "include" ${CMAKE_SOURCE_DIR})
 target_sources(qdb
     PUBLIC
     db/table_generic.cc
+    db/table_impl.cc
     util/bloom_filter.h
     util/Timer.h
     util/Timer.cc
