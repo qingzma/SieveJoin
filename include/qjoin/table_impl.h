@@ -14,9 +14,10 @@ class TableImpl {
   std::string table_name_;
   int64_t row_count_;
   int col_cnt_;
+  bool has_col2_ = false;
   std::shared_ptr<std::vector<db_key_t_>> col0_;
   std::shared_ptr<std::vector<db_key_t_>> col1_;
-  std::shared_ptr<std::vector<char*>> col2_;
+  std::shared_ptr<std::vector<std::string>> col2_;
 
  private:
   // TableImpl();
