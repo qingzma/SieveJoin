@@ -13,6 +13,7 @@
 #define QJOIN_TABLE_TPCH_TABLE_PART_H_
 
 #include "qjoin/table.h"
+#include "tpch_schema_columns.h"
 namespace qjoin {
 
 class TpchTablePart : public Table {
@@ -41,17 +42,6 @@ class TpchTablePart : public Table {
   std::shared_ptr<key_index_> part_index_;
 
   void buildPartkeyIndex();
-
- public:
-  static const int P_PARTKEY = 0;
-  static const int P_NAME = 1;
-  static const int P_MFGR = 2;
-  static const int P_BRAND = 3;
-  static const int P_TYPE = 4;
-  static const int P_SIZE = 5;
-  static const int P_CONTAINER = 6;
-  static const int P_RETAILPRICE = 7;
-  static const int P_COMMENT = 8;
 };
 }  // namespace qjoin
 

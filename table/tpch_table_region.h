@@ -7,6 +7,8 @@
 #define QJOIN_TABLE_TPCH_TABLE_REGION_H_
 
 #include "qjoin/table.h"
+#include "tpch_schema_columns.h"
+
 namespace qjoin {
 class TpchTableRegion : public Table {
  private:
@@ -24,11 +26,6 @@ class TpchTableRegion : public Table {
   std::shared_ptr<key_index_> region_index_;
 
   void buildRegionIndex();
-
- public:
-  static const int R_REGIONKEY = 0;
-  static const int R_NAME = 1;
-  static const int R_COMMENT = 2;
 
  public:
   TpchTableRegion(std::string filename, size_t row_count);

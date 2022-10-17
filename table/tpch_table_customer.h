@@ -11,6 +11,7 @@
 #define _QJOIN_TPCH_TABLE_CUSTOMER_H
 #include "qjoin/data_types.h"
 #include "qjoin/table.h"
+#include "tpch_schema_columns.h"
 
 namespace qjoin {
 class TpchTableCustomer : public Table {
@@ -41,15 +42,6 @@ class TpchTableCustomer : public Table {
   void buildAcctbalIndex();
 
  public:
-  static const int C_CUSTKEY = 0;
-  static const int C_NAME = 1;
-  static const int C_ADDRESS = 2;
-  static const int C_NATIONKEY = 3;
-  static const int C_PHONE = 4;
-  static const int C_ACCTBAL = 5;
-  static const int C_MKTSEGMENT = 6;
-  static const int C_COMMENT = 7;
-
   TpchTableCustomer(std::string filename, size_t row_count);
   virtual ~TpchTableCustomer();
 

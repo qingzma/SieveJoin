@@ -11,6 +11,8 @@
 #define QJOIN_TABLE_TPCH_TABLE_SUPPLIER_H_
 
 #include "qjoin/table.h"
+#include "tpch_schema_columns.h"
+
 namespace qjoin {
 class TpchTableSupplier : public Table {
  private:
@@ -39,15 +41,6 @@ class TpchTableSupplier : public Table {
   void buildSuppIndex();
   void buildNationIndex();
   void buildAcctbalIndex();
-
- public:
-  static const int S_SUPPKEY = 0;
-  static const int S_NAME = 1;
-  static const int S_ADDRESS = 2;
-  static const int S_NATIONKEY = 3;
-  static const int S_PHONE = 4;
-  static const int S_ACCTBAL = 5;
-  static const int S_COMMENT = 6;
 
  public:
   TpchTableSupplier(std::string filename, size_t row_count);

@@ -20,6 +20,7 @@
 #define QJOIN_TPCH_TABLE_LINEITEM_H_
 
 #include "qjoin/table.h"
+#include "tpch_schema_columns.h"
 
 namespace qjoin {
 class TpchTableLineitem : public Table {
@@ -65,24 +66,6 @@ class TpchTableLineitem : public Table {
   void buildShipDateIndex();
   void buildCommitDateIndex();
   void buildReceiptDateIndex();
-
- public:
-  static const int L_ORDERKEY = 0;
-  static const int L_PARTKEY = 1;
-  static const int L_SUPPKEY = 2;
-  static const int L_LINENUMBER = 3;
-  static const int L_QUANTITY = 4;
-  static const int L_EXTENDEDPRICE = 5;
-  static const int L_DISCOUNT = 6;
-  static const int L_TAX = 7;
-  static const int L_RETURNFLAG = 8;
-  static const int L_LINESTATUS = 9;
-  static const int L_SHIPDATE = 10;
-  static const int L_COMMITDATE = 11;
-  static const int L_RECEIPTDATE = 12;
-  static const int L_SHIPINSTRUCT = 13;
-  static const int L_SHIPMODE = 14;
-  static const int L_COMMENT = 15;
 
  public:
   TpchTableLineitem(std::string filename, int64_t row_count);
