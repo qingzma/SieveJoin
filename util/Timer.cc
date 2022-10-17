@@ -1,4 +1,4 @@
-#include "Timer.h"
+#include "timer.h"
 
 namespace qjoin {
 time_t GetEpoch() {

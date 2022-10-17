@@ -33,8 +33,8 @@ target_sources(qdb
     # db/table_generic.cc
     db/table_impl.cc
     util/bloom_filter.h
-    util/Timer.h
-    util/Timer.cc
+    util/timer.h
+    util/timer.cc
     util/options.cc
     util/string_operators.h
     util/string_operators.cc
