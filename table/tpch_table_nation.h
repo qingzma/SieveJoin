@@ -10,14 +10,11 @@
 #include <string>
 
 #include "qjoin/table.h"
+#include "tpch_schema_columns.h"
 
 namespace qjoin {
 class TpchTableNation : public Table {
  public:
-  static const int N_NATION_KEY = 0;
-  static const int N_NATION_NAME = 1;
-  static const int N_REGION_KEY = 2;
-  static const int N_COMMENT = 3;
   TpchTableNation(std::string filename, size_t row_count);
   virtual ~TpchTableNation();
 

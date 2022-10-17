@@ -8,6 +8,7 @@
 #ifndef _QJOIN_TABLE_TPCH_TABLE_PART_SUPP_H_
 #define _QJOIN_TABLE_TPCH_TABLE_PART_SUPP_H_
 #include "qjoin/table.h"
+#include "tpch_schema_columns.h"
 
 namespace qjoin {
 class TpchTablePartsupp : public Table {
@@ -27,13 +28,6 @@ class TpchTablePartsupp : public Table {
  private:
   void buildPartIndex();
   void buildSuppIndex();
-
- public:
-  static const int PS_PARTKEY = 0;
-  static const int PS_SUPPKEY = 1;
-  static const int PS_AVAILQTY = 2;
-  static const int PS_SUPPLYCOST = 3;
-  static const int PS_COMMENT = 4;
 
  public:
   TpchTablePartsupp(std::string filename, size_t row_count);

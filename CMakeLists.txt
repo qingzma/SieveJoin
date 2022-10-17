@@ -34,6 +34,7 @@ target_sources(qdb
     util/Timer.h
     util/Timer.cc
     util/options.cc
+    table/tpch_schema_columns.h
     table/tpch_table_nation.h
     table/tpch_table_nation.cc
     table/tpch_table_nation.h

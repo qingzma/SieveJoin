@@ -11,6 +11,7 @@
 #ifndef QJOIN_TABLE_TPCH_TTABLE_ORDERS_H_
 #define QJOIN_TABLE_TPCH_TTABLE_ORDERS_H_
 #include "qjoin/table.h"
+#include "tpch_schema_columns.h"
 namespace qjoin {
 class TpchTableOrders : public Table {
  private:
@@ -44,16 +45,6 @@ class TpchTableOrders : public Table {
   void buildOrderdateIndex();
 
  public:
-  static const int O_ORDERKEY = 0;
-  static const int O_CUSTKEY = 1;
-  static const int O_ORDERSTATUS = 2;
-  static const int O_TOTALPRICE = 3;
-  static const int O_ORDERDATE = 4;
-  static const int O_ORDERPRIORITY = 5;
-  static const int O_CLERK = 6;
-  static const int O_SHIPPRIORITY = 7;
-  static const int O_COMMENT = 8;
-
   TpchTableOrders(std::string filename, int64_t row_count);
   virtual ~TpchTableOrders(){};
   int ColumnCount() const override { return col_count_; }
