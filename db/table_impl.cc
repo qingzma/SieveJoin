@@ -1,5 +1,6 @@
 #include "qjoin/table_impl.h"
 
+#include <cassert>
 #include <fstream>
 #include <iostream>
 
@@ -12,10 +13,16 @@ TableImpl::TableImpl(std::string filename, char delim, int col0, int col1) {
   table_name_ = filename;
   col_cnt_ = (col0 == col1) ? 1 : 2;
 
-  //   std::ifstream f;
-  //   f.open(table_name_);
-  //   std::str
-  //   FILE * fp=fopen();
+  FILE* fp = fopen(filename.c_str(), "r");
+  assert(fp != nullptr);
+
+  char* line = nullptr;
+  size_t len = 0;
+  while (getline(&line, &len, fp) != -1) {
+    // extract columns
+  }
+  fclose(fp);
+  if (line) free(line);
 }
 
 TableImpl::TableImpl(std::string filename, char delim, int col0, int col1,
