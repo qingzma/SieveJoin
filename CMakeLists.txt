@@ -36,6 +36,8 @@ target_sources(qdb
     util/Timer.h
     util/Timer.cc
     util/options.cc
+    util/string_operators.h
+    util/string_operators.cc
     table/tpch_schema_columns.h
     table/tpch_table_nation.h
     table/tpch_table_nation.cc
@@ -120,6 +122,7 @@ if(BUILD_QJOIN_TESTS)
         table/tpch_table_region_test.cc
         table/tpch_table_supplier_test.cc
         table/tpch_table_lineitem_test.cc
+        db/table_impl_test.cc
     )
 
     include(GoogleTest)
