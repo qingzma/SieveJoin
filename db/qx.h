@@ -1,7 +1,7 @@
 // QX - Suppliers and customers in the same nations with the
 // purchase history of the customers.
 //
-// SELECT nationkey, s_suppkey, c_custkey,
+// SELECT n_nationkey, s_suppkey, c_custkey,
 // o_orderkey, l_linenumber
 // FROM nation, supplier, customer,
 // orders, lineitem

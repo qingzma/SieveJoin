@@ -1,5 +1,6 @@
 #include "qjoin/options.h"
 
+#include <tclap/CmdLine.h>
 namespace qjoin {
 
 void ParseOptions(Options& options, int argc, char** argv) {
@@ -9,6 +10,8 @@ void ParseOptions(Options& options, int argc, char** argv) {
                                         "../data/tpch/x0.1/", "string");
 
   TCLAP::SwitchArg arg_QX("x", "qx", "do query x experiment", cmd, false);
+  TCLAP::SwitchArg arg_BASE_JOIN(
+      "b", "baseline", "do baseline inner outer loop join", cmd, true);
 
   cmd.add(arg_SF);
   cmd.add(arg_PATH);
