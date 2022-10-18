@@ -38,7 +38,11 @@ class TableImpl {
   db_key_t_ KeyValAt(int64_t row, int col) const;
   std::string StrAt(int64_t row) const;
 
+  int64_t Size() const { return row_count_; }
+
   void BuildIndex();
+
+  std::vector<db_key_t_>::iterator KeyIterator(int col) const;
 
  private:
   void buildKeyIndex();
