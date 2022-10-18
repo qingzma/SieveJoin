@@ -124,6 +124,17 @@ void TableImpl::buildCharsIndex() {
   for (std::string val : *col2_) col2_index_->emplace(val, idx++);
 }
 
+std::vector<db_key_t_>::iterator TableImpl::KeyIterator(int col) const {
+  switch (col) {
+    case 0:
+      return col0_->begin();
+    case 1:
+      return col1_->begin();
+    default:
+      throw std::runtime_error("unexpected column to get key iterator.");
+  }
+}
+
 void TableImpl::buildKeyBloomFilter() {}
 void TableImpl::buildCharsBloomFilter() {}
 }  // namespace qjoin
