@@ -17,7 +17,10 @@ TableImpl::TableImpl(std::string filename, char delim, int col0, int col1) {
   has_col2_ = false;
 
   FILE* fp = fopen(filename.c_str(), "r");
-  assert(fp != nullptr);
+  if (fp == nullptr) {
+    std::cout << "table file not found: " << filename << std::endl;
+    throw std::runtime_error("table file not found: " + filename);
+  }
 
   char* line = nullptr;
   size_t len = 0;
