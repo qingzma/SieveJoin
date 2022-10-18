@@ -1,7 +1,7 @@
 #ifndef QJOIN_INCLUDE_OPTIONS_H
 #define QJOIN_INCLUDE_OPTIONS_H
 
-#include <tclap/CmdLine.h>
+#include <string>
 
 namespace qjoin {
 
