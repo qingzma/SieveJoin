@@ -12,9 +12,10 @@
 
 #ifndef QJOIN_DB_QX_H_
 #define QJOIN_DB_QX_H_
+#include "qjoin/options.h"
 
 namespace qjoin {
-void Qx();
+void Qx(Options& options);
 }
 
 #endif  // QJOIN_DB_QX_H_

@@ -6,8 +6,9 @@
 namespace qjoin {
 
 struct Options {
-  int scalingFactor;
+  // float scalingFactor;
   bool qx;
+  std::string path_prefix;
 };
 
 void ParseOptions(Options& options, int argc, char** argv);
