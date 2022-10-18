@@ -18,7 +18,7 @@ void CyclicLoopJoin::Join(Options* options, JoinedTableLists& table_lists,
     if (!access_c0 || !access_c1)
       throw std::runtime_error("this column is not required to be accessed: " +
                                std::to_string(i) + "th table.");
-    }
+  }
 
 #ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
   std::cout << "join result is saved to file." << std::endl;
