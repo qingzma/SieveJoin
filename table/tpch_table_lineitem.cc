@@ -1,6 +1,6 @@
 #include "tpch_table_lineitem.h"
 
-#include "util/Timer.h"
+#include "util/timer.h"
 namespace qjoin {
 
 TpchTableLineitem::TpchTableLineitem(std::string filename, int64_t row_count)

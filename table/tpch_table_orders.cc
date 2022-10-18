@@ -1,6 +1,6 @@
 #include "tpch_table_orders.h"
 
-#include "util/Timer.h"
+#include "util/timer.h"
 namespace qjoin {
 
 TpchTableOrders::TpchTableOrders(std::string filename, int64_t row_count)
