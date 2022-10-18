@@ -6,3 +6,4 @@ build/
 # third_party/tpch_2_17_0_skewed
 *.tbl
 *.o
+qx*.txt
