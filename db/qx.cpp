@@ -6,6 +6,7 @@
 #include "table/tpch_schema_columns.h"
 
 #include "qjoin/join_plan.h"
+#include "qjoin/loop_join.h"
 #include "qjoin/table_impl.h"
 
 namespace qjoin {
@@ -36,8 +37,8 @@ void Qx(Options& options) {
   tbl_orders_->BuildIndex();
   tbl_lineitem_->BuildIndex();
 
-  std::vector<std::shared_ptr<TableImpl>> table_lists = {
-      tbl_nation_, tbl_supplier_, tbl_customer_, tbl_orders_, tbl_lineitem_};
+  JoinedTableLists table_lists = {tbl_nation_, tbl_supplier_, tbl_customer_,
+                                  tbl_orders_, tbl_lineitem_};
 
   // create the join plan
   ColIsSelected colIsSelected = {};
@@ -57,6 +58,9 @@ void Qx(Options& options) {
   // table lineitem
   colIsSelected.emplace_back(std::vector<bool>{false, true});
   colIsJoined.emplace_back(std::vector<bool>{true, false});
+
+  CyclicLoopJoin loop_join;
+  loop_join.Join(&options, table_lists, colIsJoined, colIsSelected);
 
   std::cout << "done with query X" << std::endl;
 }
