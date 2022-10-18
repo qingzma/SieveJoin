@@ -31,4 +31,13 @@ TEST(TableImpl, test_table_loading_three_columns) {
 #endif  // HAVE_TPCH_01_CUSTOMER
 }
 
+TEST(TableImpl, test_table_loading_three_columns_build_index) {
+#ifdef HAVE_TPCH_01_CUSTOMER
+  TableImpl tbl(HAVE_TPCH_01_CUSTOMER, '|', 0, 0, 1, DATABASE_DATA_TYPES::CHAR);
+  tbl.BuildIndex();
+  std::cout << tbl.col0_index_.get()->find(1)->second << std::endl;
+  EXPECT_EQ(tbl.col0_index_.get()->find(1)->second, 0);
+#endif  // HAVE_TPCH_01_CUSTOMER
+}
+
 }  // namespace qjoin
