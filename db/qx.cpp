@@ -37,31 +37,34 @@ void Qx(Options& options) {
   tbl_orders_->BuildIndex();
   tbl_lineitem_->BuildIndex();
 
-  JoinedTableLists table_lists = {tbl_nation_, tbl_supplier_, tbl_customer_,
-                                  tbl_orders_, tbl_lineitem_};
+  //   JoinedTableLists table_lists = {tbl_nation_, tbl_supplier_,
+  //   tbl_customer_,
+  //                                   tbl_orders_, tbl_lineitem_};
 
-  // create the join plan
-  ColIsSelected colIsSelected = {};
-  ColIsJoined colIsJoined = {};
-  // table nation
-  colIsSelected.emplace_back(std::vector<bool>{true, false});
-  colIsJoined.emplace_back(std::vector<bool>{true, false});
-  // table supplier
-  colIsSelected.emplace_back(std::vector<bool>{false, true});
-  colIsJoined.emplace_back(std::vector<bool>{true, false});
-  // table customer
-  colIsSelected.emplace_back(std::vector<bool>{false, true});
-  colIsJoined.emplace_back(std::vector<bool>{true, true});
-  // table orders
-  colIsSelected.emplace_back(std::vector<bool>{false, true});
-  colIsJoined.emplace_back(std::vector<bool>{true, true});
-  // table lineitem
-  colIsSelected.emplace_back(std::vector<bool>{false, true});
-  colIsJoined.emplace_back(std::vector<bool>{true, false});
+  //   // create the join plan
+  //   ColIsSelected colIsSelected = {};
+  //   ColIsJoined colIsJoined = {};
+  //   // table nation
+  //   colIsSelected.emplace_back(std::vector<bool>{true, false});
+  //   colIsJoined.emplace_back(std::vector<bool>{true, false});
+  //   // table supplier
+  //   colIsSelected.emplace_back(std::vector<bool>{false, true});
+  //   colIsJoined.emplace_back(std::vector<bool>{true, false});
+  //   // table customer
+  //   colIsSelected.emplace_back(std::vector<bool>{false, true});
+  //   colIsJoined.emplace_back(std::vector<bool>{true, true});
+  //   // table orders
+  //   colIsSelected.emplace_back(std::vector<bool>{false, true});
+  //   colIsJoined.emplace_back(std::vector<bool>{true, true});
+  //   // table lineitem
+  //   colIsSelected.emplace_back(std::vector<bool>{false, true});
+  //   colIsJoined.emplace_back(std::vector<bool>{true, false});
 
-  CyclicLoopJoin loop_join;
-  loop_join.Join(&options, table_lists, colIsJoined, colIsSelected);
+  //   CyclicLoopJoin loop_join;
+  //   loop_join.Join(&options, table_lists, colIsJoined, colIsSelected);
 
-  std::cout << "done with query X" << std::endl;
+  for (auto iter = tbl_nation_->KeyIterator(0);
+       iter < tbl_nation_->KeyIterator(0) + tbl_nation_.)
+    std::cout << "done with query X" << std::endl;
 }
 }  // namespace qjoin
