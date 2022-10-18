@@ -29,8 +29,8 @@ class TableImpl {
 
   virtual ~TableImpl();
 
-  db_key_t_ KeyValAt(int64_t& row, int& col) const;
-  std::string StrAt(int64_t& row) const;
+  db_key_t_ KeyValAt(int64_t row, int col) const;
+  std::string StrAt(int64_t row) const;
 
   void BuildIndex();
 

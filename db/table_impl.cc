@@ -80,7 +80,7 @@ TableImpl::TableImpl(std::string filename, char delim, int col0, int col1,
 
 TableImpl::~TableImpl() {}
 
-db_key_t_ TableImpl::KeyValAt(int64_t& row, int& col) const {
+db_key_t_ TableImpl::KeyValAt(int64_t row, int col) const {
   switch (col) {
     case 0:
       return col0_->at(row);
@@ -90,7 +90,7 @@ db_key_t_ TableImpl::KeyValAt(int64_t& row, int& col) const {
       throw std::runtime_error("no such column.");
   }
 }
-std::string TableImpl::StrAt(int64_t& row) const { return col2_->at(row); }
+std::string TableImpl::StrAt(int64_t row) const { return col2_->at(row); }
 
 void TableImpl::BuildIndex() {
   buildKeyIndex();
