@@ -65,7 +65,7 @@ void Qx(Options& options) {
   //   loop_join.Join(&options, table_lists, colIsJoined, colIsSelected);
 
 #ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
-  std::ofstream myfile(options.path_prefix + "qx.txt");
+  std::ofstream baseline_file(options.path_prefix + "qx_baseline.txt");
 #endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
 
   int64_t join_cnt = 0;
@@ -98,9 +98,9 @@ void Qx(Options& options) {
                       std::cout << "find " << join_cnt << " results"
                                 << std::endl;
 #ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
-                    myfile << n_nation << "," << s_supp << "," << c_cust << ","
-                           << o_order << "," << l_linenum << "\n";
-                    if (join_cnt % 10000 == 0) myfile.flush();
+                    baseline_file << n_nation << "," << s_supp << "," << c_cust
+                                  << "," << o_order << "," << l_linenum << "\n";
+                    if (join_cnt % 10000 == 0) baseline_file.flush();
 #endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
                   }
                 }
@@ -113,7 +113,7 @@ void Qx(Options& options) {
   }
 
 #ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
-  myfile.close();
+  baseline_file.close();
 #endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
 
   std::cout << "join size is " << join_cnt << std::endl;
