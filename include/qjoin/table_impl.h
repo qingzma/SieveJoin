@@ -15,9 +15,15 @@ class TableImpl {
   int64_t row_count_;
   int col_cnt_;
   bool has_col2_ = false;
+
+ public:
   std::shared_ptr<std::vector<db_key_t_>> col0_;
   std::shared_ptr<std::vector<db_key_t_>> col1_;
   std::shared_ptr<std::vector<std::string>> col2_;
+
+  std::shared_ptr<std::multimap<db_key_t_, int64_t>> col0_index_;
+  std::shared_ptr<std::multimap<db_key_t_, int64_t>> col1_index_;
+  std::shared_ptr<std::multimap<std::string, int64_t>> col2_index_;
 
  private:
   // TableImpl();

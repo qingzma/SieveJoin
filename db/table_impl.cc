@@ -97,8 +97,29 @@ void TableImpl::BuildIndex() {
   if (has_col2_) buildCharsIndex();
 }
 
-void TableImpl::buildKeyIndex() {}
-void TableImpl::buildCharsIndex() {}
+void TableImpl::buildKeyIndex() {
+  if (col0_index_ != nullptr) return;
+  // index for col0
+  col0_index_ = std::make_shared<std::multimap<db_key_t_, int64_t>>();
+  int64_t idx = 0;
+  for (db_key_t_ val : *col0_) col0_index_->emplace(val, idx++);
+
+  // index for col1
+  if (col0_ == col1_) {
+    col1_index_ = col0_index_;
+  } else {
+    col1_index_ = std::make_shared<std::multimap<db_key_t_, int64_t>>();
+    int64_t idx = 0;
+    for (db_key_t_ val : *col1_) col1_index_->emplace(val, idx++);
+  }
+}
+
+void TableImpl::buildCharsIndex() {
+  if (col2_index_ != nullptr) return;
+  col2_index_ = std::make_shared<std::multimap<std::string, int64_t>>();
+  int64_t idx = 0;
+  for (std::string val : *col2_) col2_index_->emplace(val, idx++);
+}
 
 void TableImpl::buildKeyBloomFilter() {}
 void TableImpl::buildCharsBloomFilter() {}
