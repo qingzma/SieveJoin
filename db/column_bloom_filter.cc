@@ -20,23 +20,23 @@ ColumnBloomFilter::ColumnBloomFilter(Options& options, int64_t col_size) {
   parameters_.compute_optimal_parameters();
 
   // Instantiate Bloom Filter
-  bf = std::make_shared<bloom_filter>(parameters_);
+  bf_ = bloom_filter(parameters_);
 
   level_ = 0;
 }
 
 void ColumnBloomFilter::Fit(std::shared_ptr<std::vector<db_key_t_>>& column) {
-  for (auto val : *column) bf->insert(val);
+  for (auto val : *column) bf_.insert(val);
 }
 
 void ColumnBloomFilter::UpdateBfFromOutsideColumn(
     const std::shared_ptr<std::vector<db_key_t_>>& column_inside,
     const ColumnBloomFilter& cbf_outside) {
   // reset Bloom Filter
-  bf->clear();
+  bf_.clear();
 
   for (auto val : *column_inside) {
-    if (cbf_outside.bf->contains(val)) bf->insert(val);
+    if (cbf_outside.bf_.contains(val)) bf_.insert(val);
   }
 }
 
@@ -45,11 +45,11 @@ void ColumnBloomFilter::UpdateBfFromInsideColumn(
     const std::shared_ptr<std::vector<db_key_t_>>& source_col,
     const ColumnBloomFilter& bf_source) {
   // reset Bloom Filter
-  bf->clear();
+  bf_.clear();
 
   for (int64_t idx = 0; idx < dest_col->size(); idx++) {
-    if (bf_source.bf->contains(source_col->at(idx))) {
-      bf->insert(dest_col->at(idx));
+    if (bf_source.bf_.contains(source_col->at(idx))) {
+      bf_.insert(dest_col->at(idx));
     }
   }
 }
