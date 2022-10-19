@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include "column_bloom_filter.h"
 #include "data_types.h"
 
 namespace qjoin {
@@ -24,6 +25,10 @@ class TableImpl {
   std::shared_ptr<std::multimap<db_key_t_, int64_t>> col0_index_;
   std::shared_ptr<std::multimap<db_key_t_, int64_t>> col1_index_;
   std::shared_ptr<std::multimap<std::string, int64_t>> col2_index_;
+
+  std::shared_ptr<ColumnBloomFilter> col0_bf_;
+  std::shared_ptr<ColumnBloomFilter> col1_bf_;
+  std::shared_ptr<ColumnBloomFilter> col2_bf_;
 
  private:
   // TableImpl();
