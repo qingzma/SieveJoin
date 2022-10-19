@@ -11,7 +11,8 @@ int main(int argc, char** argv) {
   std::cout << "data is located at " << options.path_prefix << std::endl;
 
   if (options.qx) {
-    qjoin::Qx(options);
+    qjoin::QueryX qx(options);
+    qx.Run();
   }
   return 0;
 }
