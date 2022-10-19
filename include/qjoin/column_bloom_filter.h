@@ -15,7 +15,7 @@ class ColumnBloomFilter {
   bloom_parameters parameters_;
 
  public:
-  std::shared_ptr<bloom_filter> bf;
+  bloom_filter bf_;
 
  public:
   ColumnBloomFilter(Options& options, int64_t col_size);

@@ -253,7 +253,7 @@ void QueryX::buildBloomFilter(int level) {
   tbl_nation_->BuildKeyBloomFilter();
   tbl_supplier_->BuildKeyBloomFilter();
   tbl_customer_->BuildKeyBloomFilter();
-  tbl_orders_->BuildCharsBloomFilter();
+  tbl_orders_->BuildKeyBloomFilter();
   tbl_lineitem_->BuildKeyBloomFilter();
 
   // merge bf from lineitem to order
