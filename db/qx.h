@@ -19,6 +19,9 @@ namespace qjoin {
 class QueryX {
  private:
   Options options_;
+  int64_t n_access_tuple_;
+  int64_t n_access_index_;
+  int64_t n_access_bf_;
 
   std::shared_ptr<TableImpl> tbl_nation_;
   std::shared_ptr<TableImpl> tbl_supplier_;  // 3, 0
@@ -27,6 +30,7 @@ class QueryX {
   std::shared_ptr<TableImpl> tbl_lineitem_;
 
   void buildBloomFilter(int level);
+  void resetCounter();
 
  public:
   QueryX(Options& options);
