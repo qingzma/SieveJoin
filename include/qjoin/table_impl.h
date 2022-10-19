@@ -8,6 +8,7 @@
 
 #include "column_bloom_filter.h"
 #include "data_types.h"
+#include "options.h"
 
 namespace qjoin {
 class TableImpl {
@@ -16,6 +17,7 @@ class TableImpl {
   int64_t row_count_;
   int col_cnt_;
   bool has_col2_ = false;
+  Options* options_;
 
  public:
   std::shared_ptr<std::vector<db_key_t_>> col0_;
@@ -34,9 +36,10 @@ class TableImpl {
   // TableImpl();
 
  public:
-  TableImpl(std::string filename, char delim, int col0, int col1);
-  TableImpl(std::string filename, char delim, int col0, int col1, int col3,
-            DATABASE_DATA_TYPES col3_date_type);
+  TableImpl(Options& options, std::string filename, char delim, int col0,
+            int col1);
+  TableImpl(Options& options, std::string filename, char delim, int col0,
+            int col1, int col3, DATABASE_DATA_TYPES col3_date_type);
 
   virtual ~TableImpl();
 
@@ -53,8 +56,9 @@ class TableImpl {
   void buildKeyIndex();
   void buildCharsIndex();
 
-  void buildKeyBloomFilter();
-  void buildCharsBloomFilter();
+ public:
+  void BuildKeyBloomFilter();
+  void BuildCharsBloomFilter();
 };
 }  // namespace qjoin
 #endif  // QJOIN_INCLUDE_QJOIN_TABLE_IMPL_H_

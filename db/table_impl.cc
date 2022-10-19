@@ -9,12 +9,14 @@
 namespace qjoin {
 // TableImpl::TableImpl() :
 // col0_(std::make_shared<std::vector<db_key_t_>>()),col1_() {}
-TableImpl::TableImpl(std::string filename, char delim, int col0, int col1) {
+TableImpl::TableImpl(Options& options, std::string filename, char delim,
+                     int col0, int col1) {
   table_name_ = filename;
   col_cnt_ = (col0 == col1) ? 1 : 2;
   col0_ = std::make_shared<std::vector<db_key_t_>>();
   col1_ = (col0 == col1) ? col0_ : std::make_shared<std::vector<db_key_t_>>();
   has_col2_ = false;
+  options_ = &options;
 
   FILE* fp = fopen(filename.c_str(), "r");
   if (fp == nullptr) {
@@ -42,8 +44,9 @@ TableImpl::TableImpl(std::string filename, char delim, int col0, int col1) {
   if (line) free(line);
 }
 
-TableImpl::TableImpl(std::string filename, char delim, int col0, int col1,
-                     int col2, DATABASE_DATA_TYPES col2_date_type) {
+TableImpl::TableImpl(Options& options, std::string filename, char delim,
+                     int col0, int col1, int col2,
+                     DATABASE_DATA_TYPES col2_date_type) {
   // currently, the third column should only be  char*
   assert(col2_date_type == DATABASE_DATA_TYPES::CHAR);
 
@@ -53,6 +56,7 @@ TableImpl::TableImpl(std::string filename, char delim, int col0, int col1,
   col1_ = (col0 == col1) ? col0_ : std::make_shared<std::vector<db_key_t_>>();
   col2_ = std::make_shared<std::vector<std::string>>();
   has_col2_ = true;
+  options_ = &options;
 
   FILE* fp = fopen(filename.c_str(), "r");
   assert(fp != nullptr);
@@ -135,6 +139,15 @@ std::vector<db_key_t_>::iterator TableImpl::KeyIterator(int col) const {
   }
 }
 
-void TableImpl::buildKeyBloomFilter() {}
-void TableImpl::buildCharsBloomFilter() {}
+void TableImpl::BuildKeyBloomFilter() {
+  col0_bf_ = std::make_shared<ColumnBloomFilter>(options_, row_count_);
+  col0_bf_->Fit(col0_);
+
+  if (col0_ != col1_) {
+    col1_bf_ = std::make_shared<ColumnBloomFilter>(options_, row_count_);
+    col1_bf_->Fit(col1_);
+  } else
+    col1_bf_ = col0_bf_;
+}
+void TableImpl::BuildCharsBloomFilter() {}
 }  // namespace qjoin
