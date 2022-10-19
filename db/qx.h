@@ -31,7 +31,8 @@ class QueryX {
   void Run();
   void LoopJoin();
   void IndexJoin();
-  void QJoin();
+  void QLoopJoin();
+  void QIndexJoin();
 };
 
 }  // namespace qjoin
