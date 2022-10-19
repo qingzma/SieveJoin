@@ -42,7 +42,9 @@ void QueryX::Run() {
   std::cout << "********************************************" << std::endl;
   std::cout << "running query X" << std::endl;
 
-  if (options_.qjoin_) QJoin();
+  if (options_.q_index_join) QIndexJoin();
+
+  if (options_.q_loop_join) QLoopJoin();
 
   if (options_.index_join) IndexJoin();
 
@@ -174,10 +176,16 @@ void QueryX::IndexJoin() {
             << std::endl;
 }
 
-void QueryX::QJoin() {
+void QueryX::QIndexJoin() {
   std::cout << "--------------------------------------------" << std::endl;
-  std::cout << "QJoin starts for query x." << std::endl;
-  std::cout << "QJoin ends for query x." << std::endl;
+  std::cout << "QJoinIndex starts for query x." << std::endl;
+  std::cout << "QJoinIndex ends for query x." << std::endl;
+}
+
+void QueryX::QLoopJoin() {
+  std::cout << "--------------------------------------------" << std::endl;
+  std::cout << "QJoinLoop starts for query x." << std::endl;
+  std::cout << "QJoinLoop ends for query x." << std::endl;
 }
 
 // void Qx(Options& options) {
