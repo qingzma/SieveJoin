@@ -6,6 +6,7 @@
 
 #include "table/tpch_schema_columns.h"
 
+#include "qjoin/column_bloom_filter.h"
 #include "qjoin/join_plan.h"
 #include "qjoin/loop_join.h"
 #include "qjoin/table_impl.h"
@@ -179,7 +180,62 @@ void QueryX::IndexJoin() {
 void QueryX::QIndexJoin() {
   std::cout << "--------------------------------------------" << std::endl;
   std::cout << "QIndexJoin starts for query x." << std::endl;
-  std::cout << "QIndexJoin ends for query x." << std::endl;
+
+#ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
+  std::ofstream index_join_file(options_.path_prefix + "qx_index.txt");
+#endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
+
+  int64_t join_cnt = 0;
+  // loop nation
+
+  for (db_key_t_ n_nation : *(tbl_nation_->col0_)) {
+    // check existence and loop supplier
+    auto s_nation_iter = tbl_supplier_->col0_index_->equal_range(n_nation);
+    for (auto iter_s = s_nation_iter.first; iter_s != s_nation_iter.second;
+         iter_s++) {
+      db_key_t_ s_nation = iter_s->first;
+      int64_t s_idx = iter_s->second;
+      db_key_t_ s_supp = tbl_supplier_->col1_->at(s_idx);
+      // looop customer
+      auto c_nation_iter = tbl_customer_->col0_index_->equal_range(s_nation);
+      for (auto iter_c = c_nation_iter.first; iter_c != c_nation_iter.second;
+           iter_c++) {
+        db_key_t_ c_nation = iter_c->first;
+        int64_t c_idx = iter_c->second;
+        db_key_t_ c_cust = tbl_customer_->col1_->at(c_idx);
+        // loop orders
+        auto o_cust_iter = tbl_orders_->col0_index_->equal_range(c_cust);
+        for (auto iter_o = o_cust_iter.first; iter_o != o_cust_iter.second;
+             iter_o++) {
+          db_key_t_ o_cust = iter_o->first;
+          int64_t o_idx = iter_o->second;
+          db_key_t_ o_order = tbl_orders_->col1_->at(o_idx);
+          // loop lineitem
+          auto l_order_iter = tbl_lineitem_->col0_index_->equal_range(o_order);
+          for (auto iter_l = l_order_iter.first; iter_l != l_order_iter.second;
+               iter_l++) {
+            int64_t l_idx = iter_l->second;
+            db_key_t_ l_linenum = tbl_lineitem_->col1_->at(l_idx);
+            join_cnt++;
+            if (join_cnt % 10000 == 0)
+              std::cout << "find " << join_cnt << " results" << std::endl;
+#ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
+            index_join_file << n_nation << "," << s_supp << "," << c_cust << ","
+                            << o_order << "," << l_linenum << "\n";
+            if (join_cnt % 10000 == 0) index_join_file.flush();
+#endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
+          }
+        }
+      }
+    }
+  }
+
+#ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
+  index_join_file.close();
+#endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
+
+  std::cout << "QIndexJoin ends for query x with join size: " << join_cnt
+            << std::endl;
 }
 
 void QueryX::QLoopJoin() {
@@ -188,6 +244,11 @@ void QueryX::QLoopJoin() {
   std::cout << "QLoopJoin ends for query x." << std::endl;
 }
 
+void QueryX::buildBloomFilter(int level) {
+  tbl_nation_->col0_bf_ =
+      std::make_shared<ColumnBloomFilter>(options_, tbl_nation_->Size());
+  tbl_
+}
 // void Qx(Options& options) {
 //   JoinedTableLists table_lists = {tbl_nation_, tbl_supplier_,
 //   tbl_customer_,
