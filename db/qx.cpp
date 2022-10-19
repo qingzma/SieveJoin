@@ -36,6 +36,7 @@ QueryX::QueryX(Options& options) : options_(options) {
   tbl_orders_->BuildIndex();
   tbl_lineitem_->BuildIndex();
 }
+
 void QueryX::Run() {
   std::cout << "********************************************" << std::endl;
   std::cout << "********************************************" << std::endl;

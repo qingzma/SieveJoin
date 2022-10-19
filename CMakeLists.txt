@@ -31,14 +31,15 @@ target_sources(qdb
     PUBLIC
 
     # db/table_generic.cc
-    db/table_impl.cc
-    db/loop_join.cc
     util/bloom_filter.h
     util/timer.h
     util/timer.cc
     util/options.cc
     util/string_operators.h
     util/string_operators.cc
+    db/table_impl.cc
+    db/loop_join.cc
+    db/column_bloom_filter.cc
     table/tpch_schema_columns.h
     table/tpch_table_nation.h
     table/tpch_table_nation.cc
