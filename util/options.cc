@@ -12,10 +12,9 @@ void ParseOptions(Options& options, int argc, char** argv) {
   TCLAP::SwitchArg arg_QX("x", "qx", "do query x experiment", cmd, false);
   TCLAP::SwitchArg arg_LOOP_JOIN("l", "loop", "do  loop join", cmd, false);
   TCLAP::SwitchArg arg_INDEX_JOIN("i", "index", "do  index join", cmd, false);
-  TCLAP::SwitchArg arg_QJOIN_INDEX("qi", "qjoinindex", "do  qjoinindex", cmd,
+  TCLAP::SwitchArg arg_QJOIN_INDEX("q", "qindexjoin", "do  qjoinindex", cmd,
                                    false);
-  TCLAP::SwitchArg arg_QJOIN_LOOP("ql", "qjoinloop", "do  qjoinloop", cmd,
-                                  false);
+  TCLAP::SwitchArg arg_QJOIN_LOOP("", "qloopjoin", "do  qjoinloop", cmd, false);
 
   cmd.add(arg_SF);
   cmd.add(arg_PATH);
