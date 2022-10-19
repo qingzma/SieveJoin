@@ -11,25 +11,23 @@
 #include "qjoin/table_impl.h"
 
 namespace qjoin {
-void Qx(Options& options) {
-  std::cout << "running query X" << std::endl;
 
+QueryX::QueryX(Options& options) : options_(options) {
   // load data
-  std::shared_ptr<TableImpl> tbl_nation_(
-      new TableImpl(options.path_prefix + "nation.tbl", '|', N_NATION_KEY,
-                    N_NATION_KEY));  // 0, 0
-  std::shared_ptr<TableImpl> tbl_supplier_(
-      new TableImpl(options.path_prefix + "supplier.tbl", '|', S_NATIONKEY,
-                    S_SUPPKEY));  // 3, 0
-  std::shared_ptr<TableImpl> tbl_customer_(
-      new TableImpl(options.path_prefix + "customer.tbl", '|', C_NATIONKEY,
-                    C_CUSTKEY));  // 3, 0
-  std::shared_ptr<TableImpl> tbl_orders_(
-      new TableImpl(options.path_prefix + "orders.tbl", '|', O_CUSTKEY,
-                    O_ORDERKEY));  // 1, 0
-  std::shared_ptr<TableImpl> tbl_lineitem_(
-      new TableImpl(options.path_prefix + "lineitem.tbl", '|', L_ORDERKEY,
-                    L_LINENUMBER));  // 0, 3
+  tbl_nation_ = std::make_shared<TableImpl>(options_.path_prefix + "nation.tbl",
+                                            '|', N_NATION_KEY, N_NATION_KEY);
+  tbl_supplier_ =
+      std::make_shared<TableImpl>(options_.path_prefix + "supplier.tbl", '|',
+                                  S_NATIONKEY, S_SUPPKEY);  // 3, 0
+  tbl_customer_ = std::make_shared<TableImpl>(
+      options_.path_prefix + "customer.tbl", '|', C_NATIONKEY,
+      C_CUSTKEY);  // 3, 0
+  tbl_orders_ = std::make_shared<TableImpl>(options_.path_prefix + "orders.tbl",
+                                            '|', O_CUSTKEY,
+                                            O_ORDERKEY);  // 1, 0
+  tbl_lineitem_ = std::make_shared<TableImpl>(
+      options_.path_prefix + "lineitem.tbl", '|', L_ORDERKEY,
+      L_LINENUMBER);  // 0, 3
 
   // build indexes
   tbl_nation_->BuildIndex();
@@ -37,35 +35,29 @@ void Qx(Options& options) {
   tbl_customer_->BuildIndex();
   tbl_orders_->BuildIndex();
   tbl_lineitem_->BuildIndex();
+}
+void QueryX::Run() {
+  std::cout << "********************************************" << std::endl;
+  std::cout << "********************************************" << std::endl;
+  std::cout << "running query X" << std::endl;
 
-  //   JoinedTableLists table_lists = {tbl_nation_, tbl_supplier_,
-  //   tbl_customer_,
-  //                                   tbl_orders_, tbl_lineitem_};
-  //
-  //   // create the join plan
-  //   ColIsSelected colIsSelected = {};
-  //   ColIsJoined colIsJoined = {};
-  //   // table nation
-  //   colIsSelected.emplace_back(std::vector<bool>{true, false});
-  //   colIsJoined.emplace_back(std::vector<bool>{true, false});
-  //   // table supplier
-  //   colIsSelected.emplace_back(std::vector<bool>{false, true});
-  //   colIsJoined.emplace_back(std::vector<bool>{true, false});
-  //   // table customer
-  //   colIsSelected.emplace_back(std::vector<bool>{false, true});
-  //   colIsJoined.emplace_back(std::vector<bool>{true, true});
-  //   // table orders
-  //   colIsSelected.emplace_back(std::vector<bool>{false, true});
-  //   colIsJoined.emplace_back(std::vector<bool>{true, true});
-  //   // table lineitem
-  //   colIsSelected.emplace_back(std::vector<bool>{false, true});
-  //   colIsJoined.emplace_back(std::vector<bool>{true, false});
+  if (options_.qjoin_) QJoin();
 
-  //   CyclicLoopJoin loop_join;
-  //   loop_join.Join(&options, table_lists, colIsJoined, colIsSelected);
+  if (options_.index_join) IndexJoin();
 
+  if (options_.loop_join) LoopJoin();
+
+  std::cout << "--------------------------------------------" << std::endl;
+  std::cout << "done with query X" << std::endl;
+  std::cout << "********************************************" << std::endl;
+  std::cout << "********************************************" << std::endl;
+}
+
+void QueryX::LoopJoin() {
+  std::cout << "--------------------------------------------" << std::endl;
+  std::cout << "Loop join starts for query x." << std::endl;
 #ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
-  std::ofstream baseline_file(options.path_prefix + "qx_baseline.txt");
+  std::ofstream baseline_file(options_.path_prefix + "qx_baseline.txt");
 #endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
 
   int64_t join_cnt = 0;
@@ -116,7 +108,48 @@ void Qx(Options& options) {
   baseline_file.close();
 #endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
 
-  std::cout << "join size is " << join_cnt << std::endl;
-  std::cout << "done with query X" << std::endl;
+  std::cout << "Loop join ends for query x with join size: " << join_cnt
+            << std::endl;
 }
+
+void QueryX::IndexJoin() {
+  std::cout << "--------------------------------------------" << std::endl;
+  std::cout << "Index join starts for query x." << std::endl;
+  std::cout << "Index join ends for query x." << std::endl;
+}
+
+void QueryX::QJoin() {
+  std::cout << "--------------------------------------------" << std::endl;
+  std::cout << "QJoin starts for query x." << std::endl;
+  std::cout << "QJoin ends for query x." << std::endl;
+}
+
+// void Qx(Options& options) {
+//   JoinedTableLists table_lists = {tbl_nation_, tbl_supplier_,
+//   tbl_customer_,
+//                                   tbl_orders_, tbl_lineitem_};
+//
+//   // create the join plan
+//   ColIsSelected colIsSelected = {};
+//   ColIsJoined colIsJoined = {};
+//   // table nation
+//   colIsSelected.emplace_back(std::vector<bool>{true, false});
+//   colIsJoined.emplace_back(std::vector<bool>{true, false});
+//   // table supplier
+//   colIsSelected.emplace_back(std::vector<bool>{false, true});
+//   colIsJoined.emplace_back(std::vector<bool>{true, false});
+//   // table customer
+//   colIsSelected.emplace_back(std::vector<bool>{false, true});
+//   colIsJoined.emplace_back(std::vector<bool>{true, true});
+//   // table orders
+//   colIsSelected.emplace_back(std::vector<bool>{false, true});
+//   colIsJoined.emplace_back(std::vector<bool>{true, true});
+//   // table lineitem
+//   colIsSelected.emplace_back(std::vector<bool>{false, true});
+//   colIsJoined.emplace_back(std::vector<bool>{true, false});
+//
+//   CyclicLoopJoin loop_join;
+//   loop_join.Join(&options, table_lists, colIsJoined, colIsSelected);
+// }
+
 }  // namespace qjoin
