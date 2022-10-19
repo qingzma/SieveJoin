@@ -76,8 +76,7 @@ target_sources(qentry
 option(BUILD_QJOIN_TESTS "build unit tests" TRUE)
 
 # option(WRITE_JOIN_RESULT_TO_FILE, "write join results to file" TRUE)
-add_compile_definitions(BOOL_WRITE_JOIN_RESULT_TO_FILE)
-
+# add_compile_definitions(BOOL_WRITE_JOIN_RESULT_TO_FILE)
 if(BUILD_QJOIN_TESTS)
     enable_testing()
 
