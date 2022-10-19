@@ -41,8 +41,8 @@ void ColumnBloomFilter::UpdateBfFromOutsideColumn(
 }
 
 void ColumnBloomFilter::UpdateBfFromInsideColumn(
-    const std::shared_ptr<std::vector<db_key_t_>>& dest,
-    const std::shared_ptr<std::vector<db_key_t_>>& source,
+    const std::shared_ptr<std::vector<db_key_t_>>& dest_col,
+    const std::shared_ptr<std::vector<db_key_t_>>& source_col,
     const ColumnBloomFilter& bf_source) {
   // reset Bloom Filter
   bf->clear();

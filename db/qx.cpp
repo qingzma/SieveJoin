@@ -245,9 +245,20 @@ void QueryX::QLoopJoin() {
 }
 
 void QueryX::buildBloomFilter(int level) {
-  tbl_nation_->col0_bf_ =
-      std::make_shared<ColumnBloomFilter>(options_, tbl_nation_->Size());
-  tbl_
+  tbl_nation_->BuildKeyBloomFilter();
+  tbl_supplier_->BuildKeyBloomFilter();
+  tbl_customer_->BuildKeyBloomFilter();
+  tbl_orders_->BuildCharsBloomFilter();
+  tbl_lineitem_->BuildKeyBloomFilter();
+
+  // merge bf from lineitem to order
+  tbl_orders_->col1_bf_->UpdateBfFromOutsideColumn(tbl_lineitem_->col0_,
+                                                   *(tbl_lineitem_->col0_bf_));
+  tbl_orders_->col0_bf_->UpdateBfFromInsideColumn(
+      tbl_orders_->col0_, tbl_orders_->col1_, *(tbl_orders_->col1_bf_));
+  //// merge bf from order to customer
+
+  //   tbl_customer_->col1_bf_->
 }
 // void Qx(Options& options) {
 //   JoinedTableLists table_lists = {tbl_nation_, tbl_supplier_,
