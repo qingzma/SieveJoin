@@ -140,11 +140,11 @@ std::vector<db_key_t_>::iterator TableImpl::KeyIterator(int col) const {
 }
 
 void TableImpl::BuildKeyBloomFilter() {
-  col0_bf_ = std::make_shared<ColumnBloomFilter>(options_, row_count_);
+  col0_bf_ = std::make_shared<ColumnBloomFilter>(*options_, row_count_);
   col0_bf_->Fit(col0_);
 
   if (col0_ != col1_) {
-    col1_bf_ = std::make_shared<ColumnBloomFilter>(options_, row_count_);
+    col1_bf_ = std::make_shared<ColumnBloomFilter>(*options_, row_count_);
     col1_bf_->Fit(col1_);
   } else
     col1_bf_ = col0_bf_;

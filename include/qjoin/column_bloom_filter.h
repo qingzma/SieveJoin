@@ -25,12 +25,12 @@ class ColumnBloomFilter {
   // merge the bf on column b_1 in table 1  with equal condition on column b_2
   // from another table b2.
   void UpdateBfFromOutsideColumn(
-      const std::shared_ptr<std::vector<db_key_t_>>& column,
+      const std::shared_ptr<std::vector<db_key_t_>>& column_inside,
       const ColumnBloomFilter& cbf);
 
   void UpdateBfFromInsideColumn(
-      const std::shared_ptr<std::vector<db_key_t_>>& dest,
-      const std::shared_ptr<std::vector<db_key_t_>>& source,
+      const std::shared_ptr<std::vector<db_key_t_>>& dest_col,
+      const std::shared_ptr<std::vector<db_key_t_>>& source_col,
       const ColumnBloomFilter& bf_source);
 };
 }  // namespace qjoin
