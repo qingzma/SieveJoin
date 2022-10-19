@@ -30,13 +30,13 @@ void ColumnBloomFilter::Fit(std::shared_ptr<std::vector<db_key_t_>>& column) {
 }
 
 void ColumnBloomFilter::UpdateBfFromOutsideColumn(
-    const std::shared_ptr<std::vector<db_key_t_>>& column,
-    const ColumnBloomFilter& cbf) {
+    const std::shared_ptr<std::vector<db_key_t_>>& column_inside,
+    const ColumnBloomFilter& cbf_outside) {
   // reset Bloom Filter
   bf->clear();
 
-  for (auto val : *column) {
-    if (cbf.bf->contains(val)) bf->insert(val);
+  for (auto val : *column_inside) {
+    if (cbf_outside.bf->contains(val)) bf->insert(val);
   }
 }
 
@@ -47,9 +47,9 @@ void ColumnBloomFilter::UpdateBfFromInsideColumn(
   // reset Bloom Filter
   bf->clear();
 
-  for (int64_t idx = 0; idx < dest->size(); idx++) {
-    if (bf_source.bf->contains(source->at(idx))) {
-      bf->insert(dest->at(idx));
+  for (int64_t idx = 0; idx < dest_col->size(); idx++) {
+    if (bf_source.bf->contains(source_col->at(idx))) {
+      bf->insert(dest_col->at(idx));
     }
   }
 }

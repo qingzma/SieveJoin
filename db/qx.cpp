@@ -15,19 +15,20 @@ namespace qjoin {
 
 QueryX::QueryX(Options& options) : options_(options) {
   // load data
-  tbl_nation_ = std::make_shared<TableImpl>(options_.path_prefix + "nation.tbl",
-                                            '|', N_NATION_KEY, N_NATION_KEY);
-  tbl_supplier_ =
-      std::make_shared<TableImpl>(options_.path_prefix + "supplier.tbl", '|',
-                                  S_NATIONKEY, S_SUPPKEY);  // 3, 0
+  tbl_nation_ =
+      std::make_shared<TableImpl>(options, options_.path_prefix + "nation.tbl",
+                                  '|', N_NATION_KEY, N_NATION_KEY);
+  tbl_supplier_ = std::make_shared<TableImpl>(
+      options, options_.path_prefix + "supplier.tbl", '|', S_NATIONKEY,
+      S_SUPPKEY);  // 3, 0
   tbl_customer_ = std::make_shared<TableImpl>(
-      options_.path_prefix + "customer.tbl", '|', C_NATIONKEY,
+      options, options_.path_prefix + "customer.tbl", '|', C_NATIONKEY,
       C_CUSTKEY);  // 3, 0
-  tbl_orders_ = std::make_shared<TableImpl>(options_.path_prefix + "orders.tbl",
-                                            '|', O_CUSTKEY,
-                                            O_ORDERKEY);  // 1, 0
+  tbl_orders_ = std::make_shared<TableImpl>(
+      options, options_.path_prefix + "orders.tbl", '|', O_CUSTKEY,
+      O_ORDERKEY);  // 1, 0
   tbl_lineitem_ = std::make_shared<TableImpl>(
-      options_.path_prefix + "lineitem.tbl", '|', L_ORDERKEY,
+      options, options_.path_prefix + "lineitem.tbl", '|', L_ORDERKEY,
       L_LINENUMBER);  // 0, 3
 
   // build indexes
@@ -36,6 +37,10 @@ QueryX::QueryX(Options& options) : options_(options) {
   tbl_customer_->BuildIndex();
   tbl_orders_->BuildIndex();
   tbl_lineitem_->BuildIndex();
+
+  if (options.q_loop_join || options.q_index_join) {
+    buildBloomFilter(0);
+  }
 }
 
 void QueryX::Run() {
@@ -252,14 +257,26 @@ void QueryX::buildBloomFilter(int level) {
   tbl_lineitem_->BuildKeyBloomFilter();
 
   // merge bf from lineitem to order
-  tbl_orders_->col1_bf_->UpdateBfFromOutsideColumn(tbl_lineitem_->col0_,
+  tbl_orders_->col1_bf_->UpdateBfFromOutsideColumn(tbl_orders_->col1_,
                                                    *(tbl_lineitem_->col0_bf_));
   tbl_orders_->col0_bf_->UpdateBfFromInsideColumn(
       tbl_orders_->col0_, tbl_orders_->col1_, *(tbl_orders_->col1_bf_));
-  //// merge bf from order to customer
 
-  //   tbl_customer_->col1_bf_->
+  // merge bf from order to customer
+  tbl_customer_->col1_bf_->UpdateBfFromOutsideColumn(tbl_customer_->col1_,
+                                                     *(tbl_orders_->col0_bf_));
+  tbl_customer_->col0_bf_->UpdateBfFromInsideColumn(
+      tbl_customer_->col0_, tbl_customer_->col1_, *(tbl_customer_->col1_bf_));
+
+  // merge bf from customer to supplier
+  tbl_supplier_->col0_bf_->UpdateBfFromOutsideColumn(
+      tbl_supplier_->col0_, *(tbl_customer_->col0_bf_));
+
+  // merge bf from supplier to nation
+  tbl_nation_->col0_bf_->UpdateBfFromOutsideColumn(tbl_nation_->col0_,
+                                                   *(tbl_supplier_->col0_bf_));
 }
+
 // void Qx(Options& options) {
 //   JoinedTableLists table_lists = {tbl_nation_, tbl_supplier_,
 //   tbl_customer_,
