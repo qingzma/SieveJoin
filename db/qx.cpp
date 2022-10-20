@@ -35,7 +35,7 @@ QueryX::QueryX(Options& options) : options_(options) {
       options, options_.path_prefix + "orders.tbl", '|', O_CUSTKEY,
       O_ORDERKEY);  // 1, 0
   tbl_lineitem_ = std::make_shared<TableImpl>(
-      options, options_.path_prefix + "lineitem_6w.tbl", '|', L_ORDERKEY,
+      options, options_.path_prefix + "lineitem_60w.tbl", '|', L_ORDERKEY,
       L_LINENUMBER);  // 0, 3
 
   // build indexes
