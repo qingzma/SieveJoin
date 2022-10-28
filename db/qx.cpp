@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "table/tpch_schema_columns.h"
+#include "util/timer.h"
 
 #include "qjoin/column_bloom_filter.h"
 #include "qjoin/join_plan.h"
@@ -35,7 +36,7 @@ QueryX::QueryX(Options& options) : options_(options) {
       options, options_.path_prefix + "orders.tbl", '|', O_CUSTKEY,
       O_ORDERKEY);  // 1, 0
   tbl_lineitem_ = std::make_shared<TableImpl>(
-      options, options_.path_prefix + "lineitem_60w.tbl", '|', L_ORDERKEY,
+      options, options_.path_prefix + "lineitem.tbl", '|', L_ORDERKEY,
       L_LINENUMBER);  // 0, 3
 
   // build indexes
@@ -54,6 +55,8 @@ void QueryX::Run() {
   std::cout << "********************************************" << std::endl;
   std::cout << "********************************************" << std::endl;
   std::cout << "running query X" << std::endl;
+  Timer timer;
+  timer.Start();
 
   if (options_.q_index_join) QIndexJoin();
 
@@ -65,6 +68,9 @@ void QueryX::Run() {
 
   std::cout << "--------------------------------------------" << std::endl;
   std::cout << "done with query X" << std::endl;
+  timer.Stop();
+  std::cout << "total time cost is " << timer.Seconds() << " seconds."
+            << std::endl;
   std::cout << "********************************************" << std::endl;
   std::cout << "********************************************" << std::endl;
 }
@@ -72,6 +78,9 @@ void QueryX::Run() {
 void QueryX::LoopJoin() {
   std::cout << "--------------------------------------------" << std::endl;
   std::cout << "Loop join starts for query x." << std::endl;
+  Timer timer;
+  timer.Start();
+
 #ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
   std::ofstream baseline_file(options_.path_prefix + "qx_loop.txt");
 #endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
@@ -124,6 +133,8 @@ void QueryX::LoopJoin() {
   baseline_file.close();
 #endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
 
+  timer.Stop();
+  std::cout << "time cost: " << timer.Seconds() << " seconds." << std::endl;
   std::cout << "Loop join ends for query x with join size: " << join_cnt
             << std::endl;
 }
@@ -131,7 +142,8 @@ void QueryX::LoopJoin() {
 void QueryX::IndexJoin() {
   std::cout << "--------------------------------------------" << std::endl;
   std::cout << "Index join starts for query x." << std::endl;
-  std::chrono::steady_clock::time_point t0 = std::chrono::steady_clock::now();
+  Timer timer;
+  timer.Start();
 
 #ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
   std::ofstream index_join_file(options_.path_prefix + "qx_index.txt");
@@ -195,12 +207,8 @@ void QueryX::IndexJoin() {
   index_join_file.close();
 #endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
 
-  std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
-  std::cout << "time cost: "
-            << std::chrono::duration_cast<std::chrono::duration<double>>(t1 -
-                                                                         t0)
-                   .count()
-            << std::endl;
+  timer.Stop();
+  std::cout << "time cost: " << timer.Seconds() << " seconds." << std::endl;
 
   std::cout << "access tuples: " << n_access_tuple_ << std::endl;
   std::cout << "access indexed: " << n_access_index_ << std::endl;
@@ -212,7 +220,8 @@ void QueryX::IndexJoin() {
 void QueryX::QIndexJoin() {
   std::cout << "--------------------------------------------" << std::endl;
   std::cout << "QIndexJoin starts for query x." << std::endl;
-  std::chrono::steady_clock::time_point t0 = std::chrono::steady_clock::now();
+  Timer timer;
+  timer.Start();
 
 #ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
   std::ofstream index_join_file(options_.path_prefix + "qx_qindex_join.txt");
@@ -286,12 +295,8 @@ void QueryX::QIndexJoin() {
   index_join_file.close();
 #endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
 
-  std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
-  std::cout << "time cost: "
-            << std::chrono::duration_cast<std::chrono::duration<double>>(t1 -
-                                                                         t0)
-                   .count()
-            << std::endl;
+  timer.Stop();
+  std::cout << "time cost: " << timer.Seconds() << " seconds." << std::endl;
   std::cout << "access tuples: " << n_access_tuple_ << std::endl;
   std::cout << "access indexed: " << n_access_index_ << std::endl;
   std::cout << "access bfs: " << n_access_bf_ << std::endl;
