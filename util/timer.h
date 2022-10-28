@@ -9,23 +9,25 @@ time_t GetEpoch();
 class Timer {
  private:
   bool activate_;
-  std::chrono::high_resolution_clock::time_point start_point_;
-  std::chrono::high_resolution_clock::duration duration_;
+  // std::chrono::high_resolution_clock::time_point start_point_;
+  // std::chrono::high_resolution_clock::duration duration_;
+  std::chrono::steady_clock::time_point start_point_;
+  double duration_;
 
  public:
   Timer(){};
   virtual ~Timer(){};
   void Start() {
     activate_ = true;
-    start_point_ = std::chrono::high_resolution_clock::now();
+    start_point_ = std::chrono::steady_clock::now();
   }
 
   void Stop() {
     if (activate_) {
-      duration_ += std::chrono::duration_cast<
-          std::chrono::high_resolution_clock::duration>(
-          std::chrono::high_resolution_clock::now() - start_point_);
-      start_point_ = std::chrono::high_resolution_clock::time_point();
+      duration_ += std::chrono::duration_cast<std::chrono::duration<double>>(
+                       std::chrono::steady_clock::now() - start_point_)
+                       .count();
+      start_point_ = std::chrono::steady_clock::time_point();
       activate_ = false;
     }
   }
@@ -33,8 +35,8 @@ class Timer {
   void Pause() { Stop(); }
 
   void Reset() {
-    start_point_ = std::chrono::high_resolution_clock::time_point();
-    duration_ = std::chrono::high_resolution_clock::duration();
+    start_point_ = std::chrono::steady_clock::time_point();
+    duration_ = 0.0;
     activate_ = false;
   }
 
@@ -43,22 +45,19 @@ class Timer {
     Start();
   }
 
-  double Seconds() {
-    return static_cast<double>(
-        std::chrono::duration_cast<std::chrono::seconds>(duration_).count());
-  }
+  double Seconds() { return duration_; }
 
-  double MilliSeconds() {
-    return static_cast<double>(
-        std::chrono::duration_cast<std::chrono::milliseconds>(duration_)
-            .count());
-  }
+  // double MilliSeconds() {
+  //   return static_cast<double>(
+  //       std::chrono::duration_cast<std::chrono::milliseconds>(duration_)
+  //           .count());
+  // }
 
-  double MicroSeconds() {
-    return static_cast<double>(
-        std::chrono::duration_cast<std::chrono::microseconds>(duration_)
-            .count());
-  }
+  // double MicroSeconds() {
+  //   return static_cast<double>(
+  //       std::chrono::duration_cast<std::chrono::microseconds>(duration_)
+  //           .count());
+  // }
 };
 }  // namespace qjoin
 
