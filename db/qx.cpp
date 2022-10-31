@@ -109,7 +109,7 @@ void QueryX::LoopJoin() {
                   db_key_t_ l_linenum = tbl_lineitem_->col1_->at(i4);
                   if (o_order == l_order) {
                     join_cnt++;
-                    if (join_cnt % 10000 == 0) {
+                    if (join_cnt % N_PRINT_GAP == 0) {
                       // if (join_cnt > 0) std::cout << '\r' << std::flush;
                       std::cout << "\rfind " << join_cnt << " results"
                                 << std::flush;
@@ -118,7 +118,7 @@ void QueryX::LoopJoin() {
 #ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
                     baseline_file << n_nation << "," << s_supp << "," << c_cust
                                   << "," << o_order << "," << l_linenum << "\n";
-                    if (join_cnt % 10000 == 0) baseline_file.flush();
+                    if (join_cnt % N_PRINT_GAP == 0) baseline_file.flush();
 #endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
                   }
                 }
@@ -191,14 +191,14 @@ void QueryX::IndexJoin() {
             n_access_tuple_++;
             db_key_t_ l_linenum = tbl_lineitem_->col1_->at(l_idx);
             join_cnt++;
-            if (join_cnt % 10000 == 0) {
+            if (join_cnt % N_PRINT_GAP == 0) {
               // if (join_cnt > 0) std::cout << '\r' << std::flush;
               std::cout << "\rfind " << join_cnt << " results" << std::flush;
             }
 #ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
             index_join_file << n_nation << "," << s_supp << "," << c_cust << ","
                             << o_order << "," << l_linenum << "\n";
-            if (join_cnt % 10000 == 0) index_join_file.flush();
+            if (join_cnt % N_PRINT_GAP == 0) index_join_file.flush();
 #endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
           }
         }
@@ -281,14 +281,14 @@ void QueryX::QIndexJoin() {
             n_access_tuple_++;
             db_key_t_ l_linenum = tbl_lineitem_->col1_->at(l_idx);
             join_cnt++;
-            if (join_cnt % 10000 == 0) {
+            if (join_cnt % N_PRINT_GAP == 0) {
               // if (join_cnt > 0) std::cout << '\r' << std::flush;
               std::cout << "\rfind " << join_cnt << " results" << std::flush;
             }
 #ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
             index_join_file << n_nation << "," << s_supp << "," << c_cust << ","
                             << o_order << "," << l_linenum << "\n";
-            if (join_cnt % 10000 == 0) index_join_file.flush();
+            if (join_cnt % N_PRINT_GAP == 0) index_join_file.flush();
 #endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
           }
         }
