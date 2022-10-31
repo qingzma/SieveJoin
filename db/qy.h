@@ -14,8 +14,8 @@
 // AND c1.c_nationkey = s.s_nationkey
 // AND s.s_nationkey = c2.c_nationkey;
 
-#ifndef QJOIN_DB_QX_H_
-#define QJOIN_DB_QX_H_
+#ifndef QJOIN_DB_QY_H_
+#define QJOIN_DB_QY_H_
 #include "qjoin/options.h"
 #include "qjoin/table_impl.h"
 #include "query.h"
@@ -23,14 +23,16 @@
 namespace qjoin {
 class QueryY : public Query {
  private:
-  std::shared_ptr<TableImpl> tbl_nation_;
-  std::shared_ptr<TableImpl> tbl_supplier_;  // 3, 0
-  std::shared_ptr<TableImpl> tbl_customer_;  // 3, 0
-  std::shared_ptr<TableImpl> tbl_orders_;    // 1, 0
-  std::shared_ptr<TableImpl> tbl_lineitem_;
+  std::shared_ptr<TableImpl> tbl_lineitem_1_;  //
+  std::shared_ptr<TableImpl> tbl_orders_1_;    //
+  std::shared_ptr<TableImpl> tbl_customer_1_;  //
+  std::shared_ptr<TableImpl> tbl_lineitem_2_;  //
+  std::shared_ptr<TableImpl> tbl_orders_2_;    //
+  std::shared_ptr<TableImpl> tbl_customer_2_;  //
+  std::shared_ptr<TableImpl> tbl_supplier_;    //
 
   void buildBloomFilter(int level) override;
-  void resetCounter();
+  //   void resetCounter();
 
  public:
   QueryY(Options& options);
@@ -45,4 +47,4 @@ class QueryY : public Query {
 
 }  // namespace qjoin
 
-#endif  // QJOIN_DB_QX_H_
+#endif  // QJOIN_DB_QY_H_
