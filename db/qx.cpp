@@ -14,13 +14,10 @@
 #include "qjoin/table_impl.h"
 
 namespace qjoin {
-void QueryX::resetCounter() {
-  n_access_tuple_ = 0;
-  n_access_index_ = 0;
-  n_access_bf_ = 0;
-}
+QueryX::~QueryX() {}
 
-QueryX::QueryX(Options& options) : options_(options) {
+QueryX::QueryX(Options& options) {
+  options_ = options;
   resetCounter();
   // load data
   tbl_nation_ =
@@ -85,6 +82,7 @@ void QueryX::LoopJoin() {
   std::ofstream baseline_file(options_.path_prefix + "qx_loop.txt");
 #endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
 
+  std::cout << "find 0 results" << std::flush;
   int64_t join_cnt = 0;
   // loop nation
   for (int64_t i0 = 0; i0 < tbl_nation_->Size(); i0++) {
@@ -111,9 +109,12 @@ void QueryX::LoopJoin() {
                   db_key_t_ l_linenum = tbl_lineitem_->col1_->at(i4);
                   if (o_order == l_order) {
                     join_cnt++;
-                    if (join_cnt % 10000 == 0)
-                      std::cout << "find " << join_cnt << " results"
-                                << std::endl;
+                    if (join_cnt % 10000 == 0) {
+                      // if (join_cnt > 0) std::cout << '\r' << std::flush;
+                      std::cout << "\rfind " << join_cnt << " results"
+                                << std::flush;
+                    }
+
 #ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
                     baseline_file << n_nation << "," << s_supp << "," << c_cust
                                   << "," << o_order << "," << l_linenum << "\n";
@@ -134,7 +135,7 @@ void QueryX::LoopJoin() {
 #endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
 
   timer.Stop();
-  std::cout << "time cost: " << timer.Seconds() << " seconds." << std::endl;
+  std::cout << "\rtime cost: " << timer.Seconds() << " seconds." << std::endl;
   std::cout << "Loop join ends for query x with join size: " << join_cnt
             << std::endl;
 }
@@ -148,7 +149,7 @@ void QueryX::IndexJoin() {
 #ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
   std::ofstream index_join_file(options_.path_prefix + "qx_index.txt");
 #endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
-
+  std::cout << "find 0 results" << std::flush;
   int64_t join_cnt = 0;
   // loop nation
 
@@ -190,8 +191,10 @@ void QueryX::IndexJoin() {
             n_access_tuple_++;
             db_key_t_ l_linenum = tbl_lineitem_->col1_->at(l_idx);
             join_cnt++;
-            if (join_cnt % 10000 == 0)
-              std::cout << "find " << join_cnt << " results" << std::endl;
+            if (join_cnt % 10000 == 0) {
+              // if (join_cnt > 0) std::cout << '\r' << std::flush;
+              std::cout << "\rfind " << join_cnt << " results" << std::flush;
+            }
 #ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
             index_join_file << n_nation << "," << s_supp << "," << c_cust << ","
                             << o_order << "," << l_linenum << "\n";
@@ -208,7 +211,7 @@ void QueryX::IndexJoin() {
 #endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
 
   timer.Stop();
-  std::cout << "time cost: " << timer.Seconds() << " seconds." << std::endl;
+  std::cout << "\rtime cost: " << timer.Seconds() << " seconds." << std::endl;
 
   std::cout << "access tuples: " << n_access_tuple_ << std::endl;
   std::cout << "access indexed: " << n_access_index_ << std::endl;
@@ -226,7 +229,7 @@ void QueryX::QIndexJoin() {
 #ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
   std::ofstream index_join_file(options_.path_prefix + "qx_qindex_join.txt");
 #endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
-
+  std::cout << "find 0 results" << std::flush;
   int64_t join_cnt = 0;
   // loop nation
 
@@ -278,8 +281,10 @@ void QueryX::QIndexJoin() {
             n_access_tuple_++;
             db_key_t_ l_linenum = tbl_lineitem_->col1_->at(l_idx);
             join_cnt++;
-            if (join_cnt % 10000 == 0)
-              std::cout << "find " << join_cnt << " results" << std::endl;
+            if (join_cnt % 10000 == 0) {
+              // if (join_cnt > 0) std::cout << '\r' << std::flush;
+              std::cout << "\rfind " << join_cnt << " results" << std::flush;
+            }
 #ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
             index_join_file << n_nation << "," << s_supp << "," << c_cust << ","
                             << o_order << "," << l_linenum << "\n";
@@ -296,7 +301,7 @@ void QueryX::QIndexJoin() {
 #endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
 
   timer.Stop();
-  std::cout << "time cost: " << timer.Seconds() << " seconds." << std::endl;
+  std::cout << "\rtime cost: " << timer.Seconds() << " seconds." << std::endl;
   std::cout << "access tuples: " << n_access_tuple_ << std::endl;
   std::cout << "access indexed: " << n_access_index_ << std::endl;
   std::cout << "access bfs: " << n_access_bf_ << std::endl;
