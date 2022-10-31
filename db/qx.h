@@ -26,7 +26,7 @@ class QueryX : public Query {
   std::shared_ptr<TableImpl> tbl_orders_;    // 1, 0
   std::shared_ptr<TableImpl> tbl_lineitem_;
 
-  void buildBloomFilter(int level);
+  void buildBloomFilter(int level) override;
 
  public:
   QueryX(Options& options);

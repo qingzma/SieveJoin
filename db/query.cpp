@@ -7,6 +7,10 @@ void Query::resetCounter() {
   n_access_bf_ = 0;
 }
 
+void Query::buildBloomFilter(int level) {
+  throw std::runtime_error("not implemented.");
+}
+
 // void Query::Run() { throw std::runtime_error("not implemented."); }
 void Query::LoopJoin() { throw std::runtime_error("not implemented."); }
 void Query::IndexJoin() { throw std::runtime_error("not implemented."); }
