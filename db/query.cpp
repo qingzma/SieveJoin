@@ -1,6 +1,8 @@
 #include "query.h"
 
 namespace qjoin {
+Query::~Query() {}
+
 void Query::resetCounter() {
   n_access_tuple_ = 0;
   n_access_index_ = 0;

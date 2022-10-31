@@ -1,4 +1,5 @@
-#pragma once
+#ifndef QJOIN_DB_QUERY_H_
+#define QJOIN_DB_QUERY_H_
 
 #include "qjoin/options.h"
 #include "qjoin/table_impl.h"
@@ -17,7 +18,7 @@ class Query {
 
  public:
   Query() = default;
-  virtual ~Query() = default;
+  virtual ~Query();
 
   virtual void Run() = 0;
   virtual void LoopJoin();
@@ -27,3 +28,5 @@ class Query {
 };
 
 }  // namespace qjoin
+
+#endif  // QJOIN_DB_QUERY_H_

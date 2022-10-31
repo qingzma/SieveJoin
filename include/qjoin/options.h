@@ -8,6 +8,7 @@ namespace qjoin {
 struct Options {
   // float scalingFactor;
   bool qx;
+  bool qy;
   bool loop_join;     // run baseline loop join
   bool index_join;    // run index join
   bool q_index_join;  // run qjoinindex

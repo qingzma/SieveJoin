@@ -2,6 +2,7 @@
 
 #include "qjoin/options.h"
 #include "qx.h"
+#include "qy.h"
 
 int main(int argc, char** argv) {
   qjoin::Options options;
@@ -13,6 +14,11 @@ int main(int argc, char** argv) {
   if (options.qx) {
     qjoin::QueryX qx(options);
     qx.Run();
+  }
+
+  if (options.qy) {
+    qjoin::QueryY qy(options);
+    qy.Run();
   }
   return 0;
 }
