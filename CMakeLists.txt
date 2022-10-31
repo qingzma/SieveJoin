@@ -69,6 +69,8 @@ target_include_directories(qentry PUBLIC "include")
 target_sources(qentry
     PUBLIC
     db/db_entry.cpp
+    db/query.h
+    db/query.cpp
     db/qx.h
     db/qx.cpp
     db/qy.h

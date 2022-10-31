@@ -12,17 +12,14 @@
 
 #ifndef QJOIN_DB_QX_H_
 #define QJOIN_DB_QX_H_
+#include "db/query.h"
+
 #include "qjoin/options.h"
 #include "qjoin/table_impl.h"
 
 namespace qjoin {
-class QueryX {
+class QueryX : public Query {
  private:
-  Options options_;
-  int64_t n_access_tuple_;
-  int64_t n_access_index_;
-  int64_t n_access_bf_;
-
   std::shared_ptr<TableImpl> tbl_nation_;
   std::shared_ptr<TableImpl> tbl_supplier_;  // 3, 0
   std::shared_ptr<TableImpl> tbl_customer_;  // 3, 0
@@ -30,15 +27,16 @@ class QueryX {
   std::shared_ptr<TableImpl> tbl_lineitem_;
 
   void buildBloomFilter(int level);
-  void resetCounter();
 
  public:
   QueryX(Options& options);
-  void Run();
-  void LoopJoin();
-  void IndexJoin();
-  void QLoopJoin();
-  void QIndexJoin();
+  ~QueryX();
+
+  void Run() override;
+  void LoopJoin() override;
+  void IndexJoin() override;
+  void QLoopJoin() override;
+  void QIndexJoin() override;
 };
 
 }  // namespace qjoin
