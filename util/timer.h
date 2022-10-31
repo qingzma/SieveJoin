@@ -12,6 +12,7 @@ class Timer {
   // std::chrono::high_resolution_clock::time_point start_point_;
   // std::chrono::high_resolution_clock::duration duration_;
   std::chrono::steady_clock::time_point start_point_;
+  std::chrono::steady_clock::time_point mark_point_;
   double duration_;
 
  public:
@@ -20,6 +21,7 @@ class Timer {
   void Start() {
     activate_ = true;
     start_point_ = std::chrono::steady_clock::now();
+    mark_point_ = start_point_;
   }
 
   void Stop() {
@@ -32,32 +34,21 @@ class Timer {
     }
   }
 
-  void Pause() { Stop(); }
+  // void Pause() { Stop(); }
 
-  void Reset() {
-    start_point_ = std::chrono::steady_clock::time_point();
-    duration_ = 0.0;
-    activate_ = false;
+  void Mark() { mark_point_ = std::chrono::steady_clock::now(); }
+
+  double Seconds() {
+    return std::chrono::duration_cast<std::chrono::duration<double>>(
+               std::chrono::steady_clock::now() - start_point_)
+        .count();
   }
 
-  void UpdateDuration() {
-    Stop();
-    Start();
+  double SecondsSinceMarked() {
+    return std ::chrono::duration_cast<std::chrono::duration<double>>(
+               std::chrono::steady_clock::now() - mark_point_)
+        .count();
   }
-
-  double Seconds() { return duration_; }
-
-  // double MilliSeconds() {
-  //   return static_cast<double>(
-  //       std::chrono::duration_cast<std::chrono::milliseconds>(duration_)
-  //           .count());
-  // }
-
-  // double MicroSeconds() {
-  //   return static_cast<double>(
-  //       std::chrono::duration_cast<std::chrono::microseconds>(duration_)
-  //           .count());
-  // }
 };
 }  // namespace qjoin
 

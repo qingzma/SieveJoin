@@ -65,7 +65,7 @@ void QueryX::Run() {
 
   std::cout << "--------------------------------------------" << std::endl;
   std::cout << "done with query X" << std::endl;
-  timer.Stop();
+
   std::cout << "total time cost is " << timer.Seconds() << " seconds."
             << std::endl;
   std::cout << "********************************************" << std::endl;
@@ -134,7 +134,6 @@ void QueryX::LoopJoin() {
   baseline_file.close();
 #endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
 
-  timer.Stop();
   std::cout << "\rtime cost: " << timer.Seconds() << " seconds." << std::endl;
   std::cout << "Loop join ends for query x with join size: " << join_cnt
             << std::endl;
@@ -210,7 +209,6 @@ void QueryX::IndexJoin() {
   index_join_file.close();
 #endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
 
-  timer.Stop();
   std::cout << "\rtime cost: " << timer.Seconds() << " seconds." << std::endl;
 
   std::cout << "access tuples: " << n_access_tuple_ << std::endl;
@@ -300,7 +298,6 @@ void QueryX::QIndexJoin() {
   index_join_file.close();
 #endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
 
-  timer.Stop();
   std::cout << "\rtime cost: " << timer.Seconds() << " seconds." << std::endl;
   std::cout << "access tuples: " << n_access_tuple_ << std::endl;
   std::cout << "access indexed: " << n_access_index_ << std::endl;
