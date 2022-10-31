@@ -23,8 +23,8 @@ QueryY::QueryY(Options& options) {
       options, options_.path_prefix + "customer.tbl", '|', C_CUSTKEY,
       C_NATIONKEY);  // 0, 3
   tbl_supplier_ = std::make_shared<TableImpl>(
-      options, options_.path_prefix + "supplier.tbl", '|', S_SUPPKEY,
-      S_NATIONKEY);  // 0, 3
+      options, options_.path_prefix + "supplier.tbl", '|', S_NATIONKEY,
+      S_SUPPKEY);  // 0, 3
   tbl_customer_2_ = std::make_shared<TableImpl>(
       options, options_.path_prefix + "customer.tbl", '|', C_NATIONKEY,
       C_CUSTKEY);  // 3, 0
@@ -43,7 +43,6 @@ QueryY::QueryY(Options& options) {
   tbl_orders_1_->BuildIndex();
   tbl_customer_1_->BuildIndex();
   tbl_supplier_->BuildIndex();
-  tbl_customer_2_->BuildIndex();
   tbl_customer_2_->BuildIndex();
   tbl_orders_2_->BuildIndex();
   tbl_lineitem_2_->BuildIndex();
@@ -112,7 +111,7 @@ void QueryY::LoopJoin() {
 void QueryY::buildBloomFilter(int level) {
   tbl_lineitem_1_->BuildKeyBloomFilter();
   tbl_orders_1_->BuildKeyBloomFilter();
-  tbl_customer_1_->BuildCharsBloomFilter();
+  tbl_customer_1_->BuildKeyBloomFilter();
   tbl_supplier_->BuildKeyBloomFilter();
   tbl_customer_2_->BuildKeyBloomFilter();
   tbl_orders_2_->BuildKeyBloomFilter();
@@ -123,5 +122,36 @@ void QueryY::buildBloomFilter(int level) {
       tbl_orders_2_->col1_, *(tbl_lineitem_2_->col0_bf_));
   tbl_orders_2_->col0_bf_->UpdateBfFromInsideColumn(
       tbl_orders_2_->col0_, tbl_orders_2_->col1_, *(tbl_orders_2_->col1_bf_));
+
+  // merge bf from o2 to c2
+  tbl_customer_2_->col1_bf_->UpdateBfFromOutsideColumn(
+      tbl_customer_2_->col1_, *(tbl_orders_2_->col0_bf_));
+  tbl_customer_2_->col0_bf_->UpdateBfFromInsideColumn(
+      tbl_customer_2_->col0_, tbl_customer_2_->col1_,
+      *(tbl_customer_2_->col1_bf_));
+
+  // merge bf from c2 to s
+  tbl_supplier_->col0_bf_->UpdateBfFromOutsideColumn(
+      tbl_supplier_->col0_, *(tbl_customer_2_->col0_bf_));
+
+  // merge bf from s to c1
+  tbl_customer_1_->col1_bf_->UpdateBfFromOutsideColumn(
+      tbl_customer_1_->col1_, *(tbl_supplier_->col0_bf_));
+  tbl_customer_1_->col0_bf_->UpdateBfFromInsideColumn(
+      tbl_customer_1_->col0_, tbl_customer_1_->col1_,
+      *(tbl_supplier_->col1_bf_));
+
+  // merge bf from c1 to o1
+  tbl_orders_1_->col1_bf_->UpdateBfFromOutsideColumn(
+      tbl_orders_1_->col1_, *(tbl_customer_1_->col0_bf_));
+  tbl_orders_1_->col0_bf_->UpdateBfFromInsideColumn(
+      tbl_orders_1_->col0_, tbl_orders_1_->col1_, *(tbl_customer_1_->col0_bf_));
+
+  // merge bf from o1 to l1
+  tbl_lineitem_1_->col1_bf_->UpdateBfFromOutsideColumn(
+      tbl_lineitem_1_->col1_, *(tbl_orders_1_->col0_bf_));
+  tbl_lineitem_1_->col0_bf_->UpdateBfFromInsideColumnOutsideColumn(
+      tbl_lineitem_1_->col0_, tbl_lineitem_1_->col1_,
+      *(tbl_lineitem_1_->col1_bf_), *(tbl_lineitem_2_->col1_bf_));
 }
 }  // namespace qjoin

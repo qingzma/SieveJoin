@@ -54,4 +54,19 @@ void ColumnBloomFilter::UpdateBfFromInsideColumn(
   }
 }
 
+void ColumnBloomFilter::UpdateBfFromInsideColumnOutsideColumn(
+    const std::shared_ptr<std::vector<db_key_t_>>& dest_col,
+    const std::shared_ptr<std::vector<db_key_t_>>& source_col,
+    const ColumnBloomFilter& bf_source, const ColumnBloomFilter& bf_outiside) {
+  // reset Bloom Filter
+  bf_.clear();
+
+  for (int64_t idx = 0; idx < dest_col->size(); idx++) {
+    if (bf_source.bf_.contains(source_col->at(idx)) &&
+        bf_outiside.bf_.contains(source_col->at(idx))) {
+      bf_.insert(dest_col->at(idx));
+    }
+  }
+}
+
 }  // namespace qjoin
