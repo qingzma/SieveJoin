@@ -32,6 +32,14 @@ class ColumnBloomFilter {
       const std::shared_ptr<std::vector<db_key_t_>>& dest_col,
       const std::shared_ptr<std::vector<db_key_t_>>& source_col,
       const ColumnBloomFilter& bf_source);
+
+  /*this method is used to support cyclic joins.
+   it is a combination of the above two methods.
+  */
+  void UpdateBfFromInsideColumnOutsideColumn(
+      const std::shared_ptr<std::vector<db_key_t_>>& dest_col,
+      const std::shared_ptr<std::vector<db_key_t_>>& source_col,
+      const ColumnBloomFilter& bf_source, const ColumnBloomFilter& bf_outiside);
 };
 }  // namespace qjoin
 
