@@ -90,13 +90,76 @@ void QueryY::LoopJoin() {
   timer.Start();
 
 #ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
-  std::ofstream baseline_file(options_.path_prefix + "qx_loop.txt");
+  std::ofstream baseline_file(options_.path_prefix + "qy_loop.txt");
 #endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
 
   std::cout << "find 0 results" << std::flush;
   int64_t join_cnt = 0;
   // loop lineitem1
-  for (int64_t i0 = 0; i0 < tbl_lineitem_1_->Size(); i0++) {
+  for (int64_t il1 = 0; il1 < tbl_lineitem_1_->Size(); il1++) {
+    db_key_t_ l1_order = tbl_lineitem_1_->col1_->at(il1);
+    db_key_t_ l1_part = tbl_lineitem_1_->col0_->at(il1);
+
+    // loop order1
+    for (int64_t io1 = 0; io1 < tbl_orders_1_->Size(); io1++) {
+      db_key_t_ o1_order = tbl_orders_1_->col0_->at(io1);
+      db_key_t_ o1_cust = tbl_orders_1_->col1_->at(io1);
+
+      if (l1_order == o1_order) {
+        // loop c1
+        for (int64_t ic1 = 0; ic1 < tbl_customer_1_->Size(); ic1++) {
+          db_key_t_ c1_cust = tbl_customer_1_->col0_->at(ic1);
+          db_key_t_ c1_nation = tbl_customer_1_->col1_->at(ic1);
+
+          if (o1_cust == c1_cust) {
+            // loop s
+            for (int64_t is1 = 0; is1 < tbl_supplier_->Size(); is1++) {
+              db_key_t_ s_nation = tbl_supplier_->col0_->at(is1);
+              db_key_t_ s_supp = tbl_supplier_->col1_->at(is1);
+
+              if (c1_nation == s_nation) {
+                // loop c2
+                for (int64_t ic2 = 0; ic2 < tbl_customer_2_->Size(); ic2++) {
+                  db_key_t_ c2_nation = tbl_customer_2_->col0_->at(is1);
+                  db_key_t_ c2_cust = tbl_customer_2_->col1_->at(is1);
+
+                  if (c2_nation == s_nation) {
+                    // loop o2
+                    for (int64_t io2 = 0; io2 < tbl_orders_2_->Size(); io2++) {
+                      db_key_t_ o2_cust = tbl_orders_2_->col0_->at(is1);
+                      db_key_t_ o2_order = tbl_orders_2_->col1_->at(is1);
+
+                      if (o2_cust == c2_cust) {
+                        // loop l2
+                        for (int64_t il2 = 0; il2 < tbl_lineitem_2_->Size();
+                             il2++) {
+                          db_key_t_ l2_order = tbl_lineitem_2_->col0_->at(is1);
+                          db_key_t_ l2_part = tbl_lineitem_2_->col1_->at(is1);
+                          if (l2_order == o2_order && l2_part == l1_part) {
+                            join_cnt++;
+                            if (join_cnt % N_PRINT_GAP == 0) {
+                              std::cout << "\rfind " << join_cnt << " results"
+                                        << std::flush;
+                            }
+#ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
+                            baseline_file << l1_order << "," << o1_cust << ","
+                                          << c1_nation << "," << c2_cust << ","
+                                          << o2_order << "," << l2_part << "\n";
+                            if (join_cnt % N_PRINT_GAP == 0)
+                              baseline_file.flush();
+#endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 
 #ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
