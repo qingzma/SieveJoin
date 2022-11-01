@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "table/tpch_schema_columns.h"
+#include "util/prints.h"
 #include "util/timer.h"
 
 #include "qjoin/column_bloom_filter.h"
@@ -16,7 +17,15 @@
 namespace qjoin {
 QueryX::~QueryX() {}
 
+void QueryX::resetCounter() {
+  n_access_tuple_ = 0;
+  n_access_index_ = 0;
+  n_access_bf_ = 0;
+  memset(n_misses, 0, sizeof(n_misses));
+}
+
 QueryX::QueryX(Options& options) {
+  // N_PRINT_GAP = 10000;
   options_ = options;
   resetCounter();
   // load data
@@ -248,8 +257,11 @@ void QueryX::QIndexJoin() {
     n_access_tuple_++;
     // check existence and loop supplier
     n_access_bf_++;
-    if (!tbl_nation_->col0_bf_->bf_.contains(n_nation))
+    if (!tbl_nation_->col0_bf_->bf_.contains(n_nation)) {
+      n_misses[0]++;
       continue;  // skip if not exist in current table
+    }
+
     n_access_index_++;
     auto s_nation_iter = tbl_supplier_->col0_index_->equal_range(n_nation);
     for (auto iter_s = s_nation_iter.first; iter_s != s_nation_iter.second;
@@ -260,8 +272,11 @@ void QueryX::QIndexJoin() {
       db_key_t_ s_supp = tbl_supplier_->col1_->at(s_idx);
       // looop customer
       n_access_bf_++;
-      if (!tbl_supplier_->col0_bf_->bf_.contains(s_nation))
+      if (!tbl_supplier_->col0_bf_->bf_.contains(s_nation)) {
+        n_misses[1]++;
         continue;  // skip if not exist in current table
+      }
+
       n_access_index_++;
       auto c_nation_iter = tbl_customer_->col0_index_->equal_range(s_nation);
       for (auto iter_c = c_nation_iter.first; iter_c != c_nation_iter.second;
@@ -272,7 +287,10 @@ void QueryX::QIndexJoin() {
         db_key_t_ c_cust = tbl_customer_->col1_->at(c_idx);
         // loop orders
         n_access_bf_++;
-        if (!tbl_customer_->col1_bf_->bf_.contains(c_cust)) continue;
+        if (!tbl_customer_->col1_bf_->bf_.contains(c_cust)) {
+          n_misses[2]++;
+          continue;
+        }
         n_access_index_++;
         auto o_cust_iter = tbl_orders_->col0_index_->equal_range(c_cust);
         for (auto iter_o = o_cust_iter.first; iter_o != o_cust_iter.second;
@@ -282,7 +300,10 @@ void QueryX::QIndexJoin() {
           n_access_tuple_++;
           db_key_t_ o_order = tbl_orders_->col1_->at(o_idx);
           n_access_bf_++;
-          if (!tbl_orders_->col1_bf_->bf_.contains(o_order)) continue;
+          if (!tbl_orders_->col1_bf_->bf_.contains(o_order)) {
+            n_misses[3]++;
+            continue;
+          }
           // loop lineitem
           n_access_index_++;
           auto l_order_iter = tbl_lineitem_->col0_index_->equal_range(o_order);
@@ -315,7 +336,7 @@ void QueryX::QIndexJoin() {
   std::cout << "access tuples: " << n_access_tuple_ << std::endl;
   std::cout << "access indexed: " << n_access_index_ << std::endl;
   std::cout << "access bfs: " << n_access_bf_ << std::endl;
-
+  print_n_misses(n_misses, 4);
   std::cout << "QIndexJoin ends for query x with join size: " << join_cnt
             << std::endl;
 }
@@ -339,8 +360,10 @@ void QueryX::QLoopJoin() {
     db_key_t_ n_nation = tbl_nation_->col0_->at(i0);
     n_access_tuple_++;
     n_access_bf_++;
-    if (!tbl_nation_->col0_bf_->bf_.contains(n_nation))
+    if (!tbl_nation_->col0_bf_->bf_.contains(n_nation)) {
+      n_misses[0]++;
       continue;  // skip if not exist in current table
+    }
 
     // loop supplier
     for (int64_t i1 = 0; i1 < tbl_supplier_->Size(); i1++) {
@@ -349,8 +372,10 @@ void QueryX::QLoopJoin() {
       n_access_tuple_++;
       n_access_tuple_++;
       n_access_bf_++;
-      if (!tbl_supplier_->col0_bf_->bf_.contains(s_nation))
+      if (!tbl_supplier_->col0_bf_->bf_.contains(s_nation)) {
+        n_misses[1]++;
         continue;  // skip if not exist in current table
+      }
 
       if (n_nation == s_nation) {
         // loop customer
@@ -360,7 +385,10 @@ void QueryX::QLoopJoin() {
           n_access_tuple_++;
           n_access_tuple_++;
           n_access_bf_++;
-          if (!tbl_customer_->col1_bf_->bf_.contains(c_cust)) continue;
+          if (!tbl_customer_->col1_bf_->bf_.contains(c_cust)) {
+            n_misses[2]++;
+            continue;
+          }
 
           if (s_nation == c_nation) {
             // loop orders
@@ -370,7 +398,10 @@ void QueryX::QLoopJoin() {
               n_access_tuple_++;
               n_access_tuple_++;
               n_access_bf_++;
-              if (!tbl_orders_->col1_bf_->bf_.contains(o_order)) continue;
+              if (!tbl_orders_->col1_bf_->bf_.contains(o_order)) {
+                n_misses[3]++;
+                continue;
+              }
 
               if (c_cust == o_cust) {
                 // loop lineitem
@@ -409,6 +440,7 @@ void QueryX::QLoopJoin() {
   std::cout << "\rtime cost: " << timer.Seconds() << " seconds." << std::endl;
   std::cout << "access tuples: " << n_access_tuple_ << std::endl;
   std::cout << "access bfs: " << n_access_bf_ << std::endl;
+  print_n_misses(n_misses, 4);
   std::cout << "Loop join ends for query x with join size: " << join_cnt
             << std::endl;
 }

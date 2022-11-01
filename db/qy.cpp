@@ -1,12 +1,21 @@
 #include "qy.h"
 
 #include "table/tpch_schema_columns.h"
+#include "util/prints.h"
 #include "util/timer.h"
 
 namespace qjoin {
 QueryY::~QueryY() {}
 
+void QueryY::resetCounter() {
+  n_access_tuple_ = 0;
+  n_access_index_ = 0;
+  n_access_bf_ = 0;
+  memset(n_misses, 0, sizeof(n_misses));
+}
+
 QueryY::QueryY(Options& options) {
+  N_PRINT_GAP = 1;
   options_ = options;
   resetCounter();
 
@@ -104,8 +113,11 @@ void QueryY::QIndexJoin() {
     n_access_bf_++;
     n_access_bf_++;
     if ((!tbl_lineitem_1_->col0_bf_->bf_.contains(l1_part)) ||
-        (!tbl_lineitem_1_->col1_bf_->bf_.contains(l1_order)))
+        (!tbl_lineitem_1_->col1_bf_->bf_.contains(l1_order))) {
+      n_misses[0]++;
       continue;  // skip if not exist in current table
+    }
+
     n_access_index_++;
     auto o1_order_ranges = tbl_orders_1_->col0_index_->equal_range(l1_order);
     for (auto iter_o1 = o1_order_ranges.first;
@@ -116,7 +128,10 @@ void QueryY::QIndexJoin() {
 
       // loop c1
       n_access_bf_++;
-      if (!tbl_orders_1_->col1_bf_->bf_.contains(o1_cust)) continue;
+      if (!tbl_orders_1_->col1_bf_->bf_.contains(o1_cust)) {
+        n_misses[1]++;
+        continue;
+      }
       n_access_index_++;
       auto c1_cust_ranges = tbl_customer_1_->col0_index_->equal_range(o1_cust);
       for (auto iter_c1 = c1_cust_ranges.first;
@@ -127,7 +142,10 @@ void QueryY::QIndexJoin() {
 
         // loop s
         n_access_bf_++;
-        if (!tbl_customer_1_->col1_bf_->bf_.contains(c1_nation)) continue;
+        if (!tbl_customer_1_->col1_bf_->bf_.contains(c1_nation)) {
+          n_misses[2]++;
+          continue;
+        }
         n_access_index_++;
         auto s_nation_ranges =
             tbl_supplier_->col0_index_->equal_range(c1_nation);
@@ -139,7 +157,10 @@ void QueryY::QIndexJoin() {
 
           // loop c2
           n_access_bf_++;
-          if (!tbl_supplier_->col0_bf_->bf_.contains(s_nation)) continue;
+          if (!tbl_supplier_->col0_bf_->bf_.contains(s_nation)) {
+            n_misses[3]++;
+            continue;
+          }
           n_access_index_++;
           auto c2_nation_ranges =
               tbl_customer_2_->col0_index_->equal_range(s_nation);
@@ -151,7 +172,10 @@ void QueryY::QIndexJoin() {
 
             // loop o2
             n_access_bf_++;
-            if (!tbl_customer_2_->col1_bf_->bf_.contains(c2_cust)) continue;
+            if (!tbl_customer_2_->col1_bf_->bf_.contains(c2_cust)) {
+              n_misses[4]++;
+              continue;
+            }
             n_access_index_++;
             auto o2_cust_ranges =
                 tbl_orders_2_->col0_index_->equal_range(c2_cust);
@@ -163,7 +187,10 @@ void QueryY::QIndexJoin() {
 
               // loop l2
               n_access_bf_++;
-              if (!tbl_orders_2_->col1_bf_->bf_.contains(o2_order)) continue;
+              if (!tbl_orders_2_->col1_bf_->bf_.contains(o2_order)) {
+                n_misses[5]++;
+                continue;
+              }
               n_access_index_++;
               auto l2_order_ranges =
                   tbl_lineitem_2_->col0_index_->equal_range(o2_order);
@@ -202,7 +229,8 @@ void QueryY::QIndexJoin() {
 
   std::cout << "access tuples: " << n_access_tuple_ << std::endl;
   std::cout << "access indexed: " << n_access_index_ << std::endl;
-  std::cout << "access bfi: " << n_access_bf_ << std::endl;
+  std::cout << "access bfs: " << n_access_bf_ << std::endl;
+  print_n_misses(n_misses, 6);
   std::cout << "QIndexJoin ends for query Y with join size: " << join_cnt
             << std::endl;
 }
@@ -230,8 +258,11 @@ void QueryY::QLoopJoin() {
     n_access_bf_++;
     n_access_bf_++;
     if ((!tbl_lineitem_1_->col0_bf_->bf_.contains(l1_part)) ||
-        (!tbl_lineitem_1_->col1_bf_->bf_.contains(l1_order)))
+        (!tbl_lineitem_1_->col1_bf_->bf_.contains(l1_order))) {
+      n_misses[0]++;
       continue;  // skip if not exist in current table
+    }
+
     // loop order1
     for (int64_t io1 = 0; io1 < tbl_orders_1_->Size(); io1++) {
       db_key_t_ o1_order = tbl_orders_1_->col0_->at(io1);
@@ -240,7 +271,10 @@ void QueryY::QLoopJoin() {
       n_access_tuple_++;
 
       n_access_bf_++;
-      if (!tbl_orders_1_->col1_bf_->bf_.contains(o1_cust)) continue;
+      if (!tbl_orders_1_->col1_bf_->bf_.contains(o1_cust)) {
+        n_misses[1]++;
+        continue;
+      }
       if (l1_order == o1_order) {
         // loop c1
         for (int64_t ic1 = 0; ic1 < tbl_customer_1_->Size(); ic1++) {
@@ -250,7 +284,10 @@ void QueryY::QLoopJoin() {
           n_access_tuple_++;
 
           n_access_bf_++;
-          if (!tbl_customer_1_->col1_bf_->bf_.contains(c1_nation)) continue;
+          if (!tbl_customer_1_->col1_bf_->bf_.contains(c1_nation)) {
+            n_misses[2]++;
+            continue;
+          }
           if (o1_cust == c1_cust) {
             // loop s
             for (int64_t is1 = 0; is1 < tbl_supplier_->Size(); is1++) {
@@ -260,7 +297,10 @@ void QueryY::QLoopJoin() {
               n_access_tuple_++;
 
               n_access_bf_++;
-              if (!tbl_supplier_->col0_bf_->bf_.contains(s_nation)) continue;
+              if (!tbl_supplier_->col0_bf_->bf_.contains(s_nation)) {
+                n_misses[3]++;
+                continue;
+              }
               if (c1_nation == s_nation) {
                 // loop c2
                 for (int64_t ic2 = 0; ic2 < tbl_customer_2_->Size(); ic2++) {
@@ -270,8 +310,10 @@ void QueryY::QLoopJoin() {
                   n_access_tuple_++;
 
                   n_access_bf_++;
-                  if (!tbl_customer_2_->col1_bf_->bf_.contains(c2_cust))
+                  if (!tbl_customer_2_->col1_bf_->bf_.contains(c2_cust)) {
+                    n_misses[4]++;
                     continue;
+                  }
                   if (c2_nation == s_nation) {
                     // loop o2
                     for (int64_t io2 = 0; io2 < tbl_orders_2_->Size(); io2++) {
@@ -281,8 +323,11 @@ void QueryY::QLoopJoin() {
                       n_access_tuple_++;
 
                       n_access_bf_++;
-                      if (!tbl_orders_2_->col1_bf_->bf_.contains(o2_order))
+                      if (!tbl_orders_2_->col1_bf_->bf_.contains(o2_order)) {
+                        n_misses[5]++;
                         continue;
+                      }
+
                       if (o2_cust == c2_cust) {
                         // loop l2
                         for (int64_t il2 = 0; il2 < tbl_lineitem_2_->Size();
@@ -326,6 +371,7 @@ void QueryY::QLoopJoin() {
   std::cout << "\rtime cost: " << timer.Seconds() << " seconds." << std::endl;
   std::cout << "access tuples: " << n_access_tuple_ << std::endl;
   std::cout << "access bfs: " << n_access_bf_ << std::endl;
+  print_n_misses(n_misses, 6);
   std::cout << "QLoopJoin ends for query Y with join size: " << join_cnt
             << std::endl;
 }

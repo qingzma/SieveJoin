@@ -32,7 +32,9 @@ class QueryY : public Query {
   std::shared_ptr<TableImpl> tbl_supplier_;    //
 
   void buildBloomFilter(int level) override;
-  //   void resetCounter();
+  void resetCounter() override;
+
+  int64_t n_misses[6];
 
  public:
   QueryY(Options& options);

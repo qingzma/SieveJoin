@@ -29,14 +29,14 @@ add_library(qdb "")
 target_include_directories(qdb PUBLIC "include" ${CMAKE_SOURCE_DIR})
 target_sources(qdb
     PUBLIC
-
-    # db/table_generic.cc
     util/bloom_filter.h
     util/timer.h
     util/timer.cc
     util/options.cc
     util/string_operators.h
     util/string_operators.cc
+    util/prints.h
+    util/prints.cpp
     db/table_impl.cc
     db/loop_join.cc
     db/column_bloom_filter.cc
