@@ -33,7 +33,7 @@ QueryX::QueryX(Options& options) {
       options, options_.path_prefix + "orders.tbl", '|', O_CUSTKEY,
       O_ORDERKEY);  // 1, 0
   tbl_lineitem_ = std::make_shared<TableImpl>(
-      options, options_.path_prefix + "lineitem.tbl", '|', L_ORDERKEY,
+      options, options_.path_prefix + "lineitem_10p.tbl", '|', L_ORDERKEY,
       L_LINENUMBER);  // 0, 3
 
   // build indexes
@@ -88,26 +88,35 @@ void QueryX::LoopJoin() {
   // loop nation
   for (int64_t i0 = 0; i0 < tbl_nation_->Size(); i0++) {
     db_key_t_ n_nation = tbl_nation_->col0_->at(i0);
+    n_access_tuple_++;
 
     // loop supplier
     for (int64_t i1 = 0; i1 < tbl_supplier_->Size(); i1++) {
       db_key_t_ s_nation = tbl_supplier_->col0_->at(i1);
       db_key_t_ s_supp = tbl_supplier_->col1_->at(i1);
+      n_access_tuple_++;
+      n_access_tuple_++;
       if (n_nation == s_nation) {
         // loop customer
         for (int64_t i2 = 0; i2 < tbl_customer_->Size(); i2++) {
           db_key_t_ c_nation = tbl_customer_->col0_->at(i2);
           db_key_t_ c_cust = tbl_customer_->col1_->at(i2);
+          n_access_tuple_++;
+          n_access_tuple_++;
           if (s_nation == c_nation) {
             // loop orders
             for (int64_t i3 = 0; i3 < tbl_orders_->Size(); i3++) {
               db_key_t_ o_cust = tbl_orders_->col0_->at(i3);
               db_key_t_ o_order = tbl_orders_->col1_->at(i3);
+              n_access_tuple_++;
+              n_access_tuple_++;
               if (c_cust == o_cust) {
                 // loop lineitem
                 for (int64_t i4 = 0; i4 < tbl_lineitem_->Size(); i4++) {
                   db_key_t_ l_order = tbl_lineitem_->col0_->at(i4);
                   db_key_t_ l_linenum = tbl_lineitem_->col1_->at(i4);
+                  n_access_tuple_++;
+                  n_access_tuple_++;
                   if (o_order == l_order) {
                     join_cnt++;
                     if (join_cnt % N_PRINT_GAP == 0) {
@@ -136,6 +145,7 @@ void QueryX::LoopJoin() {
 #endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
 
   std::cout << "\rtime cost: " << timer.Seconds() << " seconds." << std::endl;
+  std::cout << "access tuples: " << n_access_tuple_ << std::endl;
   std::cout << "Loop join ends for query x with join size: " << join_cnt
             << std::endl;
 }
@@ -313,7 +323,94 @@ void QueryX::QIndexJoin() {
 void QueryX::QLoopJoin() {
   std::cout << "--------------------------------------------" << std::endl;
   std::cout << "QLoopJoin starts for query x." << std::endl;
-  std::cout << "QLoopJoin ends for query x." << std::endl;
+
+  resetCounter();
+  Timer timer;
+  timer.Start();
+
+#ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
+  std::ofstream baseline_file(options_.path_prefix + "qx_loop.txt");
+#endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
+
+  std::cout << "find 0 results" << std::flush;
+  int64_t join_cnt = 0;
+  // loop nation
+  for (int64_t i0 = 0; i0 < tbl_nation_->Size(); i0++) {
+    db_key_t_ n_nation = tbl_nation_->col0_->at(i0);
+    n_access_tuple_++;
+    n_access_bf_++;
+    if (!tbl_nation_->col0_bf_->bf_.contains(n_nation))
+      continue;  // skip if not exist in current table
+
+    // loop supplier
+    for (int64_t i1 = 0; i1 < tbl_supplier_->Size(); i1++) {
+      db_key_t_ s_nation = tbl_supplier_->col0_->at(i1);
+      db_key_t_ s_supp = tbl_supplier_->col1_->at(i1);
+      n_access_tuple_++;
+      n_access_tuple_++;
+      n_access_bf_++;
+      if (!tbl_supplier_->col0_bf_->bf_.contains(s_nation))
+        continue;  // skip if not exist in current table
+
+      if (n_nation == s_nation) {
+        // loop customer
+        for (int64_t i2 = 0; i2 < tbl_customer_->Size(); i2++) {
+          db_key_t_ c_nation = tbl_customer_->col0_->at(i2);
+          db_key_t_ c_cust = tbl_customer_->col1_->at(i2);
+          n_access_tuple_++;
+          n_access_tuple_++;
+          n_access_bf_++;
+          if (!tbl_customer_->col1_bf_->bf_.contains(c_cust)) continue;
+
+          if (s_nation == c_nation) {
+            // loop orders
+            for (int64_t i3 = 0; i3 < tbl_orders_->Size(); i3++) {
+              db_key_t_ o_cust = tbl_orders_->col0_->at(i3);
+              db_key_t_ o_order = tbl_orders_->col1_->at(i3);
+              n_access_tuple_++;
+              n_access_tuple_++;
+              n_access_bf_++;
+              if (!tbl_orders_->col1_bf_->bf_.contains(o_order)) continue;
+
+              if (c_cust == o_cust) {
+                // loop lineitem
+                for (int64_t i4 = 0; i4 < tbl_lineitem_->Size(); i4++) {
+                  db_key_t_ l_order = tbl_lineitem_->col0_->at(i4);
+                  db_key_t_ l_linenum = tbl_lineitem_->col1_->at(i4);
+                  n_access_tuple_++;
+                  n_access_tuple_++;
+                  if (o_order == l_order) {
+                    join_cnt++;
+                    if (join_cnt % N_PRINT_GAP == 0) {
+                      // if (join_cnt > 0) std::cout << '\r' << std::flush;
+                      std::cout << "\rfind " << join_cnt << " results"
+                                << std::flush;
+                    }
+
+#ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
+                    baseline_file << n_nation << "," << s_supp << "," << c_cust
+                                  << "," << o_order << "," << l_linenum << "\n";
+                    if (join_cnt % N_PRINT_GAP == 0) baseline_file.flush();
+#endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+#ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
+  baseline_file.close();
+#endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
+
+  std::cout << "\rtime cost: " << timer.Seconds() << " seconds." << std::endl;
+  std::cout << "access tuples: " << n_access_tuple_ << std::endl;
+  std::cout << "access bfs: " << n_access_bf_ << std::endl;
+  std::cout << "Loop join ends for query x with join size: " << join_cnt
+            << std::endl;
 }
 
 void QueryX::buildBloomFilter(int level) {
