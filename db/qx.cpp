@@ -154,7 +154,7 @@ void QueryX::IndexJoin() {
 
   for (db_key_t_ n_nation : *(tbl_nation_->col0_)) {
     n_access_tuple_++;
-    // check existence and loop supplier
+    // check existance and loop supplier
     n_access_index_++;
     auto s_nation_iter = tbl_supplier_->col0_index_->equal_range(n_nation);
     for (auto iter_s = s_nation_iter.first; iter_s != s_nation_iter.second;
