@@ -11,10 +11,10 @@ class Query {
   int64_t n_access_tuple_;
   int64_t n_access_index_;
   int64_t n_access_bf_;
-  const int N_PRINT_GAP = 1;
+  int N_PRINT_GAP = 10000;
 
   virtual void buildBloomFilter(int level);
-  void resetCounter();
+  virtual void resetCounter();
 
  public:
   Query() = default;
