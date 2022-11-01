@@ -15,7 +15,7 @@ void QueryY::resetCounter() {
 }
 
 QueryY::QueryY(Options& options) {
-  N_PRINT_GAP = 1;
+  N_PRINT_GAP = 100;
   options_ = options;
   resetCounter();
 
@@ -23,7 +23,7 @@ QueryY::QueryY(Options& options) {
   timer.Start();
   // load data
   tbl_lineitem_1_ = std::make_shared<TableImpl>(
-      options, options_.path_prefix + "lineitem_10p.tbl", '|', L_PARTKEY,
+      options, options_.path_prefix + "lineitem_1p.tbl", '|', L_PARTKEY,
       L_ORDERKEY);  // 1, 0
   tbl_orders_1_ =
       std::make_shared<TableImpl>(options, options_.path_prefix + "orders.tbl",
@@ -41,7 +41,7 @@ QueryY::QueryY(Options& options) {
       std::make_shared<TableImpl>(options, options_.path_prefix + "orders.tbl",
                                   '|', O_CUSTKEY, O_ORDERKEY);  // 1, 0
   tbl_lineitem_2_ = std::make_shared<TableImpl>(
-      options, options_.path_prefix + "lineitem_10p.tbl", '|', L_ORDERKEY,
+      options, options_.path_prefix + "lineitem_1p.tbl", '|', L_ORDERKEY,
       L_PARTKEY);  // 1, 0
   std::cout << "time cost to load data: " << timer.Seconds() << " seconds."
             << std::endl;
@@ -111,9 +111,10 @@ void QueryY::QIndexJoin() {
 
     // check existance and loop order1
     n_access_bf_++;
-    n_access_bf_++;
-    if ((!tbl_lineitem_1_->col0_bf_->bf_.contains(l1_part)) ||
-        (!tbl_lineitem_1_->col1_bf_->bf_.contains(l1_order))) {
+    // n_access_bf_++;
+    if (!tbl_lineitem_1_->col0_bf_->bf_.contains(
+            l1_part)  //||(!tbl_lineitem_1_->col1_bf_->bf_.contains(l1_order))
+    ) {
       n_misses[0]++;
       continue;  // skip if not exist in current table
     }
@@ -624,7 +625,7 @@ void QueryY::buildBloomFilter(int level) {
       tbl_customer_1_->col1_, *(tbl_supplier_->col0_bf_));
   tbl_customer_1_->col0_bf_->UpdateBfFromInsideColumn(
       tbl_customer_1_->col0_, tbl_customer_1_->col1_,
-      *(tbl_supplier_->col1_bf_));
+      *(tbl_customer_1_->col1_bf_));
 
   // merge bf from c1 to o1
   tbl_orders_1_->col1_bf_->UpdateBfFromOutsideColumn(
