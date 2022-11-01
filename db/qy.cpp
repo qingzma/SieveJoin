@@ -14,7 +14,7 @@ QueryY::QueryY(Options& options) {
   timer.Start();
   // load data
   tbl_lineitem_1_ = std::make_shared<TableImpl>(
-      options, options_.path_prefix + "lineitem.tbl", '|', L_PARTKEY,
+      options, options_.path_prefix + "lineitem_10p.tbl", '|', L_PARTKEY,
       L_ORDERKEY);  // 1, 0
   tbl_orders_1_ =
       std::make_shared<TableImpl>(options, options_.path_prefix + "orders.tbl",
@@ -32,7 +32,7 @@ QueryY::QueryY(Options& options) {
       std::make_shared<TableImpl>(options, options_.path_prefix + "orders.tbl",
                                   '|', O_CUSTKEY, O_ORDERKEY);  // 1, 0
   tbl_lineitem_2_ = std::make_shared<TableImpl>(
-      options, options_.path_prefix + "lineitem.tbl", '|', L_ORDERKEY,
+      options, options_.path_prefix + "lineitem_10p.tbl", '|', L_ORDERKEY,
       L_PARTKEY);  // 1, 0
   std::cout << "time cost to load data: " << timer.Seconds() << " seconds."
             << std::endl;
@@ -80,8 +80,113 @@ void QueryY::Run() {
   std::cout << "********************************************" << std::endl;
 }
 
-void QueryY::QIndexJoin() {}
+void QueryY::QIndexJoin() {
+  std::cout << "--------------------------------------------" << std::endl;
+  std::cout << "QIndexJoin starts for query Y." << std::endl;
+  Timer timer;
+  timer.Start();
+
+#ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
+  std::ofstream index_join_file(options_.path_prefix + "qy_index.txt");
+#endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
+  std::cout << "find 0 results" << std::flush;
+  int64_t join_cnt = 0;
+
+  // loop lineitem1
+  for (int64_t il1 = 0; il1 < tbl_lineitem_1_->Size(); il1++) {
+    db_key_t_ l1_order = tbl_lineitem_1_->col1_->at(il1);
+    db_key_t_ l1_part = tbl_lineitem_1_->col0_->at(il1);
+
+    // check existance and loop order1
+    if ((!tbl_lineitem_1_->col0_bf_->bf_.contains(l1_part)) ||
+        (!tbl_lineitem_1_->col1_bf_->bf_.contains(l1_order)))
+      continue;  // skip if not exist in current table
+    auto o1_order_ranges = tbl_orders_1_->col0_index_->equal_range(l1_order);
+    for (auto iter_o1 = o1_order_ranges.first;
+         iter_o1 != o1_order_ranges.second; iter_o1++) {
+      int64_t o1_idx = iter_o1->second;
+      db_key_t_ o1_cust = tbl_orders_1_->col1_->at(o1_idx);
+
+      // loop c1
+      if (!tbl_orders_1_->col1_bf_->bf_.contains(o1_cust)) continue;
+      auto c1_cust_ranges = tbl_customer_1_->col0_index_->equal_range(o1_cust);
+      for (auto iter_c1 = c1_cust_ranges.first;
+           iter_c1 != c1_cust_ranges.second; iter_c1++) {
+        int64_t c1_idx = iter_c1->second;
+        db_key_t_ c1_nation = tbl_customer_1_->col1_->at(c1_idx);
+
+        // loop s
+        if (!tbl_customer_1_->col1_bf_->bf_.contains(c1_nation)) continue;
+        auto s_nation_ranges =
+            tbl_supplier_->col0_index_->equal_range(c1_nation);
+        for (auto iter_s = s_nation_ranges.first;
+             iter_s != s_nation_ranges.second; iter_s++) {
+          int64_t s_idx = iter_s->second;
+          db_key_t_ s_nation = tbl_supplier_->col0_->at(s_idx);
+
+          // loop c2
+          if (!tbl_supplier_->col0_bf_->bf_.contains(s_nation)) continue;
+          auto c2_nation_ranges =
+              tbl_customer_2_->col0_index_->equal_range(s_nation);
+          for (auto iter_c2 = c2_nation_ranges.first;
+               iter_c2 != c2_nation_ranges.second; iter_c2++) {
+            int64_t c2_idx = iter_c2->second;
+            db_key_t_ c2_cust = tbl_customer_2_->col1_->at(c2_idx);
+
+            // loop o2
+            if (!tbl_customer_2_->col1_bf_->bf_.contains(c2_cust)) continue;
+            auto o2_cust_ranges =
+                tbl_orders_2_->col0_index_->equal_range(c2_cust);
+            for (auto iter_o2 = o2_cust_ranges.first;
+                 iter_o2 != o2_cust_ranges.second; iter_o2++) {
+              int64_t o2_idx = iter_o2->second;
+              db_key_t_ o2_order = tbl_orders_2_->col1_->at(o2_idx);
+
+              // loop l2
+              if (!tbl_orders_2_->col1_bf_->bf_.contains(o2_order)) continue;
+              auto l2_order_ranges =
+                  tbl_lineitem_2_->col0_index_->equal_range(o2_order);
+              for (auto iter_l2 = l2_order_ranges.first;
+                   iter_l2 != l2_order_ranges.second; iter_l2++) {
+                int64_t l2_idx = iter_l2->second;
+                db_key_t_ l2_part = tbl_lineitem_2_->col1_->at(l2_idx);
+
+                if (l2_part == l1_part) {
+                  join_cnt++;
+                  if (join_cnt % N_PRINT_GAP == 0) {
+                    std::cout << "\rfind " << join_cnt << " results"
+                              << std::flush;
+                  }
+#ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
+                  index_join_file << l1_order << "," << o1_cust << ","
+                                  << c1_nation << "," << c2_cust << ","
+                                  << o2_order << "," << l2_part << "\n";
+                  if (join_cnt % N_PRINT_GAP == 0) index_join_file.flush();
+#endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+#ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
+  index_join_file.close();
+#endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
+
+  std::cout << "\rtime cost: " << timer.Seconds() << " seconds." << std::endl;
+
+  std::cout << "access tuples: " << n_access_tuple_ << std::endl;
+  std::cout << "access indexed: " << n_access_index_ << std::endl;
+
+  std::cout << "QIndexJoin ends for query Y with join size: " << join_cnt
+            << std::endl;
+}
+
 void QueryY::QLoopJoin() {}
+
 void QueryY::IndexJoin() {
   std::cout << "--------------------------------------------" << std::endl;
   std::cout << "Index join starts for query Y." << std::endl;
