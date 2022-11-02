@@ -29,6 +29,9 @@ QueryX::QueryX(Options& options) {
   // N_PRINT_GAP = 10000;
   options_ = options;
   resetCounter();
+  Timer timer;
+  timer.Start();
+
   // load data
   tbl_nation_ =
       std::make_shared<TableImpl>(options, options_.path_prefix + "nation.tbl",
@@ -48,16 +51,24 @@ QueryX::QueryX(Options& options) {
   tbl_lineitem_ =
       std::make_shared<TableImpl>(options, path_lineitem, '|', L_ORDERKEY,
                                   L_LINENUMBER);  // 0, 3
+  std::cout << "time cost to load data: " << timer.Seconds() << " seconds."
+            << std::endl;
 
   // build indexes
+  timer.Mark();
   tbl_nation_->BuildIndex();
   tbl_supplier_->BuildIndex();
   tbl_customer_->BuildIndex();
   tbl_orders_->BuildIndex();
   tbl_lineitem_->BuildIndex();
+  std::cout << "time cost to build index: " << timer.SecondsSinceMarked()
+            << " seconds." << std::endl;
 
   if (options.q_loop_join || options.q_index_join) {
+    timer.Mark();
     buildBloomFilter(0);
+    std::cout << "time cost to build bloom filters: "
+              << timer.SecondsSinceMarked() << " seconds." << std::endl;
   }
 }
 
