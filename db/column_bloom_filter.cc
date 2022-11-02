@@ -1,5 +1,6 @@
 #include "qjoin/column_bloom_filter.h"
 
+#include <cassert>
 #include <iostream>
 namespace qjoin {
 ColumnBloomFilter::ColumnBloomFilter(Options& options, int64_t col_size) {
