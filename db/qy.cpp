@@ -22,9 +22,12 @@ QueryY::QueryY(Options& options) {
   Timer timer;
   timer.Start();
   // load data
-  tbl_lineitem_1_ = std::make_shared<TableImpl>(
-      options, options_.path_prefix + "lineitem_1p.tbl", '|', L_PARTKEY,
-      L_ORDERKEY);  // 1, 0
+  std::string path_lineitem = options_.path_prefix + "lineitem";
+  if (options_.skew_prefix != "") path_lineitem += options_.skew_prefix;
+  path_lineitem += ".tbl";
+  tbl_lineitem_1_ =
+      std::make_shared<TableImpl>(options, path_lineitem, '|', L_PARTKEY,
+                                  L_ORDERKEY);  // 1, 0
   tbl_orders_1_ =
       std::make_shared<TableImpl>(options, options_.path_prefix + "orders.tbl",
                                   '|', O_ORDERKEY, O_CUSTKEY);  // 0, 1
@@ -40,9 +43,9 @@ QueryY::QueryY(Options& options) {
   tbl_orders_2_ =
       std::make_shared<TableImpl>(options, options_.path_prefix + "orders.tbl",
                                   '|', O_CUSTKEY, O_ORDERKEY);  // 1, 0
-  tbl_lineitem_2_ = std::make_shared<TableImpl>(
-      options, options_.path_prefix + "lineitem_1p.tbl", '|', L_ORDERKEY,
-      L_PARTKEY);  // 1, 0
+  tbl_lineitem_2_ =
+      std::make_shared<TableImpl>(options, path_lineitem, '|', L_ORDERKEY,
+                                  L_PARTKEY);  // 1, 0
   std::cout << "time cost to load data: " << timer.Seconds() << " seconds."
             << std::endl;
 
