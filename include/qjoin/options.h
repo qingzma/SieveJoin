@@ -14,6 +14,7 @@ struct Options {
   bool q_index_join;  // run qjoinindex
   bool q_loop_join;   // run qjoinindex
   std::string path_prefix;
+  std::string skew_prefix;  // _1p, _10p, etc
 };
 
 void ParseOptions(Options& options, int argc, char** argv);
