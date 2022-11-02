@@ -1,6 +1,7 @@
 #include "qx.h"
 
 #include <chrono>
+#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <memory>

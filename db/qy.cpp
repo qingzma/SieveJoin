@@ -1,5 +1,7 @@
 #include "qy.h"
 
+#include <cstring>
+
 #include "table/tpch_schema_columns.h"
 #include "util/prints.h"
 #include "util/timer.h"
