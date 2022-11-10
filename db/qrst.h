@@ -23,6 +23,8 @@ class QueryRst : public Query {
   void buildBloomFilter(int level) override;
   void resetCounter() override;
 
+  int64_t QPlusJoinPart(int n, int i);
+
  public:
   QueryRst(Options& options);
   ~QueryRst();
