@@ -48,6 +48,9 @@ class ColumnBloomFilter {
 
   std::shared_ptr<std::multimap<db_key_t_, int64_t>> CreateBfIndex(
       const std::shared_ptr<std::vector<db_key_t_>>& col);
+
+  std::shared_ptr<std::vector<db_key_t_>> CreateBfIndexVec(
+      const std::shared_ptr<std::vector<db_key_t_>>& col);
 };
 }  // namespace qjoin
 

@@ -95,4 +95,16 @@ ColumnBloomFilter::CreateBfIndex(
   return idx;
 }
 
+std::shared_ptr<std::vector<db_key_t_>> ColumnBloomFilter::CreateBfIndexVec(
+    const std::shared_ptr<std::vector<db_key_t_>>& col) {
+  std::shared_ptr<std::vector<db_key_t_>> idx =
+      std::make_shared<std::vector<db_key_t_>>();
+
+  for (int64_t i = 0; i < col->size(); i++) {
+    if (bf_.contains(col->at(i))) idx->emplace_back(col->at(i));
+  }
+
+  return idx;
+}
+
 }  // namespace qjoin
