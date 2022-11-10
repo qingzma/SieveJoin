@@ -4,10 +4,45 @@
 #include <cmath>
 #include <cstring>
 #include <future>
+#include <thread>
 
 #include "util/prints.h"
 #include "util/timer.h"
 namespace qjoin {
+
+int64_t QPlusJoinPart(int n, int i, std::shared_ptr<TableImpl> tbl_r_,
+                      std::shared_ptr<TableImpl> tbl_s_,
+                      std::shared_ptr<TableImpl> tbl_t_) {
+  int64_t join_cnt = 0;
+
+  int64_t sz = tbl_r_->col0_bf_index_->size();
+  int64_t chunk = sz / n + 1;
+  int64_t low_i = chunk * i;
+  int64_t high_i = chunk * (i + 1);
+  high_i = std::min(high_i, sz + 1);
+
+  // loop r
+  for (auto r_i = low_i; r_i != high_i; r_i++) {
+    db_key_t_ r = (*tbl_r_->col0_bf_index_vec_)[r_i];
+
+    auto s_ranges = tbl_s_->col0_bf_index_->equal_range(r);
+    for (auto s_iter = s_ranges.first; s_iter != s_ranges.second; s_iter++) {
+      // db_key_t_ s = s_iter->first;
+
+      // check existance and loop t
+      auto t_ranges = tbl_t_->col0_bf_index_->equal_range(r);
+      for (auto t_iter = t_ranges.first; t_iter != t_ranges.second; t_iter++) {
+        // db_key_t_ t = t_iter->first;
+        join_cnt++;
+        if (join_cnt % 10000 == 0) {
+          std::cout << "\rfind " << join_cnt << " results" << std::flush;
+        }
+      }
+    }
+  }
+
+  return join_cnt;
+}
 
 QueryRst::~QueryRst() {}
 
@@ -210,30 +245,45 @@ void QueryRst::QPlusIndexJoin() {
   std::cout << "find 0 results" << std::flush;
   int64_t join_cnt = 0;
 
-  // loop r
-  for (auto r_iter = tbl_r_->col0_bf_index_vec_->begin();
-       r_iter != tbl_r_->col0_bf_index_vec_->end(); r_iter++) {
-    db_key_t_ r = *r_iter;
+  std::vector<std::future<int64_t>> tasks;
+  int n = std::thread::hardware_concurrency();
 
-    auto s_ranges = tbl_s_->col0_bf_index_->equal_range(r);
-    for (auto s_iter = s_ranges.first; s_iter != s_ranges.second; s_iter++) {
-      // db_key_t_ s = s_iter->first;
-
-      // check existance and loop t
-      auto t_ranges = tbl_t_->col0_bf_index_->equal_range(r);
-      for (auto t_iter = t_ranges.first; t_iter != t_ranges.second; t_iter++) {
-        // db_key_t_ t = t_iter->first;
-        join_cnt++;
-        if (join_cnt % N_PRINT_GAP == 0) {
-          std::cout << "\rfind " << join_cnt << " results" << std::flush;
-        }
-#ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
-        index_join_file << r << "\n";
-        if (join_cnt % N_PRINT_GAP == 0) index_join_file.flush();
-#endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
-      }
-    }
+  for (int i = 0; i < n; i++) {
+    // std::future<int64_t> task =
+    //     std::async(QPlusJoinPart, 4, 0, tbl_r_, tbl_s_, tbl_t_);
+    tasks.push_back(std::async(QPlusJoinPart, n, i, tbl_r_, tbl_s_, tbl_t_));
   }
+
+  for (int i = 0; i < n; i++) {
+    join_cnt += tasks[i].get();
+  }
+
+  //   // loop r
+  //   for (auto r_iter = tbl_r_->col0_bf_index_vec_->begin();
+  //        r_iter != tbl_r_->col0_bf_index_vec_->end(); r_iter++) {
+  //     db_key_t_ r = *r_iter;
+
+  //     auto s_ranges = tbl_s_->col0_bf_index_->equal_range(r);
+  //     for (auto s_iter = s_ranges.first; s_iter != s_ranges.second; s_iter++)
+  //     {
+  //       // db_key_t_ s = s_iter->first;
+
+  //       // check existance and loop t
+  //       auto t_ranges = tbl_t_->col0_bf_index_->equal_range(r);
+  //       for (auto t_iter = t_ranges.first; t_iter != t_ranges.second;
+  //       t_iter++) {
+  //         // db_key_t_ t = t_iter->first;
+  //         join_cnt++;
+  //         if (join_cnt % N_PRINT_GAP == 0) {
+  //           std::cout << "\rfind " << join_cnt << " results" << std::flush;
+  //         }
+  // #ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
+  //         index_join_file << r << "\n";
+  //         if (join_cnt % N_PRINT_GAP == 0) index_join_file.flush();
+  // #endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
+  //       }
+  //     }
+  //   }
 
 #ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
   index_join_file.close();
@@ -246,42 +296,6 @@ void QueryRst::QPlusIndexJoin() {
   print_n_misses(n_misses, 2);
   std::cout << "QPlusIndexJoin ends for query rst with join size: " << join_cnt
             << std::endl;
-}
-
-int64_t QueryRst::QPlusJoinPart(int n, int i) {
-  int64_t join_cnt = 0;
-
-  int64_t sz = tbl_r_->col0_bf_index_->size();
-  int64_t chunk = sz / n + 1;
-  int64_t low_i = chunk * i;
-  int64_t high_i = chunk * (i + 1);
-  high_i = std::min(high_i, sz + 1);
-
-  // loop r
-  for (auto r_i = low_i; r_i != high_i; r_i++) {
-    db_key_t_ r = (*tbl_r_->col0_bf_index_vec_)[r_i];
-
-    auto s_ranges = tbl_s_->col0_bf_index_->equal_range(r);
-    for (auto s_iter = s_ranges.first; s_iter != s_ranges.second; s_iter++) {
-      // db_key_t_ s = s_iter->first;
-
-      // check existance and loop t
-      auto t_ranges = tbl_t_->col0_bf_index_->equal_range(r);
-      for (auto t_iter = t_ranges.first; t_iter != t_ranges.second; t_iter++) {
-        // db_key_t_ t = t_iter->first;
-        join_cnt++;
-        if (join_cnt % N_PRINT_GAP == 0) {
-          std::cout << "\rfind " << join_cnt << " results" << std::flush;
-        }
-#ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
-        index_join_file << r << "\n";
-        if (join_cnt % N_PRINT_GAP == 0) index_join_file.flush();
-#endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
-      }
-    }
-  }
-
-  return join_cnt;
 }
 
 void QueryRst::buildBloomFilter(int level) {
