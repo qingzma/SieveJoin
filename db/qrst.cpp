@@ -43,7 +43,7 @@ QueryRst::QueryRst(Options& options) {
   std::cout << "time cost to build index: " << timer.SecondsSinceMarked()
             << " seconds." << std::endl;
 
-  if (options.q_loop_join || options.q_index_join) {
+  if (options.q_loop_join || options.q_index_join || options.qplus_index_join) {
     timer.Mark();
     buildBloomFilter(0);
     std::cout << "time cost to build bloom filters: "
@@ -65,6 +65,8 @@ void QueryRst::Run() {
   if (options_.index_join) IndexJoin();
 
   if (options_.loop_join) LoopJoin();
+
+  if (options_.qplus_index_join) QPlusIndexJoin();
 
   std::cout << "--------------------------------------------" << std::endl;
   std::cout << "done with query synthetic R S T" << std::endl;
@@ -191,6 +193,58 @@ void QueryRst::QIndexJoin() {
             << std::endl;
 }
 
+void QueryRst::QPlusIndexJoin() {
+  std::cout << "--------------------------------------------" << std::endl;
+  std::cout << "QIndexJoin starts for query RST." << std::endl;
+  resetCounter();
+  Timer timer;
+  timer.Start();
+
+#ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
+  std::ofstream index_join_file(options_.path_prefix +
+                                "qrst_qplusindex_join.txt");
+#endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
+  std::cout << "find 0 results" << std::flush;
+  int64_t join_cnt = 0;
+
+  // loop r
+  for (auto r_iter = tbl_r_->col0_bf_index_->begin();
+       r_iter != tbl_r_->col0_bf_index_->end(); r_iter++) {
+    db_key_t_ r = r_iter->first;
+
+    auto s_ranges = tbl_s_->col0_bf_index_->equal_range(r);
+    for (auto s_iter = s_ranges.first; s_iter != s_ranges.second; s_iter++) {
+      // db_key_t_ s = s_iter->first;
+
+      // check existance and loop t
+      auto t_ranges = tbl_t_->col0_bf_index_->equal_range(r);
+      for (auto t_iter = t_ranges.first; t_iter != t_ranges.second; t_iter++) {
+        // db_key_t_ t = t_iter->first;
+        join_cnt++;
+        if (join_cnt % N_PRINT_GAP == 0) {
+          std::cout << "\rfind " << join_cnt << " results" << std::flush;
+        }
+#ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
+        index_join_file << r << "\n";
+        if (join_cnt % N_PRINT_GAP == 0) index_join_file.flush();
+#endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
+      }
+    }
+  }
+
+#ifdef BOOL_WRITE_JOIN_RESULT_TO_FILE
+  index_join_file.close();
+#endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
+
+  std::cout << "\rtime cost: " << timer.Seconds() << " seconds." << std::endl;
+  std::cout << "access tuples: " << n_access_tuple_ << std::endl;
+  std::cout << "access indexed: " << n_access_index_ << std::endl;
+  std::cout << "access bfs: " << n_access_bf_ << std::endl;
+  print_n_misses(n_misses, 2);
+  std::cout << "QPlusIndexJoin ends for query rst with join size: " << join_cnt
+            << std::endl;
+}
+
 void QueryRst::buildBloomFilter(int level) {
   tbl_r_->BuildKeyBloomFilter();
   tbl_s_->BuildKeyBloomFilter();
@@ -202,5 +256,9 @@ void QueryRst::buildBloomFilter(int level) {
   // merge bf from s and t to r
   tbl_r_->col0_bf_->UpdateBfFromOutsideColumns(
       tbl_r_->col0_, *(tbl_s_->col0_bf_), *(tbl_t_->col0_bf_));
+
+  tbl_r_->col0_bf_index_ = tbl_r_->col0_bf_->CreateBfIndex(tbl_r_->col0_);
+  tbl_s_->col0_bf_index_ = tbl_s_->col0_bf_->CreateBfIndex(tbl_s_->col0_);
+  tbl_t_->col0_bf_index_ = tbl_t_->col0_bf_->CreateBfIndex(tbl_t_->col0_);
 }
 }  // namespace qjoin

@@ -26,6 +26,8 @@ class TableImpl {
 
   std::shared_ptr<std::multimap<db_key_t_, int64_t>> col0_index_;
   std::shared_ptr<std::multimap<db_key_t_, int64_t>> col1_index_;
+  std::shared_ptr<std::multimap<db_key_t_, int64_t>> col0_bf_index_;
+  std::shared_ptr<std::multimap<db_key_t_, int64_t>> col1_bf_index_;
   std::shared_ptr<std::multimap<std::string, int64_t>> col2_index_;
 
   std::shared_ptr<ColumnBloomFilter> col0_bf_;

@@ -25,6 +25,7 @@ class Query {
   virtual void IndexJoin();
   virtual void QLoopJoin();
   virtual void QIndexJoin();
+  virtual void QPlusIndexJoin();
 };
 
 }  // namespace qjoin
