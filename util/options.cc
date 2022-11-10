@@ -8,6 +8,8 @@ void ParseOptions(Options& options, int argc, char** argv) {
   TCLAP::ValueArg<float> arg_SF("s", "sf", "saling factor", false, 10, "float");
   TCLAP::ValueArg<std::string> arg_PATH("p", "path", "data path", false,
                                         "../data/tpch/x0.1/", "string");
+  TCLAP::ValueArg<std::string> arg_PATH_SUFFIX(
+      "", "path_suffix", "data path suffix", false, "", "string");
   TCLAP::ValueArg<std::string> arg_SKEW("k", "skew", "skew data extra string",
                                         false, "", "string");
 
@@ -23,6 +25,7 @@ void ParseOptions(Options& options, int argc, char** argv) {
 
   cmd.add(arg_SF);
   cmd.add(arg_PATH);
+  cmd.add(arg_PATH_SUFFIX);
   cmd.add(arg_SKEW);
   cmd.parse(argc, argv);
 
@@ -31,6 +34,7 @@ void ParseOptions(Options& options, int argc, char** argv) {
   options.qy = arg_QY.getValue();
   options.qrst = arg_QRST.getValue();
   options.path_prefix = arg_PATH.getValue();
+  options.path_suffix = arg_PATH_SUFFIX.getValue();
   options.skew_prefix = arg_SKEW.getValue();
   options.loop_join = arg_LOOP_JOIN.getValue();       // run baseline loop join
   options.index_join = arg_INDEX_JOIN.getValue();     // run index join
