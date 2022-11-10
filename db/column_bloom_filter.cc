@@ -41,6 +41,17 @@ void ColumnBloomFilter::UpdateBfFromOutsideColumn(
   }
 }
 
+void ColumnBloomFilter::UpdateBfFromOutsideColumns(
+    const std::shared_ptr<std::vector<db_key_t_>>& column_inside,
+    const ColumnBloomFilter& bf1, const ColumnBloomFilter& bf2) {
+  // reset Bloom Filter
+  bf_.clear();
+
+  for (auto val : *column_inside) {
+    if (bf1.bf_.contains(val) && bf2.bf_.contains(val)) bf_.insert(val);
+  }
+}
+
 void ColumnBloomFilter::UpdateBfFromInsideColumn(
     const std::shared_ptr<std::vector<db_key_t_>>& dest_col,
     const std::shared_ptr<std::vector<db_key_t_>>& source_col,

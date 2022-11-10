@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "qjoin/options.h"
+#include "qrst.h"
 #include "qx.h"
 #include "qy.h"
 
@@ -19,6 +20,11 @@ int main(int argc, char** argv) {
   if (options.qy) {
     qjoin::QueryY qy(options);
     qy.Run();
+  }
+
+  if (options.qrst) {
+    qjoin::QueryRst qrst(options);
+    qrst.Run();
   }
   return 0;
 }

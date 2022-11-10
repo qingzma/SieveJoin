@@ -28,6 +28,10 @@ class ColumnBloomFilter {
       const std::shared_ptr<std::vector<db_key_t_>>& column_inside,
       const ColumnBloomFilter& cbf);
 
+  void UpdateBfFromOutsideColumns(
+      const std::shared_ptr<std::vector<db_key_t_>>& column_inside,
+      const ColumnBloomFilter& bf1, const ColumnBloomFilter& bf2);
+
   void UpdateBfFromInsideColumn(
       const std::shared_ptr<std::vector<db_key_t_>>& dest_col,
       const std::shared_ptr<std::vector<db_key_t_>>& source_col,
