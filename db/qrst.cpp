@@ -1,5 +1,7 @@
 #include "qrst.h"
 
+#include <cstring>
+
 #include "util/prints.h"
 #include "util/timer.h"
 namespace qjoin {
