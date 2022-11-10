@@ -23,4 +23,7 @@ to create all required tables.
 
 ### Step 2: run queries
 
-`./qentry --qrst -p ../data/synthetic/data`
+```
+./qentry -p ../data/synthetic/data/ --path_suffix _1_10000 --qrst -i
+./qentry -p ../data/synthetic/data/ --path_suffix _1_10000 --qrst -q
+```
