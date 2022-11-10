@@ -9,3 +9,4 @@ release/
 *.tbl
 *.o
 qx*.txt
+*0000.csv
