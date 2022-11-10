@@ -18,4 +18,6 @@ void Query::LoopJoin() { throw std::runtime_error("not implemented."); }
 void Query::IndexJoin() { throw std::runtime_error("not implemented."); }
 void Query::QLoopJoin() { throw std::runtime_error("not implemented."); }
 void Query::QIndexJoin() { throw std::runtime_error("not implemented."); }
+void Query::QPlusIndexJoin() { throw std::runtime_error("not implemented."); }
+
 }  // namespace qjoin

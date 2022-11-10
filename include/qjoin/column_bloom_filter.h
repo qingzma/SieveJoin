@@ -1,6 +1,7 @@
 #ifndef QJOIN_INCLUDE_QJOIN_COLUMN_BLOOM_FILTER_H_
 #define QJOIN_INCLUDE_QJOIN_COLUMN_BLOOM_FILTER_H_
 
+#include <map>
 #include <memory>
 
 #include "util/bloom_filter.h"
@@ -44,6 +45,9 @@ class ColumnBloomFilter {
       const std::shared_ptr<std::vector<db_key_t_>>& dest_col,
       const std::shared_ptr<std::vector<db_key_t_>>& source_col,
       const ColumnBloomFilter& bf_source, const ColumnBloomFilter& bf_outiside);
+
+  std::shared_ptr<std::multimap<db_key_t_, int64_t>> CreateBfIndex(
+      const std::shared_ptr<std::vector<db_key_t_>>& col);
 };
 }  // namespace qjoin
 

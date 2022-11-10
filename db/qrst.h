@@ -32,6 +32,7 @@ class QueryRst : public Query {
   void IndexJoin() override;
   // void QLoopJoin() override;
   void QIndexJoin() override;
+  void QPlusIndexJoin() override;
 };
 }  // namespace qjoin
 #endif  // QJOIN_DB_QRST_H_

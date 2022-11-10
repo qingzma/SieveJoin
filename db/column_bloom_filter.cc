@@ -82,4 +82,17 @@ void ColumnBloomFilter::UpdateBfFromInsideColumnOutsideColumn(
   }
 }
 
+std::shared_ptr<std::multimap<db_key_t_, int64_t>>
+ColumnBloomFilter::CreateBfIndex(
+    const std::shared_ptr<std::vector<db_key_t_>>& col) {
+  std::shared_ptr<std::multimap<db_key_t_, int64_t>> idx =
+      std::make_shared<std::multimap<db_key_t_, int64_t>>();
+
+  for (int64_t i = 0; i < col->size(); i++) {
+    if (bf_.contains(col->at(i))) idx->emplace(col->at(i), i);
+  }
+
+  return idx;
+}
+
 }  // namespace qjoin
