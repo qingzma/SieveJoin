@@ -185,7 +185,7 @@ void QueryRst::QIndexJoin() {
   std::cout << "access indexed: " << n_access_index_ << std::endl;
   std::cout << "access bfs: " << n_access_bf_ << std::endl;
   print_n_misses(n_misses, 2);
-  std::cout << "QIndexJoin ends for query x with join size: " << join_cnt
+  std::cout << "QIndexJoin ends for query rst with join size: " << join_cnt
             << std::endl;
 }
 
