@@ -1,4 +1,5 @@
 # run experiments
+
 ```
 ./rst.sh 2>&1 | tee rst.log
 cat rst.log | grep "time cost:" > rst_time.txt
