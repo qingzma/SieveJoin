@@ -23,15 +23,15 @@ def plot_rst():
              0.307251, 0.470255, 0.560036, 0.765524, 0.945007],
          [0.201521, 0.481279, 1.13565, 1.82739, 2.87178, 4.01972, 5.23455, 7.0411, 8.68439, 10.8517]]
     axs[0, 0].plot(x, y[0], '-c^', label="qplus")
-    axs[0, 0].plot(x, y[1], '-ms', label="qjoin")
-    axs[0, 0].plot(x, y[2], '-b^', label="haha")
-    axs[0, 0].plot(x, y[3], '-r+', label="kaka")
+    # axs[0, 0].plot(x, y[1], '-ms', label="qjoin")
+    # axs[0, 0].plot(x, y[2], '-b^', label="haha")
+    # axs[0, 0].plot(x, y[3], '-r+', label="kaka")
     axs[0, 0].set_title('$r=10^4$', y=0.98, x=0.18, pad=-14)
-    axs[0, 1].plot(x, y[1], '-gs', label="qplus")  # 'tab:orange'
+    axs[0, 1].plot(x, y[1], '-cs', label="qplus")  # 'tab:orange'
     axs[0, 1].set_title('$r=10^5$', y=0.98, x=0.18, pad=-14)
-    axs[1, 0].plot(x, y[2], '-gp', label="qplus")  # , 'tab:green'
+    axs[1, 0].plot(x, y[2], '-cp', label="qplus")  # , 'tab:green'
     axs[1, 0].set_title('$r=10^6$', y=0.98, x=0.18, pad=-14)
-    axs[1, 1].plot(x, y[3], '-g+', label="qplus")  # , 'tab:red'
+    axs[1, 1].plot(x, y[3], '-c+', label="qplus")  # , 'tab:red'
     axs[1, 1].set_title('$r=10^7$', y=0.98, x=0.18, pad=-14)
 
     # plt.plot([1, 2, 3, 4], 'o-', label='QJoin')
@@ -47,7 +47,8 @@ def plot_rst():
             axs[i, j].set_xlim([1, 10])
             axs[i, j].set_ylim([1e-4, 10])
 
-            majorLocator = FixedLocator([1, 2, 3, 4, 5, 6, 7, 8, 10])
+            # [1, 2, 3, 4, 5, 6, 7, 8, 10]
+            majorLocator = FixedLocator([1, 5, 10])
             ymajorLocator = FixedLocator(
                 [0.0001, 0.001, 0.01, 0.1, 1, 10])
             axs[i, j].xaxis.set_major_locator(
