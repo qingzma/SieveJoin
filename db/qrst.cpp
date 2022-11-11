@@ -34,9 +34,9 @@ int64_t QPlusJoinPart(int n, int i, std::shared_ptr<TableImpl> tbl_r_,
       for (auto t_iter = t_ranges.first; t_iter != t_ranges.second; t_iter++) {
         // db_key_t_ t = t_iter->first;
         join_cnt++;
-        if (join_cnt % 10000 == 0) {
-          std::cout << "\rfind " << join_cnt << " results" << std::flush;
-        }
+        // if (join_cnt % 10000 == 0) {
+        //   std::cout << "\rfind " << join_cnt << " results" << std::flush;
+        // }
       }
     }
   }
@@ -242,11 +242,12 @@ void QueryRst::QPlusIndexJoin() {
   std::ofstream index_join_file(options_.path_prefix +
                                 "qrst_qplusindex_join.txt");
 #endif  // BOOL_WRITE_JOIN_RESULT_TO_FILE
-  std::cout << "find 0 results" << std::flush;
+  // std::cout << "find 0 results" << std::flush;
   int64_t join_cnt = 0;
 
   std::vector<std::future<int64_t>> tasks;
-  int n = std::thread::hardware_concurrency();
+  int n = (options_.n_core == 0) ? std::thread::hardware_concurrency()
+                                 : options_.n_core;
 
   for (int i = 0; i < n; i++) {
     // std::future<int64_t> task =
