@@ -10,3 +10,4 @@ release/
 *.o
 qx*.txt
 *0000.csv
+*.log

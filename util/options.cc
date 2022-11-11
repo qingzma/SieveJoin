@@ -12,6 +12,8 @@ void ParseOptions(Options& options, int argc, char** argv) {
       "", "path_suffix", "data path suffix", false, "", "string");
   TCLAP::ValueArg<std::string> arg_SKEW("k", "skew", "skew data extra string",
                                         false, "", "string");
+  TCLAP::ValueArg<int> arg_CORE("n", "cores", "parallel cores", false, 0,
+                                "int");
 
   TCLAP::SwitchArg arg_QX("x", "qx", "do query x experiment", cmd, false);
   TCLAP::SwitchArg arg_QY("y", "qy", "do query y experiment", cmd, false);
@@ -29,6 +31,7 @@ void ParseOptions(Options& options, int argc, char** argv) {
   cmd.add(arg_PATH);
   cmd.add(arg_PATH_SUFFIX);
   cmd.add(arg_SKEW);
+  cmd.add(arg_CORE);
   cmd.parse(argc, argv);
 
   // options.scalingFactor = arg_SF.getValue();
@@ -42,6 +45,7 @@ void ParseOptions(Options& options, int argc, char** argv) {
   options.index_join = arg_INDEX_JOIN.getValue();     // run index join
   options.q_index_join = arg_QJOIN_INDEX.getValue();  // run qjoin index
   options.q_loop_join = arg_QJOIN_LOOP.getValue();    // run qjoin loop
-  options.qplus_index_join = arg_QPLUS_INDEX_JOIN.getValue();
+  options.qplus_index_join = arg_QPLUS_INDEX_JOIN.getValue();  // run qplusjoin
+  options.n_core = arg_CORE.getValue();                        // parallel cores
 }
 }  // namespace qjoin
