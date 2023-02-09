@@ -1,0 +1,920 @@
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 0.860475 seconds.
+time cost to build index: 2.45944 seconds.
+time cost to build bloom filters: 1.76183 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.000701621 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 10001
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.000715698 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 1.69054 seconds.
+time cost to build index: 5.29955 seconds.
+time cost to build bloom filters: 4.27756 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.000861311 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 80008
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.000885266 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 2.48802 seconds.
+time cost to build index: 8.31057 seconds.
+time cost to build bloom filters: 6.83965 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.00097785 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 270027
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.00100356 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 3.44819 seconds.
+time cost to build index: 11.5575 seconds.
+time cost to build bloom filters: 10.3432 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.00155279 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 640064
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.00157232 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 4.11337 seconds.
+time cost to build index: 14.7502 seconds.
+time cost to build bloom filters: 12.8316 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.00218908 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 1250125
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.002208 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 4.93042 seconds.
+time cost to build index: 18.4717 seconds.
+time cost to build bloom filters: 15.5703 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.0026799 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 2160216
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.00270203 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 6.01168 seconds.
+time cost to build index: 21.7971 seconds.
+time cost to build bloom filters: 18.1674 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.00414783 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 3430343
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.00416332 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 6.68213 seconds.
+time cost to build index: 25.5627 seconds.
+time cost to build bloom filters: 20.6392 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.00434758 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 5120512
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.004368 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 7.52259 seconds.
+time cost to build index: 29.7505 seconds.
+time cost to build bloom filters: 22.9973 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.00524219 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 7290729
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.00526298 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 8.37956 seconds.
+time cost to build index: 34.1218 seconds.
+time cost to build bloom filters: 24.8794 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.00663672 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 10001000
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.0066518 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 0.877856 seconds.
+time cost to build index: 2.49076 seconds.
+time cost to build bloom filters: 1.81646 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.00192706 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 100001
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.00195446 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 1.72538 seconds.
+time cost to build index: 5.30316 seconds.
+time cost to build bloom filters: 4.30629 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.00362337 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 800008
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.003643 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 2.4864 seconds.
+time cost to build index: 8.29231 seconds.
+time cost to build bloom filters: 8.08122 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.00636762 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 2700027
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.00638612 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 3.38932 seconds.
+time cost to build index: 12.0223 seconds.
+time cost to build bloom filters: 11.1662 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.00992103 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 6400064
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.00994 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 4.34393 seconds.
+time cost to build index: 15.4804 seconds.
+time cost to build bloom filters: 13.7406 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.0182043 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 12500125
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.0182228 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 5.05162 seconds.
+time cost to build index: 19.0161 seconds.
+time cost to build bloom filters: 16.1579 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.0199562 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 21600216
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.0199819 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 6.03164 seconds.
+time cost to build index: 22.654 seconds.
+time cost to build bloom filters: 19.3172 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.0259782 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 34300343
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.0259979 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 6.85397 seconds.
+time cost to build index: 26.5477 seconds.
+time cost to build bloom filters: 21.897 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.0310069 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 51200512
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.0310266 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 7.56162 seconds.
+time cost to build index: 30.6612 seconds.
+time cost to build bloom filters: 23.2741 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.04169 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 72900729
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.0417116 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 8.48925 seconds.
+time cost to build index: 34.4186 seconds.
+time cost to build bloom filters: 25.4682 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.0483575 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 100001000
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.0483832 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 0.935232 seconds.
+time cost to build index: 2.62952 seconds.
+time cost to build bloom filters: 2.58437 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.012743 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 1000001
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.0127719 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 1.79719 seconds.
+time cost to build index: 5.51961 seconds.
+time cost to build bloom filters: 5.97371 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.0285731 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 8000008
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.0286065 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 2.66001 seconds.
+time cost to build index: 8.83616 seconds.
+time cost to build bloom filters: 10.1531 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.0497722 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 27000027
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.0498034 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 3.51554 seconds.
+time cost to build index: 12.4846 seconds.
+time cost to build bloom filters: 14.3838 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.0736743 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 64000064
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.0737043 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 4.39534 seconds.
+time cost to build index: 15.7701 seconds.
+time cost to build bloom filters: 17.1772 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.120383 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 125000125
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.12042 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 5.2665 seconds.
+time cost to build index: 19.7252 seconds.
+time cost to build bloom filters: 20.4367 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.145708 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 216000216
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.145737 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 6.3148 seconds.
+time cost to build index: 23.9138 seconds.
+time cost to build bloom filters: 24.579 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.172175 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 343000343
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.172202 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 7.16157 seconds.
+time cost to build index: 27.7453 seconds.
+time cost to build bloom filters: 27.114 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.237443 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 512000512
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.23747 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 7.95288 seconds.
+time cost to build index: 31.7773 seconds.
+time cost to build bloom filters: 29.5034 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.295016 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 729000729
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.295049 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 9.1778 seconds.
+time cost to build index: 36.6618 seconds.
+time cost to build bloom filters: 32.1829 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.390122 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 1000001000
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.39015 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 1.37612 seconds.
+time cost to build index: 4.01169 seconds.
+time cost to build bloom filters: 16.768 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.127651 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 10000000
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.127681 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 3.03072 seconds.
+time cost to build index: 8.63571 seconds.
+time cost to build bloom filters: 33.1361 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.304785 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 80000000
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.304822 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 3.92393 seconds.
+time cost to build index: 13.98 seconds.
+time cost to build bloom filters: 41.2469 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.623084 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 270000000
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.623112 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 5.17364 seconds.
+time cost to build index: 19.0855 seconds.
+time cost to build bloom filters: 50.5361 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 0.772751 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 640000000
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 0.772779 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 6.33649 seconds.
+time cost to build index: 24.3735 seconds.
+time cost to build bloom filters: 59.2057 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 1.10117 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 1250000000
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 1.1012 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 7.52423 seconds.
+time cost to build index: 30.1356 seconds.
+time cost to build bloom filters: 67.244 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 1.61639 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 2160000000
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 1.61643 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 9.27614 seconds.
+time cost to build index: 35.9846 seconds.
+time cost to build bloom filters: 77.5473 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 2.23422 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 3430000000
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 2.23425 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 10.0654 seconds.
+time cost to build index: 41.3061 seconds.
+time cost to build bloom filters: 87.2205 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 2.77625 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 5120000000
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 2.77627 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 11.2708 seconds.
+time cost to build index: 47.748 seconds.
+time cost to build bloom filters: 96.4053 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 3.54992 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 7290000000
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 3.54995 seconds.
+********************************************
+********************************************
+welcome to Quasi Join Demo
+data is located at ../data/synthetic/data/
+time cost to load data: 12.5131 seconds.
+time cost to build index: 53.3892 seconds.
+time cost to build bloom filters: 106.921 seconds.
+********************************************
+********************************************
+running query synthetic R S T
+--------------------------------------------
+QIndexJoin starts for query RST.
+time cost: 4.51862 seconds.
+access tuples: 0
+access indexed: 0
+access bfs: 0
+misses statistics: 
+level 0:        0
+level 1:        0
+QPlusIndexJoin ends for query rst with join size: 10000000000
+--------------------------------------------
+done with query synthetic R S T
+total time cost is 4.51865 seconds.
+********************************************
+********************************************

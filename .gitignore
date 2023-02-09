@@ -11,3 +11,4 @@ release/
 qx*.txt
 *0000.csv
 *.log
+experiments/qx/log.txt
