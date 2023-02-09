@@ -95,6 +95,21 @@ ColumnBloomFilter::CreateBfIndex(
   return idx;
 }
 
+std::shared_ptr<std::multimap<db_key_t_, int64_t>>
+ColumnBloomFilter::CreateBfIndexWithMultipleColumns(
+    const std::shared_ptr<std::vector<db_key_t_>>& col, bloom_filter bf1,
+    const std::shared_ptr<std::vector<db_key_t_>>& col1) {
+  std::shared_ptr<std::multimap<db_key_t_, int64_t>> idx =
+      std::make_shared<std::multimap<db_key_t_, int64_t>>();
+
+  for (int64_t i = 0; i < col->size(); i++) {
+    if (bf_.contains(col->at(i)) && bf1.contains(col1->at(i)))
+      idx->emplace(col->at(i), i);
+  }
+
+  return idx;
+}
+
 std::shared_ptr<std::vector<db_key_t_>> ColumnBloomFilter::CreateBfIndexVec(
     const std::shared_ptr<std::vector<db_key_t_>>& col) {
   std::shared_ptr<std::vector<db_key_t_>> idx =

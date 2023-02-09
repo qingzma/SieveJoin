@@ -12,7 +12,7 @@ void ParseOptions(Options& options, int argc, char** argv) {
       "", "path_suffix", "data path suffix", false, "", "string");
   TCLAP::ValueArg<std::string> arg_SKEW("k", "skew", "skew data extra string",
                                         false, "", "string");
-  TCLAP::ValueArg<int> arg_CORE("n", "cores", "parallel cores", false, 0,
+  TCLAP::ValueArg<int> arg_CORE("n", "cores", "parallel cores", false, 1,
                                 "int");
 
   TCLAP::SwitchArg arg_QX("x", "qx", "do query x experiment", cmd, false);
