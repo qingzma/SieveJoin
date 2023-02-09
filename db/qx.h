@@ -39,6 +39,7 @@ class QueryX : public Query {
   void IndexJoin() override;
   void QLoopJoin() override;
   void QIndexJoin() override;
+  void QPlusIndexJoin() override;
 };
 
 }  // namespace qjoin

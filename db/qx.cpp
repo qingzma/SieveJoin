@@ -3,8 +3,10 @@
 #include <chrono>
 #include <cstring>
 #include <fstream>
+#include <future>
 #include <iostream>
 #include <memory>
+#include <thread>
 
 #include "table/tpch_schema_columns.h"
 #include "util/prints.h"
@@ -16,6 +18,62 @@
 #include "qjoin/table_impl.h"
 
 namespace qjoin {
+
+int64_t QPlusJoinPart(int n, int i, std::shared_ptr<TableImpl> tbl_nation_,
+                      std::shared_ptr<TableImpl> tbl_supplier_,
+                      std::shared_ptr<TableImpl> tbl_customer_,
+                      std::shared_ptr<TableImpl> tbl_orders_,
+                      std::shared_ptr<TableImpl> tbl_lineitem_) {
+  int64_t join_cnt = 0;
+  int64_t sz = tbl_nation_->col0_bf_index_->size();
+  int64_t chunk = sz / n + 1;
+  int64_t low_i = chunk * i;
+  int64_t high_i = chunk * (i + 1);
+  high_i = std::min(high_i, sz + 1);
+
+  // loop nation
+
+  for (auto n_i = low_i; n_i != high_i; n_i++) {
+    db_key_t_ nation_key = (*tbl_nation_->col0_bf_index_vec_)[n_i];
+    auto s_nation_iter = tbl_supplier_->col0_bf_index_->equal_range(nation_key);
+    for (auto iter_s = s_nation_iter.first; iter_s != s_nation_iter.second;
+         iter_s++) {
+      db_key_t_ s_nation = iter_s->first;
+      int64_t s_idx = iter_s->second;
+
+      db_key_t_ s_supp = tbl_supplier_->col1_->at(s_idx);
+      // looop customer
+      auto c_nation_iter = tbl_customer_->col0_bf_index_->equal_range(s_nation);
+      for (auto iter_c = c_nation_iter.first; iter_c != c_nation_iter.second;
+           iter_c++) {
+        db_key_t_ c_nation = iter_c->first;
+        int64_t c_idx = iter_c->second;
+
+        db_key_t_ c_cust = tbl_customer_->col1_->at(c_idx);
+        // loop orders
+        auto o_cust_iter = tbl_orders_->col0_bf_index_->equal_range(c_cust);
+        for (auto iter_o = o_cust_iter.first; iter_o != o_cust_iter.second;
+             iter_o++) {
+          db_key_t_ o_cust = iter_o->first;
+          int64_t o_idx = iter_o->second;
+
+          db_key_t_ o_order = tbl_orders_->col1_->at(o_idx);
+          // loop lineitem
+          auto l_order_iter =
+              tbl_lineitem_->col0_bf_index_->equal_range(o_order);
+          for (auto iter_l = l_order_iter.first; iter_l != l_order_iter.second;
+               iter_l++) {
+            int64_t l_idx = iter_l->second;
+            db_key_t_ l_linenum = tbl_lineitem_->col1_->at(l_idx);
+            join_cnt++;
+          }
+        }
+      }
+    }
+  }
+  return join_cnt;
+}
+
 QueryX::~QueryX() {}
 
 void QueryX::resetCounter() {
@@ -64,7 +122,7 @@ QueryX::QueryX(Options& options) {
   std::cout << "time cost to build index: " << timer.SecondsSinceMarked()
             << " seconds." << std::endl;
 
-  if (options.q_loop_join || options.q_index_join) {
+  if (options.q_loop_join || options.q_index_join || options.qplus_index_join) {
     timer.Mark();
     buildBloomFilter(0);
     std::cout << "time cost to build bloom filters: "
@@ -86,6 +144,8 @@ void QueryX::Run() {
   if (options_.index_join) IndexJoin();
 
   if (options_.loop_join) LoopJoin();
+
+  if (options_.qplus_index_join) QPlusIndexJoin();
 
   std::cout << "--------------------------------------------" << std::endl;
   std::cout << "done with query X" << std::endl;
@@ -356,6 +416,33 @@ void QueryX::QIndexJoin() {
             << std::endl;
 }
 
+void QueryX::QPlusIndexJoin() {
+  std::cout << "--------------------------------------------" << std::endl;
+  std::cout << "QPlusIndexJoin starts for query x." << std::endl;
+  resetCounter();
+  Timer timer;
+  timer.Start();
+
+  int64_t join_cnt = 0;
+  std::vector<std::future<int64_t>> tasks;
+  int n = (options_.n_core == 0) ? std::thread::hardware_concurrency()
+                                 : options_.n_core;
+  for (int i = 0; i < n; i++) {
+    // std::future<int64_t> task =
+    //     std::async(QPlusJoinPart, 4, 0, tbl_r_, tbl_s_, tbl_t_);
+    tasks.push_back(std::async(QPlusJoinPart, n, i, tbl_nation_, tbl_supplier_,
+                               tbl_customer_, tbl_orders_, tbl_lineitem_));
+  }
+
+  for (int i = 0; i < n; i++) {
+    join_cnt += tasks[i].get();
+  }
+
+  std::cout << "time cost: " << timer.Seconds() << " seconds." << std::endl;
+  std::cout << "QPlusIndexJoin ends for query x with join size: " << join_cnt
+            << std::endl;
+}
+
 void QueryX::QLoopJoin() {
   std::cout << "--------------------------------------------" << std::endl;
   std::cout << "QLoopJoin starts for query x." << std::endl;
@@ -486,6 +573,31 @@ void QueryX::buildBloomFilter(int level) {
   // merge bf from supplier to nation
   tbl_nation_->col0_bf_->UpdateBfFromOutsideColumn(tbl_nation_->col0_,
                                                    *(tbl_supplier_->col0_bf_));
+
+  // QPlus join structure
+  tbl_nation_->col0_bf_index_ =
+      tbl_nation_->col0_bf_->CreateBfIndex(tbl_nation_->col0_);
+  tbl_supplier_->col0_bf_index_ =
+      tbl_supplier_->col0_bf_->CreateBfIndex(tbl_supplier_->col0_);
+  tbl_customer_->col0_bf_index_ =
+      tbl_customer_->col0_bf_->CreateBfIndexWithMultipleColumns(
+          tbl_customer_->col0_, tbl_customer_->col1_bf_->bf_,
+          tbl_customer_->col1_);
+  tbl_customer_->col1_bf_index_ =
+      tbl_customer_->col1_bf_->CreateBfIndexWithMultipleColumns(
+          tbl_customer_->col1_, tbl_customer_->col0_bf_->bf_,
+          tbl_customer_->col0_);
+  tbl_orders_->col0_bf_index_ =
+      tbl_orders_->col0_bf_->CreateBfIndexWithMultipleColumns(
+          tbl_orders_->col0_, tbl_orders_->col1_bf_->bf_, tbl_orders_->col1_);
+  tbl_orders_->col1_bf_index_ =
+      tbl_orders_->col1_bf_->CreateBfIndexWithMultipleColumns(
+          tbl_orders_->col1_, tbl_orders_->col0_bf_->bf_, tbl_orders_->col0_);
+  tbl_lineitem_->col0_bf_index_ =
+      tbl_lineitem_->col0_bf_->CreateBfIndex(tbl_lineitem_->col0_);
+
+  tbl_nation_->col0_bf_index_vec_ =
+      tbl_nation_->col0_bf_->CreateBfIndexVec(tbl_nation_->col0_);
 }
 
 }  // namespace qjoin
