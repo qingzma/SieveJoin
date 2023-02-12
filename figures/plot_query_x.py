@@ -72,33 +72,30 @@ def plot_queryx_comparison():
          [31.457, 47.8217, 83.5088, 154.725, 259.882, 402.66, 580.812, 722.536],
          [0.002554, 0.021830, 0.222335, 0.434496,
              0.863749, 1.303641, 1.788428, 2.240768],
-         [0.000426746, 0.00360698, 0.0561153, 0.135796, 0.527769, 0.911862, 1.30654, 1.73786]]
-    # y = [[0.305453,	0.568535,	1.06303, 1.3468,	2.09494,	2.56107,	3.51752,	4.57332],
-    #      [0.0156666,	0.0683826,	0.494824,	0.826786,
-    #          1.6332,	2.64963,	3.85975,	5.0753],
-    #      [93.8655, 170.181, 241.5, 306.047, 405.948, 510.887, 599.234, 743.272],
-    #      [2.12507, 10.0493, 127.851, 218.328, 388.64, 565.314, 713.675, 847.131]]
+         [0.000426746, 0.00360698, 0.0561153, 0.135796,
+             0.527769, 0.911862, 1.30654, 1.73786],
+         [0.230570, 2.288659, 22.485415, 44.817197,
+             88.766733, 135.886965, 179.036015, 219.126915],
+         [0.0297303, 0.574212, 18.3214, 53.2559, 183.026, 372.901, 532.084, 606.438]]
     axs.plot(x, y[0], '-c^', label="index-SF=0.1")
     axs.plot(x, y[1], '-ms', label="qjoin-SF=0.1")
     axs.plot(x, y[4], '-r+', label="umbra-SF=0.1")
     axs.plot(x, y[5], '-b+', label="qplus-SF=0.1")
-    axs.plot(x, y[2], '-b^', label="index-SF=1")
-    axs.plot(x, y[3], '-r+', label="qjoin-SF=1")
+    # axs.plot(x, y[2], '-c^', label="index-SF=1")
+    # axs.plot(x, y[3], '-m+', label="qjoin-SF=1")
+    # axs.plot(x, y[6], '-r+', label="umbra-SF=1")
+    # axs.plot(x, y[7], '-b+', label="qplus-SF=1")
 
     axs.legend()  # loc='upper left'
 
-    axs.set_yscale('log')
+    # axs.set_yscale('log')
     axs.set_xlim([0, 1])
-    axs.set_ylim([1e-4, 1e3])
+    # axs.set_ylim([1e-4, 1e1])
 
-    # majorLocator = FixedLocator(
-    #     [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
-    ymajorLocator = FixedLocator(
-        [0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000])
-    # axs.xaxis.set_major_locator(
-    #     majorLocator)  # plt.MaxNLocator(5)
-    axs.yaxis.set_major_locator(
-        ymajorLocator)
+    # ymajorLocator = FixedLocator(
+    #     [0.0001, 0.001, 0.01, 0.1, 1, 10, 100, 1000])
+    # axs.yaxis.set_major_locator(
+    #     ymajorLocator)
     axs.xaxis.set_major_formatter(PercentFormatter(1.0))
     plt.setp(axs.get_xminorticklabels(), visible=False)
 
@@ -117,3 +114,4 @@ def plot_queryx_comparison():
 
 if __name__ == "__main__":
     plot_queryx_comparison()
+    # plot_queryx()

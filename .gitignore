@@ -12,3 +12,7 @@ qx*.txt
 *0000.csv
 *.log
 experiments/qx/log*
+*.gz
+gplus_combined.txt
+com-orkut*
+twitter-2010*
