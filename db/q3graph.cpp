@@ -18,6 +18,49 @@
 #include "qjoin/table_impl.h"
 
 namespace qjoin {
+
+int64_t QPlus3CliqueJoinPart(int n, int i, std::shared_ptr<TableImpl> tbl1,
+                             std::shared_ptr<TableImpl> tbl2,
+                             std::shared_ptr<TableImpl> tbl3) {
+  // std::cout << "here1" << std::endl;
+  int64_t join_cnt = 0;
+  int64_t sz = tbl1->col0_bf_index_vec_->size();
+  int64_t chunk = sz / n + 1;
+  int64_t low_i = chunk * i;
+  int64_t high_i = chunk * (i + 1);
+  high_i = std::min(high_i, sz);
+  std::cout << "size is " << sz << std::endl;
+  std::cout << "low is " << low_i << std::endl;
+  std::cout << "high is " << high_i << std::endl;
+
+  // loop tbl1
+  for (auto n_i = low_i; n_i != high_i; n_i++) {
+    // std::cout << "here3" << tbl1->col0_bf_index_vec_->size() << ", " << n_i
+    //           << std::endl;
+    db_key_t_ t1c0 = tbl1->col0_bf_index_vec_->at(n_i);
+    db_key_t_ t1c1 = tbl1->col1_bf_index_vec_->at(n_i);
+
+    auto t2_ranges = tbl2->col0_bf_index_->equal_range(t1c1);
+    for (auto iter2 = t2_ranges.first; iter2 != t2_ranges.second; iter2++) {
+      int64_t t2_i = iter2->second;
+      db_key_t_ t2c1 = tbl2->col1_->at(t2_i);
+      // std::cout << "here4" << std::endl;
+
+      auto t3_ranges = tbl3->col0_bf_index_->equal_range(t2c1);
+      for (auto iter3 = t3_ranges.first; iter3 != t3_ranges.second; iter3++) {
+        int64_t t3_i = iter3->second;
+        // std::cout << tbl3->col1_->size() << std::endl;
+        db_key_t_ t3c1 = tbl3->col1_->at(t3_i);
+        if (t3c1 == t1c0) {
+          join_cnt++;
+        }
+      }
+    }
+  }
+  std::cout << "here6" << std::endl;
+  return join_cnt;
+}
+
 Query3Graph::~Query3Graph() {}
 
 void Query3Graph::resetCounter() {
@@ -34,9 +77,12 @@ Query3Graph::Query3Graph(Options& options) {
   timer.Start();
 
   // load data
-  tbl1_ = std::make_shared<TableImpl>(options, options_.path_prefix, ',', 0, 1);
-  tbl2_ = std::make_shared<TableImpl>(options, options_.path_prefix, ',', 0, 1);
-  tbl3_ = std::make_shared<TableImpl>(options, options_.path_prefix, ',', 0, 1);
+  tbl1_ =
+      std::make_shared<TableImpl>(options, options_.path_prefix, '\t', 0, 1);
+  tbl2_ =
+      std::make_shared<TableImpl>(options, options_.path_prefix, '\t', 0, 1);
+  tbl3_ =
+      std::make_shared<TableImpl>(options, options_.path_prefix, '\t', 0, 1);
   std::cout << "time cost to load data: " << timer.Seconds() << " seconds."
             << std::endl;
 
@@ -82,14 +128,123 @@ void Query3Graph::Run() {
   std::cout << "********************************************" << std::endl;
 }
 
-void Query3Graph::IndexJoin() {}
+void Query3Graph::IndexJoin() {
+  std::cout << "--------------------------------------------" << std::endl;
+  std::cout << "Index join starts for query x." << std::endl;
+  resetCounter();
+  Timer timer;
+  timer.Start();
 
-void Query3Graph::QIndexJoin() {}
+  std::cout << "find 0 results" << std::flush;
+  int64_t join_cnt = 0;
 
-void Query3Graph::QPlusIndexJoin() {}
+  // loop tbl1
+  for (int64_t i1 = 0; i1 < tbl1_->col0_->size(); i1++) {
+    db_key_t_ t1c0 = tbl1_->col0_->at(i1);
+    db_key_t_ t1c1 = tbl1_->col1_->at(i1);
+    auto t2_ranges = tbl2_->col0_index_->equal_range(t1c1);
+    for (auto t2_iter = t2_ranges.first; t2_iter != t2_ranges.second;
+         t2_iter++) {
+      int64_t t2_i = t2_iter->second;
+      db_key_t_ t2c1 = tbl2_->col1_->at(t2_i);
+      auto t3_ranges = tbl3_->col0_index_->equal_range(t2c1);
+      for (auto t3_iter = t3_ranges.first; t3_iter != t3_ranges.second;
+           t3_iter++) {
+        int64_t t3_i = t3_iter->second;
+        db_key_t_ t3c1 = tbl3_->col1_->at(t3_i);
+        if (t3c1 == t1c0) {
+          join_cnt++;
+          if (join_cnt % N_PRINT_GAP == 0) {
+            std::cout << "\rfind " << join_cnt << " results" << std::flush;
+          }
+        }
+      }
+    }
+  }
+}
+
+void Query3Graph::QIndexJoin() {
+  std::cout << "--------------------------------------------" << std::endl;
+  std::cout << "QIndexJoin starts for 3-clique query ." << std::endl;
+  resetCounter();
+  Timer timer;
+  timer.Start();
+
+  std::cout << "find 0 results" << std::flush;
+  int64_t join_cnt = 0;
+
+  for (int64_t t1_i = 0; t1_i < tbl1_->col0_->size(); t1_i++) {
+    db_key_t_ t1c0 = tbl1_->col0_->at(t1_i);
+    if (!tbl1_->col0_bf_->bf_.contains(t1c0)) {
+      continue;
+    }
+    db_key_t_ t1c1 = tbl1_->col1_->at(t1_i);
+    if (tbl1_->col1_bf_->bf_.contains(t1c1)) {
+      // loop tbl 2
+      auto t2_ranges = tbl2_->col0_index_->equal_range(t1c1);
+      for (auto iter2 = t2_ranges.first; iter2 != t2_ranges.second; iter2++) {
+        int64_t i2 = iter2->second;
+        db_key_t_ t2c0 = tbl2_->col0_->at(i2);
+        if (tbl2_->col0_bf_->bf_.contains(t2c0)) {
+          db_key_t_ t2c1 = tbl2_->col1_->at(i2);
+          if (tbl2_->col1_bf_->bf_.contains(t2c1)) {
+            // loop tbl3
+            auto t3_ranges = tbl3_->col0_index_->equal_range(t2c0);
+            for (auto iter3 = t3_ranges.first; iter3 != t3_ranges.second;
+                 iter3++) {
+              int64_t i3 = iter3->second;
+              db_key_t_ t3c1 = tbl3_->col1_->at(i3);
+              if (t3c1 == t1c0) {
+                join_cnt++;
+                if (join_cnt % N_PRINT_GAP == 0) {
+                  std::cout << "\rfind " << join_cnt << " results"
+                            << std::flush;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  std::cout << "\rtime cost: " << timer.Seconds() << " seconds." << std::endl;
+  std::cout << "access tuples: " << n_access_tuple_ << std::endl;
+  std::cout << "access indexed: " << n_access_index_ << std::endl;
+  std::cout << "access bfs: " << n_access_bf_ << std::endl;
+  print_n_misses(n_misses, 4);
+  std::cout << "QIndexJoin ends for 3 clique query  with join size: "
+            << join_cnt << std::endl;
+}
+
+void Query3Graph::QPlusIndexJoin() {
+  std::cout << "--------------------------------------------" << std::endl;
+  std::cout << "QPlusIndexJoin starts for 3-clique query ." << std::endl;
+  resetCounter();
+  Timer timer;
+  timer.Start();
+
+  int64_t join_cnt = 0;
+  std::vector<std::future<int64_t>> tasks;
+  int n = (options_.n_core == 0) ? std::thread::hardware_concurrency()
+                                 : options_.n_core;
+  for (int i = 0; i < n; i++) {
+    // std::future<int64_t> task =
+    //     std::async(QPlusJoinPart, 4, 0, tbl_r_, tbl_s_, tbl_t_);
+    tasks.push_back(
+        std::async(QPlus3CliqueJoinPart, n, i, tbl1_, tbl2_, tbl3_));
+  }
+
+  for (int i = 0; i < n; i++) {
+    join_cnt += tasks[i].get();
+  }
+
+  std::cout << "time cost: " << timer.Seconds() << " seconds." << std::endl;
+  std::cout << "QPlusIndexJoin ends for 3-clique query with join size: "
+            << join_cnt << std::endl;
+}
 
 void Query3Graph::buildBloomFilter(int lvel) {
-  std::cout << "before bloom" << std::endl;
   tbl1_->BuildKeyBloomFilter();
   tbl2_->BuildKeyBloomFilter();
   tbl3_->BuildKeyBloomFilter();
@@ -121,7 +276,9 @@ void Query3Graph::buildBloomFilter(int lvel) {
       tbl3_->col0_, tbl3_->col1_bf_->bf_, tbl3_->col1_);
   tbl3_->col1_bf_index_ = tbl3_->col1_bf_->CreateBfIndexWithMultipleColumns(
       tbl3_->col1_, tbl3_->col0_bf_->bf_, tbl3_->col0_);
-  tbl1_->col0_bf_index_vec_ = tbl1_->col0_bf_->CreateBfIndexVec(tbl1_->col0_);
+  // tbl1_->col0_bf_index_vec_ =
+  // tbl1_->col0_bf_->CreateBfIndexVec(tbl1_->col0_);
+  tbl1_->BuildQPlusVecIndex();
 }
 
 }  // namespace qjoin

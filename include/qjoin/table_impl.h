@@ -29,6 +29,7 @@ class TableImpl {
   std::shared_ptr<std::multimap<db_key_t_, int64_t>> col0_bf_index_;
   std::shared_ptr<std::multimap<db_key_t_, int64_t>> col1_bf_index_;
   std::shared_ptr<std::vector<db_key_t_>> col0_bf_index_vec_;
+  std::shared_ptr<std::vector<db_key_t_>> col1_bf_index_vec_;
   std::shared_ptr<std::multimap<std::string, int64_t>> col2_index_;
 
   std::shared_ptr<ColumnBloomFilter> col0_bf_;
@@ -54,6 +55,7 @@ class TableImpl {
   void BuildIndex();
 
   std::vector<db_key_t_>::iterator KeyIterator(int col) const;
+  void BuildQPlusVecIndex();
 
  private:
   void buildKeyIndex();

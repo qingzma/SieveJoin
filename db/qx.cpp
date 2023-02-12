@@ -25,7 +25,7 @@ int64_t QPlusJoinPart(int n, int i, std::shared_ptr<TableImpl> tbl_nation_,
                       std::shared_ptr<TableImpl> tbl_orders_,
                       std::shared_ptr<TableImpl> tbl_lineitem_) {
   int64_t join_cnt = 0;
-  int64_t sz = tbl_nation_->col0_bf_index_->size();
+  int64_t sz = tbl_nation_->col0_bf_index_vec_->size();
   int64_t chunk = sz / n + 1;
   int64_t low_i = chunk * i;
   int64_t high_i = chunk * (i + 1);

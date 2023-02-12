@@ -150,4 +150,23 @@ void TableImpl::BuildKeyBloomFilter() {
     col1_bf_ = col0_bf_;
 }
 void TableImpl::BuildCharsBloomFilter() {}
+
+void TableImpl::BuildQPlusVecIndex() {
+  col0_bf_index_vec_ = std::make_shared<std::vector<db_key_t_>>();
+  if (col1_) col1_bf_index_vec_ = std::make_shared<std::vector<db_key_t_>>();
+
+  for (int64_t i = 0; i < col0_->size(); i++) {
+    if (col1_) {
+      if (col0_bf_->bf_.contains(col0_->at(i)) &&
+          col1_bf_->bf_.contains(col1_->at(i))) {
+        col0_bf_index_vec_->emplace_back(col0_->at(i));
+        col1_bf_index_vec_->emplace_back(col1_->at(i));
+      }
+    } else {
+      if (col0_bf_->bf_.contains(col0_->at(i))) {
+        col0_bf_index_vec_->emplace_back(col0_->at(i));
+      }
+    }
+  }
+}
 }  // namespace qjoin
