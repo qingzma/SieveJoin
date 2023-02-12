@@ -29,9 +29,6 @@ int64_t QPlus3CliqueJoinPart(int n, int i, std::shared_ptr<TableImpl> tbl1,
   int64_t low_i = chunk * i;
   int64_t high_i = chunk * (i + 1);
   high_i = std::min(high_i, sz);
-  std::cout << "size is " << sz << std::endl;
-  std::cout << "low is " << low_i << std::endl;
-  std::cout << "high is " << high_i << std::endl;
 
   // loop tbl1
   for (auto n_i = low_i; n_i != high_i; n_i++) {
@@ -57,7 +54,6 @@ int64_t QPlus3CliqueJoinPart(int n, int i, std::shared_ptr<TableImpl> tbl1,
       }
     }
   }
-  std::cout << "here6" << std::endl;
   return join_cnt;
 }
 
@@ -175,33 +171,31 @@ void Query3Graph::QIndexJoin() {
 
   for (int64_t t1_i = 0; t1_i < tbl1_->col0_->size(); t1_i++) {
     db_key_t_ t1c0 = tbl1_->col0_->at(t1_i);
-    if (!tbl1_->col0_bf_->bf_.contains(t1c0)) {
+    db_key_t_ t1c1 = tbl1_->col1_->at(t1_i);
+    if (!tbl1_->col0_bf_->bf_.contains(t1c0) ||
+        !tbl1_->col1_bf_->bf_.contains(t1c1)) {
       continue;
     }
-    db_key_t_ t1c1 = tbl1_->col1_->at(t1_i);
-    if (tbl1_->col1_bf_->bf_.contains(t1c1)) {
-      // loop tbl 2
-      auto t2_ranges = tbl2_->col0_index_->equal_range(t1c1);
-      for (auto iter2 = t2_ranges.first; iter2 != t2_ranges.second; iter2++) {
-        int64_t i2 = iter2->second;
-        db_key_t_ t2c0 = tbl2_->col0_->at(i2);
-        if (tbl2_->col0_bf_->bf_.contains(t2c0)) {
-          db_key_t_ t2c1 = tbl2_->col1_->at(i2);
-          if (tbl2_->col1_bf_->bf_.contains(t2c1)) {
-            // loop tbl3
-            auto t3_ranges = tbl3_->col0_index_->equal_range(t2c0);
-            for (auto iter3 = t3_ranges.first; iter3 != t3_ranges.second;
-                 iter3++) {
-              int64_t i3 = iter3->second;
-              db_key_t_ t3c1 = tbl3_->col1_->at(i3);
-              if (t3c1 == t1c0) {
-                join_cnt++;
-                if (join_cnt % N_PRINT_GAP == 0) {
-                  std::cout << "\rfind " << join_cnt << " results"
-                            << std::flush;
-                }
-              }
-            }
+
+    // loop tbl 2
+    auto t2_ranges = tbl2_->col0_index_->equal_range(t1c1);
+    for (auto iter2 = t2_ranges.first; iter2 != t2_ranges.second; iter2++) {
+      int64_t i2 = iter2->second;
+      db_key_t_ t2c0 = tbl2_->col0_->at(i2);
+      db_key_t_ t2c1 = tbl2_->col1_->at(i2);
+      if (!tbl2_->col0_bf_->bf_.contains(t2c0) ||
+          !tbl2_->col1_bf_->bf_.contains(t2c1)) {
+        continue;
+      }
+      // loop tbl3
+      auto t3_ranges = tbl3_->col0_index_->equal_range(t2c1);
+      for (auto iter3 = t3_ranges.first; iter3 != t3_ranges.second; iter3++) {
+        int64_t i3 = iter3->second;
+        db_key_t_ t3c1 = tbl3_->col1_->at(i3);
+        if (t3c1 == t1c0) {
+          join_cnt++;
+          if (join_cnt % N_PRINT_GAP == 0) {
+            std::cout << "\rfind " << join_cnt << " results" << std::flush;
           }
         }
       }
