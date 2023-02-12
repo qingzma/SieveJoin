@@ -19,6 +19,7 @@ void ParseOptions(Options& options, int argc, char** argv) {
   TCLAP::SwitchArg arg_QY("y", "qy", "do query y experiment", cmd, false);
   TCLAP::SwitchArg arg_QRST("", "qrst", "do query synthetic R S T experiment",
                             cmd, false);
+  TCLAP::SwitchArg arg_QClique3("", "c3", "do 3clique experiment", cmd, false);
   TCLAP::SwitchArg arg_LOOP_JOIN("l", "loop", "do  loop join", cmd, false);
   TCLAP::SwitchArg arg_INDEX_JOIN("i", "index", "do  index join", cmd, false);
   TCLAP::SwitchArg arg_QJOIN_INDEX("q", "qindexjoin", "do  qjoinindex", cmd,
@@ -38,6 +39,7 @@ void ParseOptions(Options& options, int argc, char** argv) {
   options.qx = arg_QX.getValue();
   options.qy = arg_QY.getValue();
   options.qrst = arg_QRST.getValue();
+  options.c3 = arg_QClique3.getValue();
   options.path_prefix = arg_PATH.getValue();
   options.path_suffix = arg_PATH_SUFFIX.getValue();
   options.skew_prefix = arg_SKEW.getValue();

@@ -77,6 +77,8 @@ target_sources(qentry
     db/qy.cpp
     db/qrst.h
     db/qrst.cpp
+    db/q3graph.h
+    db/q3graph.cpp
 )
 
 option(BUILD_QJOIN_TESTS "build unit tests" TRUE)
