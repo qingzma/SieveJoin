@@ -199,15 +199,31 @@ void TableImpl::BuildQPlusVecIndex() {
   col0_bf_index_vec_ = std::make_shared<std::vector<db_key_t_>>();
   if (col1_) col1_bf_index_vec_ = std::make_shared<std::vector<db_key_t_>>();
 
+  std::shared_ptr<ColumnBloomFilter> c0bf, c1bf;
+
+  if (col0_4clique_bf_) {
+    c0bf = col0_4clique_bf_;
+    if (col1_) c1bf = col1_4clique_bf_;
+  } else if (col0_3clique_bf_) {
+    c0bf = col0_3clique_bf_;
+    if (col1_) c1bf = col1_3clique_bf_;
+  } else if (col0_2clique_bf_) {
+    c0bf = col0_2clique_bf_;
+    if (col1_) c1bf = col1_2clique_bf_;
+  } else {
+    c0bf = col0_bf_;
+    if (col1_) c1bf = col1_bf_;
+  }
+
   for (int64_t i = 0; i < col0_->size(); i++) {
     if (col1_) {
-      if (col0_bf_->bf_.contains(col0_->at(i)) &&
-          col1_bf_->bf_.contains(col1_->at(i))) {
+      if (c0bf->bf_.contains(col0_->at(i)) &&
+          c1bf->bf_.contains(col1_->at(i))) {
         col0_bf_index_vec_->emplace_back(col0_->at(i));
         col1_bf_index_vec_->emplace_back(col1_->at(i));
       }
     } else {
-      if (col0_bf_->bf_.contains(col0_->at(i))) {
+      if (c0bf->bf_.contains(col0_->at(i))) {
         col0_bf_index_vec_->emplace_back(col0_->at(i));
       }
     }

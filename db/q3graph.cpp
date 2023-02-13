@@ -172,9 +172,12 @@ void Query3Graph::QIndexJoin() {
 
   for (int64_t t1_i = 0; t1_i < tbl1_->col0_->size(); t1_i++) {
     db_key_t_ t1c0 = tbl1_->col0_->at(t1_i);
+
+    if (!tbl1_->col0_bf_->bf_.contains(t1c0)) {
+      continue;
+    }
     db_key_t_ t1c1 = tbl1_->col1_->at(t1_i);
-    if (!tbl1_->col0_bf_->bf_.contains(t1c0) ||
-        !tbl1_->col1_bf_->bf_.contains(t1c1)) {
+    if (!tbl1_->col1_bf_->bf_.contains(t1c1)) {
       continue;
     }
 
@@ -183,9 +186,12 @@ void Query3Graph::QIndexJoin() {
     for (auto iter2 = t2_ranges.first; iter2 != t2_ranges.second; iter2++) {
       int64_t i2 = iter2->second;
       db_key_t_ t2c0 = tbl1_->col0_->at(i2);
+
+      if (!tbl1_->col0_2clique_bf_->bf_.contains(t2c0)) {
+        continue;
+      }
       db_key_t_ t2c1 = tbl1_->col1_->at(i2);
-      if (!tbl1_->col0_2clique_bf_->bf_.contains(t2c0) ||
-          !tbl1_->col0_2clique_bf_->bf_.contains(t2c1)) {
+      if (!tbl1_->col1_2clique_bf_->bf_.contains(t2c1)) {
         continue;
       }
       // loop tbl3
@@ -274,8 +280,8 @@ void Query3Graph::buildBloomFilter(int lvel) {
       tbl1_->col1_3clique_bf_->CreateBfIndexWithMultipleColumns(
           tbl1_->col1_, tbl1_->col0_3clique_bf_->bf_, tbl1_->col0_);
 
-  tbl1_->col0_bf_index_vec_ = tbl1_->col0_;
-  tbl1_->col1_bf_index_vec_ = tbl1_->col1_;
+  // tbl1_->col0_bf_index_vec_ = tbl1_->col0_;
+  // tbl1_->col1_bf_index_vec_ = tbl1_->col1_;
 
   // // merge bf from t3 to t2
   // tbl3_->col0_bf_->UpdateBfFromInsideColumn(tbl3_->col0_, tbl3_->col1_,
@@ -308,7 +314,7 @@ void Query3Graph::buildBloomFilter(int lvel) {
   //     tbl3_->col1_, tbl3_->col0_bf_->bf_, tbl3_->col0_);
   // // tbl1_->col0_bf_index_vec_ =
   // // tbl1_->col0_bf_->CreateBfIndexVec(tbl1_->col0_);
-  // tbl1_->BuildQPlusVecIndex();
+  tbl1_->BuildQPlusVecIndex();
 }
 
 }  // namespace qjoin

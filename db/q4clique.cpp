@@ -305,8 +305,9 @@ void Query4Clique::buildBloomFilter(int lvel) {
       tbl1_->col1_, tbl1_->col0_bf_->bf_, tbl1_->col0_);
 
   //   tbl1_->BuildQPlusVecIndex();
-  tbl1_->col0_bf_index_vec_ = tbl1_->col0_;
-  tbl1_->col1_bf_index_vec_ = tbl1_->col1_;
+  //   tbl1_->col0_bf_index_vec_ = tbl1_->col0_;
+  //   tbl1_->col1_bf_index_vec_ = tbl1_->col1_;
+  tbl1_->BuildQPlusVecIndex();
 }
 
 }  // namespace qjoin
