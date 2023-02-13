@@ -27,6 +27,8 @@ int64_t QPlus3CliqueJoinPart(int n, int i, std::shared_ptr<TableImpl> tbl1) {
   int64_t low_i = chunk * i;
   int64_t high_i = chunk * (i + 1);
   high_i = std::min(high_i, sz);
+  // std::cout << "size is " << tbl1->col0_bf_index_vec_->size() << std::endl
+  //           << std::flush;
 
   // loop tbl1
   for (auto n_i = low_i; n_i != high_i; n_i++) {
@@ -262,6 +264,24 @@ void Query3Graph::buildBloomFilter(int lvel) {
   tbl1_->col1_3clique_bf_->UpdateBfFromInsideColumnOutsideColumn(
       tbl1_->col1_, tbl1_->col0_, *(tbl1_->col0_3clique_bf_),
       *(tbl1_->col0_bf_));
+
+  // one more iteration
+  // merge bf from clique 3 to clique 1
+  tbl1_->col0_bf_->UpdateBfFromOutsideColumn(tbl1_->col0_,
+                                             *(tbl1_->col1_3clique_bf_));
+  tbl1_->col1_bf_->UpdateBfFromInsideColumn(tbl1_->col1_, tbl1_->col0_,
+                                            *(tbl1_->col0_bf_));
+
+  // tbl1_->col0_2clique_bf_->UpdateBfFromOutsideColumn(tbl1_->col0_,
+  //                                                    *(tbl1_->col1_bf_));
+  // tbl1_->col1_2clique_bf_->UpdateBfFromInsideColumn(tbl1_->col1_,
+  // tbl1_->col0_,
+  //                                                   *(tbl1_->col0_2clique_bf_));
+  // tbl1_->col0_3clique_bf_->UpdateBfFromOutsideColumn(
+  //     tbl1_->col0_, *(tbl1_->col1_2clique_bf_));
+  // tbl1_->col1_3clique_bf_->UpdateBfFromInsideColumnOutsideColumn(
+  //     tbl1_->col1_, tbl1_->col0_, *(tbl1_->col0_3clique_bf_),
+  //     *(tbl1_->col0_bf_));
 
   // QPlus join structure
   tbl1_->col0_bf_index_ = tbl1_->col0_bf_->CreateBfIndexWithMultipleColumns(

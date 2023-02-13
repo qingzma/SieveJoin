@@ -27,6 +27,8 @@ int64_t QPlus4CliqueJoinPart(int n, int i, std::shared_ptr<TableImpl> tbl1) {
   int64_t low_i = chunk * i;
   int64_t high_i = chunk * (i + 1);
   high_i = std::min(high_i, sz);
+  //   std::cout << "size is " << tbl1->col0_bf_index_vec_->size() << std::endl
+  //             << std::flush;
 
   // loop tbl1
   for (auto n_i = low_i; n_i != high_i; n_i++) {
@@ -260,24 +262,32 @@ void Query4Clique::QPlusIndexJoin() {
 void Query4Clique::buildBloomFilter(int lvel) {
   tbl1_->BuildKeyBloomFilter(4);
 
-  // merge bf to clique 2
-  tbl1_->col0_2clique_bf_->UpdateBfFromOutsideColumn(tbl1_->col0_,
-                                                     *(tbl1_->col1_bf_));
-  tbl1_->col1_2clique_bf_->UpdateBfFromInsideColumn(tbl1_->col1_, tbl1_->col0_,
-                                                    *(tbl1_->col0_2clique_bf_));
+  for (int i = 0; i < 3; i++) {
+    // merge bf to clique 2
+    tbl1_->col0_2clique_bf_->UpdateBfFromOutsideColumn(tbl1_->col0_,
+                                                       *(tbl1_->col1_bf_));
+    tbl1_->col1_2clique_bf_->UpdateBfFromInsideColumn(
+        tbl1_->col1_, tbl1_->col0_, *(tbl1_->col0_2clique_bf_));
 
-  // merge bf from clique 2 to clique 3
-  tbl1_->col0_3clique_bf_->UpdateBfFromOutsideColumn(
-      tbl1_->col0_, *(tbl1_->col1_2clique_bf_));
-  tbl1_->col1_3clique_bf_->UpdateBfFromInsideColumn(tbl1_->col1_, tbl1_->col0_,
-                                                    *(tbl1_->col0_3clique_bf_));
+    // merge bf from clique 2 to clique 3
+    tbl1_->col0_3clique_bf_->UpdateBfFromOutsideColumn(
+        tbl1_->col0_, *(tbl1_->col1_2clique_bf_));
+    tbl1_->col1_3clique_bf_->UpdateBfFromInsideColumn(
+        tbl1_->col1_, tbl1_->col0_, *(tbl1_->col0_3clique_bf_));
 
-  // merge bf from clique 3 to clique 4
-  tbl1_->col0_4clique_bf_->UpdateBfFromOutsideColumn(
-      tbl1_->col0_, *(tbl1_->col1_3clique_bf_));
-  tbl1_->col1_4clique_bf_->UpdateBfFromInsideColumnOutsideColumn(
-      tbl1_->col1_, tbl1_->col0_, *(tbl1_->col0_4clique_bf_),
-      *(tbl1_->col0_bf_));
+    // merge bf from clique 3 to clique 4
+    tbl1_->col0_4clique_bf_->UpdateBfFromOutsideColumn(
+        tbl1_->col0_, *(tbl1_->col1_3clique_bf_));
+    tbl1_->col1_4clique_bf_->UpdateBfFromInsideColumnOutsideColumn(
+        tbl1_->col1_, tbl1_->col0_, *(tbl1_->col0_4clique_bf_),
+        *(tbl1_->col0_bf_));
+
+    // one more loop from clique 4 to clique 1
+    tbl1_->col0_bf_->UpdateBfFromOutsideColumn(tbl1_->col1_,
+                                               *(tbl1_->col1_4clique_bf_));
+    tbl1_->col1_bf_->UpdateBfFromInsideColumn(tbl1_->col1_, tbl1_->col0_,
+                                              *(tbl1_->col0_bf_));
+  }
 
   // QPlus join structure
   tbl1_->col0_2clique_bf_index_ =
