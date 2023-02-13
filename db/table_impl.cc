@@ -139,7 +139,9 @@ std::vector<db_key_t_>::iterator TableImpl::KeyIterator(int col) const {
   }
 }
 
-void TableImpl::BuildKeyBloomFilter() {
+void TableImpl::BuildKeyBloomFilter(int clique) {
+  // NOTE, for 4+ clique queries, please add code below.
+  // for cases where clique=1
   col0_bf_ = std::make_shared<ColumnBloomFilter>(*options_, row_count_);
   col0_bf_->Fit(col0_);
 
@@ -148,6 +150,48 @@ void TableImpl::BuildKeyBloomFilter() {
     col1_bf_->Fit(col1_);
   } else
     col1_bf_ = col0_bf_;
+
+  // process 2 clique queries
+  if (clique > 1) {
+    col0_2clique_bf_ =
+        std::make_shared<ColumnBloomFilter>(*options_, row_count_);
+    col0_2clique_bf_->Fit(col0_);
+
+    if (col0_ != col1_) {
+      col1_2clique_bf_ =
+          std::make_shared<ColumnBloomFilter>(*options_, row_count_);
+      col1_2clique_bf_->Fit(col1_);
+    } else
+      col1_2clique_bf_ = col0_2clique_bf_;
+  }
+
+  // process 3 clique queries
+  if (clique > 2) {
+    col0_3clique_bf_ =
+        std::make_shared<ColumnBloomFilter>(*options_, row_count_);
+    col0_3clique_bf_->Fit(col0_);
+
+    if (col0_ != col1_) {
+      col1_3clique_bf_ =
+          std::make_shared<ColumnBloomFilter>(*options_, row_count_);
+      col1_3clique_bf_->Fit(col1_);
+    } else
+      col1_3clique_bf_ = col0_3clique_bf_;
+  }
+
+  // process 4 clique queries
+  if (clique > 3) {
+    col0_4clique_bf_ =
+        std::make_shared<ColumnBloomFilter>(*options_, row_count_);
+    col0_4clique_bf_->Fit(col0_);
+
+    if (col0_ != col1_) {
+      col1_4clique_bf_ =
+          std::make_shared<ColumnBloomFilter>(*options_, row_count_);
+      col1_4clique_bf_->Fit(col1_);
+    } else
+      col1_4clique_bf_ = col0_4clique_bf_;
+  }
 }
 void TableImpl::BuildCharsBloomFilter() {}
 

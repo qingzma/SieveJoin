@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "q3graph.h"
+#include "q4clique.h"
 #include "qjoin/options.h"
 #include "qrst.h"
 #include "qx.h"
@@ -31,6 +32,11 @@ int main(int argc, char** argv) {
   if (options.c3) {
     qjoin::Query3Graph q3(options);
     q3.Run();
+  }
+
+  if (options.c4) {
+    qjoin::Query4Clique q4(options);
+    q4.Run();
   }
   return 0;
 }

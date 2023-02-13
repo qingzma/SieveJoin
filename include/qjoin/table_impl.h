@@ -36,6 +36,21 @@ class TableImpl {
   std::shared_ptr<ColumnBloomFilter> col1_bf_;
   std::shared_ptr<ColumnBloomFilter> col2_bf_;
 
+  // 3 clique 4 clique support structure
+  // self is 1-clique
+  std::shared_ptr<std::multimap<db_key_t_, int64_t>> col0_2clique_bf_index_;
+  std::shared_ptr<std::multimap<db_key_t_, int64_t>> col1_2clique_bf_index_;
+  std::shared_ptr<ColumnBloomFilter> col0_2clique_bf_;
+  std::shared_ptr<ColumnBloomFilter> col1_2clique_bf_;
+  std::shared_ptr<std::multimap<db_key_t_, int64_t>> col0_3clique_bf_index_;
+  std::shared_ptr<std::multimap<db_key_t_, int64_t>> col1_3clique_bf_index_;
+  std::shared_ptr<ColumnBloomFilter> col0_3clique_bf_;
+  std::shared_ptr<ColumnBloomFilter> col1_3clique_bf_;
+  std::shared_ptr<std::multimap<db_key_t_, int64_t>> col0_4clique_bf_index_;
+  std::shared_ptr<std::multimap<db_key_t_, int64_t>> col1_4clique_bf_index_;
+  std::shared_ptr<ColumnBloomFilter> col0_4clique_bf_;
+  std::shared_ptr<ColumnBloomFilter> col1_4clique_bf_;
+
  private:
   // TableImpl();
 
@@ -62,7 +77,7 @@ class TableImpl {
   void buildCharsIndex();
 
  public:
-  void BuildKeyBloomFilter();
+  void BuildKeyBloomFilter(int clique = 1);
   void BuildCharsBloomFilter();
 };
 }  // namespace qjoin

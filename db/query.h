@@ -11,7 +11,7 @@ class Query {
   int64_t n_access_tuple_;
   int64_t n_access_index_;
   int64_t n_access_bf_;
-  int N_PRINT_GAP = 10000;
+  int N_PRINT_GAP = 1000000;
 
   virtual void buildBloomFilter(int level);
   virtual void resetCounter();
