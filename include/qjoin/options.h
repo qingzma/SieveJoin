@@ -17,6 +17,7 @@ struct Options {
   bool q_index_join;        // run qjoinindex
   bool q_loop_join;         // run qjoinindex
   bool qplus_index_join;    // run qjoinindex
+  bool qtiny_index_join;    // run q tiny index join
   std::string path_prefix;  // path prefix
   std::string path_suffix;  // path suffix
   std::string skew_prefix;  // _1p, _10p, etc

@@ -23,6 +23,7 @@ class Query3Graph : public Query {
 
   void buildBloomFilter(int level) override;
   void resetCounter() override;
+  void buildTinyIndex();
 
  public:
   Query3Graph(Options& options);
@@ -34,6 +35,7 @@ class Query3Graph : public Query {
   // void QLoopJoin() override;
   void QIndexJoin() override;
   void QPlusIndexJoin() override;
+  void QTinyIndexJoin();
 };
 
 }  // namespace qjoin

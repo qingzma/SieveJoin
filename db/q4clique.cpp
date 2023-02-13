@@ -92,7 +92,8 @@ Query4Clique::Query4Clique(Options& options) {
   std::cout << "time cost to build index: " << timer.SecondsSinceMarked()
             << " seconds." << std::endl;
 
-  if (options.q_loop_join || options.q_index_join || options.qplus_index_join) {
+  if (options.q_loop_join || options.q_index_join || options.qplus_index_join ||
+      options.qtiny_index_join) {
     timer.Mark();
     buildBloomFilter(0);
     std::cout << "time cost to build bloom filters: "

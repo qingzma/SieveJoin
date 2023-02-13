@@ -229,4 +229,57 @@ void TableImpl::BuildQPlusVecIndex() {
     }
   }
 }
+
+void TableImpl::BuildTinyVecIndex() {
+  col0_tiny_index_vec_ = std::make_shared<std::vector<db_key_t_>>();
+  if (col1_) col1_tiny_index_vec_ = std::make_shared<std::vector<db_key_t_>>();
+
+  for (int64_t i = 0; i < col0_->size(); i++) {
+    if (col1_) {
+      if (col0_bf_tiny_->bf_.contains(col0_->at(i)) &&
+          col1_bf_tiny_->bf_.contains(col1_->at(i))) {
+        col0_tiny_index_vec_->emplace_back(col0_->at(i));
+        col1_tiny_index_vec_->emplace_back(col1_->at(i));
+
+        col0_tiny_index_->emplace(col0_->at(i), i);
+        col1_tiny_index_->emplace(col1_->at(i), i);
+      }
+
+      if (col0_2clique_bf_tiny_->bf_.contains(col0_->at(i)) &&
+          col1_2clique_bf_tiny_->bf_.contains(col1_->at(i))) {
+        col0_2clique_tiny_index_->emplace(col0_->at(i), i);
+        col1_2clique_tiny_index_->emplace(col1_->at(i), i);
+      }
+
+      if (col0_3clique_bf_tiny_->bf_.contains(col0_->at(i)) &&
+          col1_3clique_bf_tiny_->bf_.contains(col1_->at(i))) {
+        col0_3clique_tiny_index_->emplace(col0_->at(i), i);
+        col1_3clique_tiny_index_->emplace(col1_->at(i), i);
+      }
+
+      if (col0_4clique_bf_tiny_ &&  // make sure it is a 4 clique query
+          col0_4clique_bf_tiny_->bf_.contains(col0_->at(i)) &&
+          col1_4clique_bf_tiny_->bf_.contains(col1_->at(i))) {
+        col0_4clique_tiny_index_->emplace(col0_->at(i), i);
+        col1_4clique_tiny_index_->emplace(col1_->at(i), i);
+      }
+
+    } else {
+      if (col0_bf_tiny_->bf_.contains(col0_->at(i))) {
+        col0_tiny_index_vec_->emplace_back(col0_->at(i));
+
+        col0_tiny_index_->emplace(col0_->at(i), i);
+      }
+    }
+  }
+  std::cout << "was " << col0_->size() << ", changed to "
+            << col0_tiny_index_->size() << std::endl;
+  std::cout << "was " << col0_->size() << ", changed to "
+            << col0_2clique_tiny_index_->size() << std::endl;
+  std::cout << "was " << col0_->size() << ", changed to "
+            << col0_3clique_tiny_index_->size() << std::endl;
+  if (col0_4clique_tiny_index_)
+    std::cout << "was " << col0_->size() << ", changed to "
+              << col0_4clique_tiny_index_->size() << std::endl;
+}
 }  // namespace qjoin

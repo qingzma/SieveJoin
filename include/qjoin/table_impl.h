@@ -30,26 +30,44 @@ class TableImpl {
   std::shared_ptr<std::multimap<db_key_t_, int64_t>> col1_bf_index_;
   std::shared_ptr<std::vector<db_key_t_>> col0_bf_index_vec_;
   std::shared_ptr<std::vector<db_key_t_>> col1_bf_index_vec_;
+  std::shared_ptr<std::vector<db_key_t_>> col0_tiny_index_vec_;
+  std::shared_ptr<std::vector<db_key_t_>> col1_tiny_index_vec_;
   std::shared_ptr<std::multimap<std::string, int64_t>> col2_index_;
 
   std::shared_ptr<ColumnBloomFilter> col0_bf_;
   std::shared_ptr<ColumnBloomFilter> col1_bf_;
   std::shared_ptr<ColumnBloomFilter> col2_bf_;
+  std::shared_ptr<ColumnBloomFilter> col0_bf_tiny_;
+  std::shared_ptr<ColumnBloomFilter> col1_bf_tiny_;
 
   // 3 clique 4 clique support structure
   // self is 1-clique
+  std::shared_ptr<std::multimap<db_key_t_, int64_t>> col0_tiny_index_;
+  std::shared_ptr<std::multimap<db_key_t_, int64_t>> col1_tiny_index_;
   std::shared_ptr<std::multimap<db_key_t_, int64_t>> col0_2clique_bf_index_;
   std::shared_ptr<std::multimap<db_key_t_, int64_t>> col1_2clique_bf_index_;
+  std::shared_ptr<std::multimap<db_key_t_, int64_t>> col0_2clique_tiny_index_;
+  std::shared_ptr<std::multimap<db_key_t_, int64_t>> col1_2clique_tiny_index_;
   std::shared_ptr<ColumnBloomFilter> col0_2clique_bf_;
   std::shared_ptr<ColumnBloomFilter> col1_2clique_bf_;
+  std::shared_ptr<ColumnBloomFilter> col0_2clique_bf_tiny_;
+  std::shared_ptr<ColumnBloomFilter> col1_2clique_bf_tiny_;
   std::shared_ptr<std::multimap<db_key_t_, int64_t>> col0_3clique_bf_index_;
   std::shared_ptr<std::multimap<db_key_t_, int64_t>> col1_3clique_bf_index_;
+  std::shared_ptr<std::multimap<db_key_t_, int64_t>> col0_3clique_tiny_index_;
+  std::shared_ptr<std::multimap<db_key_t_, int64_t>> col1_3clique_tiny_index_;
   std::shared_ptr<ColumnBloomFilter> col0_3clique_bf_;
   std::shared_ptr<ColumnBloomFilter> col1_3clique_bf_;
+  std::shared_ptr<ColumnBloomFilter> col0_3clique_bf_tiny_;
+  std::shared_ptr<ColumnBloomFilter> col1_3clique_bf_tiny_;
   std::shared_ptr<std::multimap<db_key_t_, int64_t>> col0_4clique_bf_index_;
   std::shared_ptr<std::multimap<db_key_t_, int64_t>> col1_4clique_bf_index_;
+  std::shared_ptr<std::multimap<db_key_t_, int64_t>> col0_4clique_tiny_index_;
+  std::shared_ptr<std::multimap<db_key_t_, int64_t>> col1_4clique_tiny_index_;
   std::shared_ptr<ColumnBloomFilter> col0_4clique_bf_;
   std::shared_ptr<ColumnBloomFilter> col1_4clique_bf_;
+  std::shared_ptr<ColumnBloomFilter> col0_4clique_bf_tiny_;
+  std::shared_ptr<ColumnBloomFilter> col1_4clique_bf_tiny_;
 
  private:
   // TableImpl();
@@ -71,6 +89,7 @@ class TableImpl {
 
   std::vector<db_key_t_>::iterator KeyIterator(int col) const;
   void BuildQPlusVecIndex();
+  void BuildTinyVecIndex();
 
  private:
   void buildKeyIndex();

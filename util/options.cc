@@ -30,6 +30,8 @@ void ParseOptions(Options& options, int argc, char** argv) {
   TCLAP::SwitchArg arg_QJOIN_LOOP("", "qloopjoin", "do  qjoinloop", cmd, false);
   TCLAP::SwitchArg arg_QPLUS_INDEX_JOIN("", "qplus", "do  qplus index join",
                                         cmd, false);
+  TCLAP::SwitchArg arg_QTINY_INDEX_JOIN("", "tiny", "do  qtiny index join", cmd,
+                                        false);
 
   cmd.add(arg_SF);
   cmd.add(arg_PATH);
@@ -53,6 +55,7 @@ void ParseOptions(Options& options, int argc, char** argv) {
   options.q_index_join = arg_QJOIN_INDEX.getValue();  // run qjoin index
   options.q_loop_join = arg_QJOIN_LOOP.getValue();    // run qjoin loop
   options.qplus_index_join = arg_QPLUS_INDEX_JOIN.getValue();  // run qplusjoin
+  options.qtiny_index_join = arg_QTINY_INDEX_JOIN.getValue();  // run qtiny join
   options.n_core = arg_CORE.getValue();                        // parallel cores
 }
 }  // namespace qjoin
