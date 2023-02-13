@@ -20,7 +20,8 @@ struct Options {
   std::string path_prefix;  // path prefix
   std::string path_suffix;  // path suffix
   std::string skew_prefix;  // _1p, _10p, etc
-  int n_core;               // parallel
+  char delim;
+  int n_core;  // parallel
 };
 
 void ParseOptions(Options& options, int argc, char** argv);

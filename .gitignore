@@ -18,3 +18,8 @@ com-orkut*
 twitter-2010*
 wiki.txt
 orkut.txt
+*.csv
+*.json
+epinions.txt
+dataset_descriptions.txt
+slashdot.txt

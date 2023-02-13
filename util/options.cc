@@ -14,6 +14,8 @@ void ParseOptions(Options& options, int argc, char** argv) {
                                         false, "", "string");
   TCLAP::ValueArg<int> arg_CORE("n", "cores", "parallel cores", false, 1,
                                 "int");
+  TCLAP::ValueArg<char> arg_DELIM("d", "delim", "delimiter", false, '\t',
+                                  "char");
 
   TCLAP::SwitchArg arg_QX("x", "qx", "do query x experiment", cmd, false);
   TCLAP::SwitchArg arg_QY("y", "qy", "do query y experiment", cmd, false);
@@ -34,6 +36,7 @@ void ParseOptions(Options& options, int argc, char** argv) {
   cmd.add(arg_PATH_SUFFIX);
   cmd.add(arg_SKEW);
   cmd.add(arg_CORE);
+  cmd.add(arg_DELIM);
   cmd.parse(argc, argv);
 
   // options.scalingFactor = arg_SF.getValue();

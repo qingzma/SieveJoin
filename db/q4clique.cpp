@@ -76,9 +76,11 @@ Query4Clique::Query4Clique(Options& options) {
   Timer timer;
   timer.Start();
 
+  char delim = (options_.delim == ',') ? ',' : '\t';
+
   // load data
   tbl1_ =
-      std::make_shared<TableImpl>(options, options_.path_prefix, '\t', 0, 1);
+      std::make_shared<TableImpl>(options, options_.path_prefix, delim, 0, 1);
   std::cout << "time cost to load data: " << timer.Seconds() << " seconds."
             << std::endl;
 
