@@ -17,8 +17,8 @@ namespace qjoin {
 class Query3Graph : public Query {
  private:
   std::shared_ptr<TableImpl> tbl1_;
-  std::shared_ptr<TableImpl> tbl2_;
-  std::shared_ptr<TableImpl> tbl3_;
+  // std::shared_ptr<TableImpl> tbl2_;
+  // std::shared_ptr<TableImpl> tbl3_;
   int64_t n_misses[4];
 
   void buildBloomFilter(int level) override;

@@ -19,9 +19,7 @@
 
 namespace qjoin {
 
-int64_t QPlus3CliqueJoinPart(int n, int i, std::shared_ptr<TableImpl> tbl1,
-                             std::shared_ptr<TableImpl> tbl2,
-                             std::shared_ptr<TableImpl> tbl3) {
+int64_t QPlus3CliqueJoinPart(int n, int i, std::shared_ptr<TableImpl> tbl1) {
   // std::cout << "here1" << std::endl;
   int64_t join_cnt = 0;
   int64_t sz = tbl1->col0_bf_index_vec_->size();
@@ -37,17 +35,17 @@ int64_t QPlus3CliqueJoinPart(int n, int i, std::shared_ptr<TableImpl> tbl1,
     db_key_t_ t1c0 = tbl1->col0_bf_index_vec_->at(n_i);
     db_key_t_ t1c1 = tbl1->col1_bf_index_vec_->at(n_i);
 
-    auto t2_ranges = tbl2->col0_bf_index_->equal_range(t1c1);
+    auto t2_ranges = tbl1->col0_2clique_bf_index_->equal_range(t1c1);
     for (auto iter2 = t2_ranges.first; iter2 != t2_ranges.second; iter2++) {
       int64_t t2_i = iter2->second;
-      db_key_t_ t2c1 = tbl2->col1_->at(t2_i);
+      db_key_t_ t2c1 = tbl1->col1_->at(t2_i);
       // std::cout << "here4" << std::endl;
 
-      auto t3_ranges = tbl3->col0_bf_index_->equal_range(t2c1);
+      auto t3_ranges = tbl1->col0_3clique_bf_index_->equal_range(t2c1);
       for (auto iter3 = t3_ranges.first; iter3 != t3_ranges.second; iter3++) {
         int64_t t3_i = iter3->second;
         // std::cout << tbl3->col1_->size() << std::endl;
-        db_key_t_ t3c1 = tbl3->col1_->at(t3_i);
+        db_key_t_ t3c1 = tbl1->col1_->at(t3_i);
         if (t3c1 == t1c0) {
           join_cnt++;
         }
@@ -75,18 +73,18 @@ Query3Graph::Query3Graph(Options& options) {
   // load data
   tbl1_ =
       std::make_shared<TableImpl>(options, options_.path_prefix, '\t', 0, 1);
-  tbl2_ =
-      std::make_shared<TableImpl>(options, options_.path_prefix, '\t', 0, 1);
-  tbl3_ =
-      std::make_shared<TableImpl>(options, options_.path_prefix, '\t', 0, 1);
+  // tbl2_ =
+  //     std::make_shared<TableImpl>(options, options_.path_prefix, '\t', 0, 1);
+  // tbl3_ =
+  //     std::make_shared<TableImpl>(options, options_.path_prefix, '\t', 0, 1);
   std::cout << "time cost to load data: " << timer.Seconds() << " seconds."
             << std::endl;
 
   // build index
   timer.Mark();
   tbl1_->BuildIndex();
-  tbl2_->BuildIndex();
-  tbl3_->BuildIndex();
+  // tbl2_->BuildIndex();
+  // tbl3_->BuildIndex();
   std::cout << "time cost to build index: " << timer.SecondsSinceMarked()
             << " seconds." << std::endl;
 
@@ -138,16 +136,16 @@ void Query3Graph::IndexJoin() {
   for (int64_t i1 = 0; i1 < tbl1_->col0_->size(); i1++) {
     db_key_t_ t1c0 = tbl1_->col0_->at(i1);
     db_key_t_ t1c1 = tbl1_->col1_->at(i1);
-    auto t2_ranges = tbl2_->col0_index_->equal_range(t1c1);
+    auto t2_ranges = tbl1_->col0_index_->equal_range(t1c1);
     for (auto t2_iter = t2_ranges.first; t2_iter != t2_ranges.second;
          t2_iter++) {
       int64_t t2_i = t2_iter->second;
-      db_key_t_ t2c1 = tbl2_->col1_->at(t2_i);
-      auto t3_ranges = tbl3_->col0_index_->equal_range(t2c1);
+      db_key_t_ t2c1 = tbl1_->col1_->at(t2_i);
+      auto t3_ranges = tbl1_->col0_index_->equal_range(t2c1);
       for (auto t3_iter = t3_ranges.first; t3_iter != t3_ranges.second;
            t3_iter++) {
         int64_t t3_i = t3_iter->second;
-        db_key_t_ t3c1 = tbl3_->col1_->at(t3_i);
+        db_key_t_ t3c1 = tbl1_->col1_->at(t3_i);
         if (t3c1 == t1c0) {
           join_cnt++;
           if (join_cnt % N_PRINT_GAP == 0) {
@@ -181,20 +179,20 @@ void Query3Graph::QIndexJoin() {
     }
 
     // loop tbl 2
-    auto t2_ranges = tbl2_->col0_index_->equal_range(t1c1);
+    auto t2_ranges = tbl1_->col0_index_->equal_range(t1c1);
     for (auto iter2 = t2_ranges.first; iter2 != t2_ranges.second; iter2++) {
       int64_t i2 = iter2->second;
-      db_key_t_ t2c0 = tbl2_->col0_->at(i2);
-      db_key_t_ t2c1 = tbl2_->col1_->at(i2);
-      if (!tbl2_->col0_bf_->bf_.contains(t2c0) ||
-          !tbl2_->col1_bf_->bf_.contains(t2c1)) {
+      db_key_t_ t2c0 = tbl1_->col0_->at(i2);
+      db_key_t_ t2c1 = tbl1_->col1_->at(i2);
+      if (!tbl1_->col0_2clique_bf_->bf_.contains(t2c0) ||
+          !tbl1_->col0_2clique_bf_->bf_.contains(t2c1)) {
         continue;
       }
       // loop tbl3
-      auto t3_ranges = tbl3_->col0_index_->equal_range(t2c1);
+      auto t3_ranges = tbl1_->col0_index_->equal_range(t2c1);
       for (auto iter3 = t3_ranges.first; iter3 != t3_ranges.second; iter3++) {
         int64_t i3 = iter3->second;
-        db_key_t_ t3c1 = tbl3_->col1_->at(i3);
+        db_key_t_ t3c1 = tbl1_->col1_->at(i3);
         if (t3c1 == t1c0) {
           join_cnt++;
           if (join_cnt % N_PRINT_GAP == 0) {
@@ -228,8 +226,7 @@ void Query3Graph::QPlusIndexJoin() {
   for (int i = 0; i < n; i++) {
     // std::future<int64_t> task =
     //     std::async(QPlusJoinPart, 4, 0, tbl_r_, tbl_s_, tbl_t_);
-    tasks.push_back(
-        std::async(QPlus3CliqueJoinPart, n, i, tbl1_, tbl2_, tbl3_));
+    tasks.push_back(std::async(QPlus3CliqueJoinPart, n, i, tbl1_));
   }
 
   for (int i = 0; i < n; i++) {
@@ -242,40 +239,76 @@ void Query3Graph::QPlusIndexJoin() {
 }
 
 void Query3Graph::buildBloomFilter(int lvel) {
-  tbl1_->BuildKeyBloomFilter();
-  tbl2_->BuildKeyBloomFilter();
-  tbl3_->BuildKeyBloomFilter();
+  tbl1_->BuildKeyBloomFilter(3);
+  // tbl2_->BuildKeyBloomFilter();
+  // tbl3_->BuildKeyBloomFilter();
 
-  // merge bf from t3 to t2
-  tbl3_->col0_bf_->UpdateBfFromInsideColumn(tbl3_->col0_, tbl3_->col1_,
-                                            *(tbl3_->col1_bf_));
-  tbl2_->col1_bf_->UpdateBfFromOutsideColumn(tbl2_->col1_, *(tbl3_->col0_bf_));
-  tbl2_->col0_bf_->UpdateBfFromInsideColumn(tbl2_->col0_, tbl2_->col1_,
-                                            *(tbl2_->col1_bf_));
-
-  // merge bf from t2 to t1
-  tbl1_->col1_bf_->UpdateBfFromOutsideColumn(tbl1_->col1_, *(tbl2_->col0_bf_));
-  tbl1_->col0_bf_->UpdateBfFromInsideColumnOutsideColumn(
-      tbl1_->col0_, tbl1_->col1_, *(tbl1_->col1_bf_), *(tbl3_->col1_bf_));
+  // merge bf to clique2
+  tbl1_->col0_2clique_bf_->UpdateBfFromOutsideColumn(tbl1_->col0_,
+                                                     *(tbl1_->col1_bf_));
+  tbl1_->col1_2clique_bf_->UpdateBfFromInsideColumn(tbl1_->col1_, tbl1_->col0_,
+                                                    *(tbl1_->col0_2clique_bf_));
+  // merge bf from clique2 to clique 3
+  tbl1_->col0_3clique_bf_->UpdateBfFromOutsideColumn(
+      tbl1_->col0_, *(tbl1_->col1_2clique_bf_));
+  tbl1_->col1_3clique_bf_->UpdateBfFromInsideColumnOutsideColumn(
+      tbl1_->col1_, tbl1_->col0_, *(tbl1_->col0_3clique_bf_),
+      *(tbl1_->col0_bf_));
 
   // QPlus join structure
   tbl1_->col0_bf_index_ = tbl1_->col0_bf_->CreateBfIndexWithMultipleColumns(
       tbl1_->col0_, tbl1_->col1_bf_->bf_, tbl1_->col1_);
   tbl1_->col1_bf_index_ = tbl1_->col1_bf_->CreateBfIndexWithMultipleColumns(
       tbl1_->col1_, tbl1_->col0_bf_->bf_, tbl1_->col0_);
+  tbl1_->col0_2clique_bf_index_ =
+      tbl1_->col0_2clique_bf_->CreateBfIndexWithMultipleColumns(
+          tbl1_->col0_, tbl1_->col1_2clique_bf_->bf_, tbl1_->col1_);
+  tbl1_->col1_2clique_bf_index_ =
+      tbl1_->col1_2clique_bf_->CreateBfIndexWithMultipleColumns(
+          tbl1_->col1_, tbl1_->col0_2clique_bf_->bf_, tbl1_->col0_);
 
-  tbl2_->col0_bf_index_ = tbl2_->col0_bf_->CreateBfIndexWithMultipleColumns(
-      tbl2_->col0_, tbl2_->col1_bf_->bf_, tbl2_->col1_);
-  tbl2_->col1_bf_index_ = tbl2_->col1_bf_->CreateBfIndexWithMultipleColumns(
-      tbl2_->col1_, tbl2_->col0_bf_->bf_, tbl2_->col0_);
+  tbl1_->col0_3clique_bf_index_ =
+      tbl1_->col0_3clique_bf_->CreateBfIndexWithMultipleColumns(
+          tbl1_->col0_, tbl1_->col1_3clique_bf_->bf_, tbl1_->col1_);
+  tbl1_->col1_3clique_bf_index_ =
+      tbl1_->col1_3clique_bf_->CreateBfIndexWithMultipleColumns(
+          tbl1_->col1_, tbl1_->col0_3clique_bf_->bf_, tbl1_->col0_);
 
-  tbl3_->col0_bf_index_ = tbl3_->col0_bf_->CreateBfIndexWithMultipleColumns(
-      tbl3_->col0_, tbl3_->col1_bf_->bf_, tbl3_->col1_);
-  tbl3_->col1_bf_index_ = tbl3_->col1_bf_->CreateBfIndexWithMultipleColumns(
-      tbl3_->col1_, tbl3_->col0_bf_->bf_, tbl3_->col0_);
-  // tbl1_->col0_bf_index_vec_ =
-  // tbl1_->col0_bf_->CreateBfIndexVec(tbl1_->col0_);
-  tbl1_->BuildQPlusVecIndex();
+  tbl1_->col0_bf_index_vec_ = tbl1_->col0_;
+  tbl1_->col1_bf_index_vec_ = tbl1_->col1_;
+
+  // // merge bf from t3 to t2
+  // tbl3_->col0_bf_->UpdateBfFromInsideColumn(tbl3_->col0_, tbl3_->col1_,
+  //                                           *(tbl3_->col1_bf_));
+  // tbl2_->col1_bf_->UpdateBfFromOutsideColumn(tbl2_->col1_,
+  // *(tbl3_->col0_bf_));
+  // tbl2_->col0_bf_->UpdateBfFromInsideColumn(tbl2_->col0_, tbl2_->col1_,
+  //                                           *(tbl2_->col1_bf_));
+
+  // // merge bf from t2 to t1
+  // tbl1_->col1_bf_->UpdateBfFromOutsideColumn(tbl1_->col1_,
+  // *(tbl2_->col0_bf_));
+  // tbl1_->col0_bf_->UpdateBfFromInsideColumnOutsideColumn(
+  //     tbl1_->col0_, tbl1_->col1_, *(tbl1_->col1_bf_), *(tbl3_->col1_bf_));
+
+  // // QPlus join structure
+  // tbl1_->col0_bf_index_ = tbl1_->col0_bf_->CreateBfIndexWithMultipleColumns(
+  //     tbl1_->col0_, tbl1_->col1_bf_->bf_, tbl1_->col1_);
+  // tbl1_->col1_bf_index_ = tbl1_->col1_bf_->CreateBfIndexWithMultipleColumns(
+  //     tbl1_->col1_, tbl1_->col0_bf_->bf_, tbl1_->col0_);
+
+  // tbl2_->col0_bf_index_ = tbl2_->col0_bf_->CreateBfIndexWithMultipleColumns(
+  //     tbl2_->col0_, tbl2_->col1_bf_->bf_, tbl2_->col1_);
+  // tbl2_->col1_bf_index_ = tbl2_->col1_bf_->CreateBfIndexWithMultipleColumns(
+  //     tbl2_->col1_, tbl2_->col0_bf_->bf_, tbl2_->col0_);
+
+  // tbl3_->col0_bf_index_ = tbl3_->col0_bf_->CreateBfIndexWithMultipleColumns(
+  //     tbl3_->col0_, tbl3_->col1_bf_->bf_, tbl3_->col1_);
+  // tbl3_->col1_bf_index_ = tbl3_->col1_bf_->CreateBfIndexWithMultipleColumns(
+  //     tbl3_->col1_, tbl3_->col0_bf_->bf_, tbl3_->col0_);
+  // // tbl1_->col0_bf_index_vec_ =
+  // // tbl1_->col0_bf_->CreateBfIndexVec(tbl1_->col0_);
+  // tbl1_->BuildQPlusVecIndex();
 }
 
 }  // namespace qjoin
