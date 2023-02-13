@@ -253,24 +253,28 @@ void Query3Graph::buildBloomFilter(int lvel) {
   // tbl2_->BuildKeyBloomFilter();
   // tbl3_->BuildKeyBloomFilter();
 
-  // merge bf to clique2
-  tbl1_->col0_2clique_bf_->UpdateBfFromOutsideColumn(tbl1_->col0_,
-                                                     *(tbl1_->col1_bf_));
-  tbl1_->col1_2clique_bf_->UpdateBfFromInsideColumn(tbl1_->col1_, tbl1_->col0_,
-                                                    *(tbl1_->col0_2clique_bf_));
-  // merge bf from clique2 to clique 3
-  tbl1_->col0_3clique_bf_->UpdateBfFromOutsideColumn(
-      tbl1_->col0_, *(tbl1_->col1_2clique_bf_));
-  tbl1_->col1_3clique_bf_->UpdateBfFromInsideColumnOutsideColumn(
-      tbl1_->col1_, tbl1_->col0_, *(tbl1_->col0_3clique_bf_),
-      *(tbl1_->col0_bf_));
+  for (int i = 0; i < 1; i++) {
+    // merge bf to clique2
+    tbl1_->col0_2clique_bf_->UpdateBfFromOutsideColumn(tbl1_->col0_,
+                                                       *(tbl1_->col1_bf_));
+    tbl1_->col1_2clique_bf_->UpdateBfFromInsideColumn(
+        tbl1_->col1_, tbl1_->col0_, *(tbl1_->col0_2clique_bf_));
+    // merge bf from clique2 to clique 3
+    tbl1_->col0_3clique_bf_->UpdateBfFromOutsideColumn(
+        tbl1_->col0_, *(tbl1_->col1_2clique_bf_));
+    // tbl1_->col1_3clique_bf_->UpdateBfFromInsideColumn(
+    //     tbl1_->col1_, tbl1_->col0_, *(tbl1_->col0_3clique_bf_));
+    tbl1_->col1_3clique_bf_->UpdateBfFromInsideColumnOutsideColumn(
+        tbl1_->col1_, tbl1_->col0_, *(tbl1_->col0_3clique_bf_),
+        *(tbl1_->col0_bf_));
 
-  // one more iteration
-  // merge bf from clique 3 to clique 1
-  tbl1_->col0_bf_->UpdateBfFromOutsideColumn(tbl1_->col0_,
-                                             *(tbl1_->col1_3clique_bf_));
-  tbl1_->col1_bf_->UpdateBfFromInsideColumn(tbl1_->col1_, tbl1_->col0_,
-                                            *(tbl1_->col0_bf_));
+    // one more iteration
+    // merge bf from clique 3 to clique 1
+    tbl1_->col0_bf_->UpdateBfFromOutsideColumn(tbl1_->col0_,
+                                               *(tbl1_->col1_3clique_bf_));
+    tbl1_->col1_bf_->UpdateBfFromInsideColumn(tbl1_->col1_, tbl1_->col0_,
+                                              *(tbl1_->col0_bf_));
+  }
 
   // tbl1_->col0_2clique_bf_->UpdateBfFromOutsideColumn(tbl1_->col0_,
   //                                                    *(tbl1_->col1_bf_));
