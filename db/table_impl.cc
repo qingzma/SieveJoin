@@ -272,6 +272,18 @@ void TableImpl::BuildTinyVecIndex() {
       }
     }
   }
+
+  // save pruned table to file
+  if (false) {
+    std::ofstream myfile;
+    myfile.open("c3.txt");
+    for (auto iter = col0_tiny_index_->begin(); iter != col0_tiny_index_->end();
+         iter++) {
+      myfile << iter->first << "\t" << col1_->at(iter->second) << std::endl;
+    }
+    myfile.close();
+  }
+
   std::cout << "was " << col0_->size() << ", changed to "
             << col0_tiny_index_->size() << std::endl;
   std::cout << "was " << col0_->size() << ", changed to "

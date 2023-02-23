@@ -63,6 +63,50 @@ int64_t QPlus4CliqueJoinPart(int n, int i, std::shared_ptr<TableImpl> tbl1) {
   return join_cnt;
 }
 
+int64_t QTiny4CliqueJoinPart(int n, int i, std::shared_ptr<TableImpl> tbl1) {
+  // std::cout << "here1" << std::endl;
+  int64_t join_cnt = 0;
+  int64_t sz = tbl1->col0_tiny_index_vec_->size();
+  int64_t chunk = sz / n + 1;
+  int64_t low_i = chunk * i;
+  int64_t high_i = chunk * (i + 1);
+  high_i = std::min(high_i, sz);
+  //   std::cout << "size is " << tbl1->col0_bf_index_vec_->size() << std::endl
+  //             << std::flush;
+
+  // loop tbl1
+  for (auto n_i = low_i; n_i != high_i; n_i++) {
+    // std::cout << "here3" << tbl1->col0_bf_index_vec_->size() << ", " << n_i
+    //           << std::endl;
+    db_key_t_ t1c0 = tbl1->col0_tiny_index_vec_->at(n_i);
+    db_key_t_ t1c1 = tbl1->col1_tiny_index_vec_->at(n_i);
+
+    auto t2_ranges = tbl1->col0_2clique_tiny_index_->equal_range(t1c1);
+    for (auto iter2 = t2_ranges.first; iter2 != t2_ranges.second; iter2++) {
+      int64_t t2_i = iter2->second;
+      db_key_t_ t2c1 = tbl1->col1_->at(t2_i);
+      // std::cout << "here4" << std::endl;
+
+      auto t3_ranges = tbl1->col0_3clique_tiny_index_->equal_range(t2c1);
+      for (auto iter3 = t3_ranges.first; iter3 != t3_ranges.second; iter3++) {
+        int64_t t3_i = iter3->second;
+        // std::cout << tbl3->col1_->size() << std::endl;
+        db_key_t_ t3c1 = tbl1->col1_->at(t3_i);
+
+        auto t4_ranges = tbl1->col0_4clique_tiny_index_->equal_range(t3c1);
+        for (auto iter4 = t4_ranges.first; iter4 != t4_ranges.second; iter4++) {
+          int64_t t4_i = iter4->second;
+          db_key_t_ t4c1 = tbl1->col1_->at(t4_i);
+          if (t4c1 == t1c0) {
+            join_cnt++;
+          }
+        }
+      }
+    }
+  }
+  return join_cnt;
+}
+
 Query4Clique::~Query4Clique() {}
 
 void Query4Clique::resetCounter() {
@@ -99,6 +143,13 @@ Query4Clique::Query4Clique(Options& options) {
     std::cout << "time cost to build bloom filters: "
               << timer.SecondsSinceMarked() << " seconds." << std::endl;
   }
+
+  if (options.qtiny_index_join) {
+    timer.Mark();
+    buildTinyIndex();
+    std::cout << "time cost to build tiny index: " << timer.SecondsSinceMarked()
+              << " seconds." << std::endl;
+  }
 }
 
 void Query4Clique::Run() {
@@ -117,6 +168,8 @@ void Query4Clique::Run() {
   if (options_.q_index_join) QIndexJoin();
 
   if (options_.qplus_index_join) QPlusIndexJoin();
+
+  if (options_.qtiny_index_join) QTinyIndexJoin();
 
   std::cout << "--------------------------------------------" << std::endl;
   std::cout << "done with 4-clique query" << std::endl;
@@ -258,6 +311,111 @@ void Query4Clique::QPlusIndexJoin() {
   std::cout << "time cost: " << timer.Seconds() << " seconds." << std::endl;
   std::cout << "QPlusIndexJoin ends for 4-clique query with join size: "
             << join_cnt << std::endl;
+}
+
+void Query4Clique::QTinyIndexJoin() {
+  std::cout << "--------------------------------------------" << std::endl;
+  std::cout << "QTinyIndexJoin starts for 4-clique query ." << std::endl;
+  resetCounter();
+  Timer timer;
+  timer.Start();
+
+  int64_t join_cnt = 0;
+  std::vector<std::future<int64_t>> tasks;
+  int n = (options_.n_core == 0) ? std::thread::hardware_concurrency()
+                                 : options_.n_core;
+  for (int i = 0; i < n; i++) {
+    tasks.push_back(std::async(QTiny4CliqueJoinPart, n, i, tbl1_));
+  }
+
+  for (int i = 0; i < n; i++) {
+    join_cnt += tasks[i].get();
+  }
+
+  std::cout << "time cost: " << timer.Seconds() << " seconds." << std::endl;
+  std::cout << "QTinyIndexJoin ends for 4-clique query with join size: "
+            << join_cnt << std::endl;
+}
+
+void Query4Clique::buildTinyIndex() {
+  tbl1_->col0_bf_tiny_ =
+      std::make_shared<ColumnBloomFilter>(options_, tbl1_->col0_->size());
+  tbl1_->col1_bf_tiny_ =
+      std::make_shared<ColumnBloomFilter>(options_, tbl1_->col0_->size());
+  tbl1_->col0_2clique_bf_tiny_ =
+      std::make_shared<ColumnBloomFilter>(options_, tbl1_->col0_->size());
+  tbl1_->col1_2clique_bf_tiny_ =
+      std::make_shared<ColumnBloomFilter>(options_, tbl1_->col0_->size());
+  tbl1_->col0_3clique_bf_tiny_ =
+      std::make_shared<ColumnBloomFilter>(options_, tbl1_->col0_->size());
+  tbl1_->col1_3clique_bf_tiny_ =
+      std::make_shared<ColumnBloomFilter>(options_, tbl1_->col0_->size());
+  tbl1_->col0_4clique_bf_tiny_ =
+      std::make_shared<ColumnBloomFilter>(options_, tbl1_->col0_->size());
+  tbl1_->col1_4clique_bf_tiny_ =
+      std::make_shared<ColumnBloomFilter>(options_, tbl1_->col0_->size());
+  // std::cout << "1" << std::endl;
+  tbl1_->col0_tiny_index_ =
+      std::make_shared<std::multimap<db_key_t_, int64_t>>();
+  tbl1_->col1_tiny_index_ =
+      std::make_shared<std::multimap<db_key_t_, int64_t>>();
+  tbl1_->col0_2clique_tiny_index_ =
+      std::make_shared<std::multimap<db_key_t_, int64_t>>();
+  tbl1_->col1_2clique_tiny_index_ =
+      std::make_shared<std::multimap<db_key_t_, int64_t>>();
+  tbl1_->col0_3clique_tiny_index_ =
+      std::make_shared<std::multimap<db_key_t_, int64_t>>();
+  tbl1_->col1_3clique_tiny_index_ =
+      std::make_shared<std::multimap<db_key_t_, int64_t>>();
+  tbl1_->col0_4clique_tiny_index_ =
+      std::make_shared<std::multimap<db_key_t_, int64_t>>();
+  tbl1_->col1_4clique_tiny_index_ =
+      std::make_shared<std::multimap<db_key_t_, int64_t>>();
+  // tbl1_->col0_tiny_index_vec_ = std::make_shared<std::vector<db_key_t_>>();
+  // tbl1_->col1_tiny_index_vec_ = std::make_shared<std::vector<db_key_t_>>();
+
+  int64_t join_cnt = 0;
+  // std::cout << "2" << std::endl;
+  // loop tbl1
+  for (auto n_i = 0; n_i != tbl1_->col0_bf_index_vec_->size(); n_i++) {
+    db_key_t_ t1c0 = tbl1_->col0_bf_index_vec_->at(n_i);
+    db_key_t_ t1c1 = tbl1_->col1_bf_index_vec_->at(n_i);
+    // std::cout << "21" << std::endl;
+
+    auto t2_ranges = tbl1_->col0_2clique_bf_index_->equal_range(t1c1);
+    for (auto iter2 = t2_ranges.first; iter2 != t2_ranges.second; iter2++) {
+      int64_t t2_i = iter2->second;
+      db_key_t_ t2c1 = tbl1_->col1_->at(t2_i);
+      // std::cout << "22" << std::endl;
+
+      auto t3_ranges = tbl1_->col0_3clique_bf_index_->equal_range(t2c1);
+      for (auto iter3 = t3_ranges.first; iter3 != t3_ranges.second; iter3++) {
+        int64_t t3_i = iter3->second;
+        db_key_t_ t3c1 = tbl1_->col1_->at(t3_i);
+
+        auto t4_ranges = tbl1_->col0_4clique_bf_index_->equal_range(t3c1);
+        for (auto iter4 = t4_ranges.first; iter4 != t4_ranges.second; iter4++) {
+          int64_t t4_i = iter4->second;
+          db_key_t_ t4c1 = tbl1_->col1_->at(t4_i);
+          if (t4c1 == t1c0) {
+            // std::cout << "24" << std::endl;
+            tbl1_->col0_bf_tiny_->bf_.insert(t1c0);
+            tbl1_->col1_bf_tiny_->bf_.insert(t1c1);
+            tbl1_->col0_2clique_bf_tiny_->bf_.insert(t1c1);
+            tbl1_->col1_2clique_bf_tiny_->bf_.insert(t2c1);
+            tbl1_->col0_3clique_bf_tiny_->bf_.insert(t2c1);
+            tbl1_->col1_3clique_bf_tiny_->bf_.insert(t3c1);
+            tbl1_->col0_4clique_bf_tiny_->bf_.insert(t3c1);
+            tbl1_->col1_4clique_bf_tiny_->bf_.insert(t4c1);
+            join_cnt++;
+          }
+        }
+        // std::cout << "23" << std::endl;
+      }
+    }
+  }
+  std::cout << "join size should be " << join_cnt << std::endl;
+  tbl1_->BuildTinyVecIndex();
 }
 
 void Query4Clique::buildBloomFilter(int lvel) {

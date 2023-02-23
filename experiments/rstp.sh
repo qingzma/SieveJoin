@@ -1,0 +1,43 @@
+./qentry -p ../data/synthetic/data/ --path_suffix _1_10000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _2_10000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _3_10000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _4_10000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _5_10000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _6_10000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _7_10000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _8_10000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _9_10000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _10_10000  --qrst --qplus -n 32
+
+./qentry -p ../data/synthetic/data/ --path_suffix _1_100000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _2_100000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _3_100000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _4_100000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _5_100000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _6_100000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _7_100000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _8_100000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _9_100000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _10_100000  --qrst --qplus -n 32
+
+./qentry -p ../data/synthetic/data/ --path_suffix _1_1000000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _2_1000000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _3_1000000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _4_1000000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _5_1000000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _6_1000000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _7_1000000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _8_1000000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _9_1000000  --qrst --qplus -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _10_1000000  --qrst --qplus  -n 32
+
+./qentry -p ../data/synthetic/data/ --path_suffix _1_10000000  --qrst --qplus  -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _2_10000000  --qrst --qplus  -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _3_10000000  --qrst --qplus  -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _4_10000000  --qrst --qplus  -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _5_10000000  --qrst --qplus  -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _6_10000000  --qrst --qplus  -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _7_10000000  --qrst --qplus  -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _8_10000000  --qrst --qplus  -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _9_10000000  --qrst --qplus  -n 32
+./qentry -p ../data/synthetic/data/ --path_suffix _10_10000000  --qrst --qplus  -n 32

@@ -115,34 +115,71 @@ def plot_queryx_comparison(sf=0.1):
     plt.show()
 
 
-def plot_size_reduction():
-    x = range(1, 9)
-    t1 = [150000, 150000, 150000, 150000, 150000, 150000, 150000, 150000]
-    t2 = [1490, 13871, 74662, 92282, 99122, 99890, 99988, 100002]  # .reverse()
-    t3 = [1500000, 1500000, 1500000, 1500000,
-          1500000, 1500000, 1500000, 1500000]
-    t4 = [1499, 14958, 149888, 300070, 600204,
-          900268, 1200988, 1500000]  # .reverse()
-    t2.reverse()
-    t4.reverse()
+def plot_response_time():
+    x = range(1, 3)
+    t1 = [0.00229291, 0.0947505]
+    t2 = [0.000728667, 0.00925989]  # .reverse()
+    t3 = [0.102845, 1.025641]
+    t4 = [0.019355, 0.083570]  # .reverse()
+    t5 = [0.098828, 1.539928]
 
     fig = plt.figure()
-    width = 0.15
+    width = 0.12
     ax = fig.add_subplot(1, 1, 1)
-    plt.bar([i-2*width for i in x], t1, width=width, label='customer')
-    plt.bar([i-1*width for i in x], t2, width=width, label="customer'")
-    plt.bar([i+0*width for i in x], t3, width=width, label='orders')
-    plt.bar([i+1*width for i in x], t4, width=width, label="orders'")
-    ax.set(xlabel='configuration id',
-           ylabel='table size')
-    ax.set_xticks(x)
+    plt.bar([i-2*width for i in x], t1, width=width,
+            label='QJoin-EO', color='y')
+    plt.bar([i-1*width for i in x], t2,
+            width=width, label="QJoin-EO_parallel", color='k')
+    plt.bar([i+0*width for i in x], t3, width=width, label='Umbra', color='m')
+    plt.bar([i+1*width for i in x], t4, width=width,
+            label="Umbra_parallel", color='b')
+    plt.bar([i+2*width for i in x], t5, width=width,
+            label="MonetDB_parallel", color='g')
+    ax.set(xlabel='query type',
+           ylabel='query response time (s)')
+    ax.set_xticks(x, ('3-clique', '4-clique'))
     ax.set_yscale('log')
-    plt.legend(loc="lower left")
+    plt.legend(loc="upper left")
+    plt.subplots_adjust(left=0.15)
+    plt.subplots_adjust(bottom=0.13)
+    plt.show()
+
+
+def plot_size():
+    x = range(1, 3)
+    t1 = [352807, 352807]
+    t2 = [3639, 10396]  # .reverse()
+    t3 = [289065, 266447]
+    t4 = [314795, 265650]  # .reverse()
+    t5 = [279079, 247747]
+    t6 = [0, 264708]
+
+    fig = plt.figure()
+    width = 0.12
+    ax = fig.add_subplot(1, 1, 1)
+    plt.bar([i-2*width for i in x], t1, width=width,
+            label='citation', color='y')
+    plt.bar([i-1*width for i in x], t2,
+            width=width, label="citation-Type II", color='k')
+    plt.bar([i+0*width for i in x], t3, width=width,
+            label='citation-Type I-1', color='m')
+    plt.bar([i+1*width for i in x], t4, width=width,
+            label="citation-Type I-2", color='b')
+    plt.bar([i+2*width for i in x], t5, width=width,
+            label="citation-Type I-3", color='g')
+    plt.bar([i+3*width for i in x], t6, width=width,
+            label="citation-Type I-4")
+    ax.set(xlabel='query type',
+           ylabel='table size')
+    ax.set_xticks(x, ('3-clique', '4-clique'))
+    # ax.set_yscale('log')
+    plt.legend(loc="center left")
+    plt.subplots_adjust(left=0.20)
+    plt.subplots_adjust(bottom=0.13)
     plt.show()
 
 
 if __name__ == "__main__":
-    # plot_queryx_comparison(sf=0.1)
-    # plot_queryx_comparison(sf=1)
-    # plot_queryx()
-    plot_size_reduction()
+
+    # plot_response_time()
+    plot_size()

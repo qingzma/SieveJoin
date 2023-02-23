@@ -22,6 +22,7 @@ class Query4Clique : public Query {
 
   void buildBloomFilter(int level) override;
   void resetCounter() override;
+  void buildTinyIndex();
 
  public:
   Query4Clique(Options& options);
@@ -33,6 +34,7 @@ class Query4Clique : public Query {
   // void QLoopJoin() override;
   void QIndexJoin() override;
   void QPlusIndexJoin() override;
+  void QTinyIndexJoin();
 };
 }  // namespace qjoin
 

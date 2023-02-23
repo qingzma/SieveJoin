@@ -2,3 +2,9 @@ index:1.33403     1.11643
 qjoin:0.805635    1.13869
 qplus:0.687019    0.8912
 Umbra: 0.045950   1.2596
+Umbra-all: 0.010540 0.138099 3clique 4clique
+QJoin: 0.5687, 39.188
+QJoin-all: 0.0269477,1.95643
+MonetDB: 0.136776, 2.831473
+QJoin-Umbra:0.030587, 0.970907
+QJoin-Umbra-parallel: 0.007427, 0.130801

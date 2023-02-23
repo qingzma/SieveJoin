@@ -1,0 +1,5 @@
+QJoin 0.00229291, 0.0947505 3-clique 4-clique
+QJoin-parallel 0.000728667, 0.00925989
+Umbra  0.102845, 1.025641
+Umbra-parallel 0.019355, 0.083570
+MonetDB-parallel 0.098828, 1.539928
