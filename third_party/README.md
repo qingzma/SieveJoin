@@ -1,3 +1,5 @@
+# Instruction
+
 `cd third_party/tpch_2_17_0/`
 
 `make -f MakeFile`
