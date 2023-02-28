@@ -14,6 +14,16 @@ pylab.rcParams.update(params)
 
 
 def plot_queryx():
+    from matplotlib import font_manager
+    import matplotlib
+    print(matplotlib.matplotlib_fname())
+    # exit()
+
+    fontP = font_manager.FontProperties()
+    fontP.set_family('SimHei')
+    # print([f for f in matplotlib.font_manager.fontManager.ttflist if 'Heiti' in f.name])
+    plt.rcParams['font.sans-serif'] = ['SimHei']
+    plt.rcParams['axes.unicode_minus'] = False
     fig, axs = plt.subplots(1, 1)
     x = [0.950467506, 0.803403965, 0.57910705, 0.427232255,
          0.233631503, 0.123669406, 0.054101442, 0.006537283]
@@ -27,10 +37,10 @@ def plot_queryx():
     #          1.6332,	2.64963,	3.85975,	5.0753],
     #      [93.8655, 170.181, 241.5, 306.047, 405.948, 510.887, 599.234, 743.272],
     #      [2.12507, 10.0493, 127.851, 218.328, 388.64, 565.314, 713.675, 847.131]]
-    axs.plot(x, y[0], '-c^', label="index-SF=0.1")
-    axs.plot(x, y[1], '-ms', label="qjoin-SF=0.1")
-    axs.plot(x, y[2], '-b^', label="index-SF=1")
-    axs.plot(x, y[3], '-r+', label="qjoin-SF=1")
+    axs.plot(x, y[0], '-c^', label="INLJ-SF=0.1")
+    axs.plot(x, y[1], '-ms', label="Qjoin-SF=0.1")
+    axs.plot(x, y[2], '-b^', label="INLJ-SF=1")
+    axs.plot(x, y[3], '-r+', label="Qjoin-SF=1")
 
     axs.legend()  # loc='upper left'
 
@@ -51,7 +61,7 @@ def plot_queryx():
 
     axs.grid(axis='y')
 
-    axs.set(xlabel='proportion of intermediate join results',
+    axs.set(xlabel='proportion of intermediate join result%',
             ylabel='query response time (s)')
 
     # Hide x labels and tick labels for top plots and y ticks for right plots.
@@ -79,15 +89,15 @@ def plot_queryx_comparison(sf=0.1):
              88.766733, 135.886965, 179.036015, 219.126915],
          [0.0297303, 0.574212, 18.3214, 53.2559, 183.026, 372.901, 532.084, 606.438]]
     if sf == 0.1:
-        axs.plot(x, y[0], '-gH', label="INL-SF=0.1")
-        axs.plot(x, y[1], '-yp', label="QJoin-SO-SF=0.1")
-        axs.plot(x, y[4], '-ms', label="Umbra-SF=0.1")
-        axs.plot(x, y[5], '-c^', label="QJoin-EO-SF=0.1")
+        axs.plot(x, y[0], '-gH', label="INL")
+        axs.plot(x, y[1], '-yp', label="QJoin")
+        axs.plot(x, y[4], '-ms', label="Umbra")
+        axs.plot(x, y[5], '-c^', label="QJoin-EO")
     if sf == 1:
-        axs.plot(x, y[2], '-gH', label="INL-SF=1")
-        axs.plot(x, y[3], '-yp', label="QJoin-SO-SF=1")
-        axs.plot(x, y[6], '-ms', label="Umbra-SF=1")
-        axs.plot(x, y[7], '-c^', label="QJoin-EO-SF=1")
+        axs.plot(x, y[2], '-gH', label="INL")
+        axs.plot(x, y[3], '-yp', label="QJoin-SO")
+        axs.plot(x, y[6], '-ms', label="Umbra")
+        axs.plot(x, y[7], '-c^', label="QJoin-EO")
 
     axs.legend()  # loc='upper left'
 
@@ -142,7 +152,7 @@ def plot_size_reduction():
 
 
 if __name__ == "__main__":
-    # plot_queryx_comparison(sf=0.1)
-    # plot_queryx_comparison(sf=1)
+    plot_queryx_comparison(sf=0.1)
+    plot_queryx_comparison(sf=1)
     # plot_queryx()
-    plot_size_reduction()
+    # plot_size_reduction()
