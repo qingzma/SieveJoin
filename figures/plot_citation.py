@@ -28,9 +28,9 @@ def plot_queryx():
     #      [93.8655, 170.181, 241.5, 306.047, 405.948, 510.887, 599.234, 743.272],
     #      [2.12507, 10.0493, 127.851, 218.328, 388.64, 565.314, 713.675, 847.131]]
     axs.plot(x, y[0], '-c^', label="index-SF=0.1")
-    axs.plot(x, y[1], '-ms', label="qjoin-SF=0.1")
+    axs.plot(x, y[1], '-ms', label="SieveJoin-SF=0.1")
     axs.plot(x, y[2], '-b^', label="index-SF=1")
-    axs.plot(x, y[3], '-r+', label="qjoin-SF=1")
+    axs.plot(x, y[3], '-r+', label="SieveJoin-SF=1")
 
     axs.legend()  # loc='upper left'
 
@@ -80,14 +80,14 @@ def plot_queryx_comparison(sf=0.1):
          [0.0297303, 0.574212, 18.3214, 53.2559, 183.026, 372.901, 532.084, 606.438]]
     if sf == 0.1:
         axs.plot(x, y[0], '-gH', label="INL-SF=0.1")
-        axs.plot(x, y[1], '-yp', label="QJoin-SO-SF=0.1")
+        axs.plot(x, y[1], '-yp', label="SieveJoin-SO-SF=0.1")
         axs.plot(x, y[4], '-ms', label="Umbra-SF=0.1")
-        axs.plot(x, y[5], '-c^', label="QJoin-EO-SF=0.1")
+        axs.plot(x, y[5], '-c^', label="SieveJoin-EO-SF=0.1")
     if sf == 1:
         axs.plot(x, y[2], '-gH', label="INL-SF=1")
-        axs.plot(x, y[3], '-yp', label="QJoin-SO-SF=1")
+        axs.plot(x, y[3], '-yp', label="SieveJoin-SO-SF=1")
         axs.plot(x, y[6], '-ms', label="Umbra-SF=1")
-        axs.plot(x, y[7], '-c^', label="QJoin-EO-SF=1")
+        axs.plot(x, y[7], '-c^', label="SieveJoin-EO-SF=1")
 
     axs.legend()  # loc='upper left'
 
@@ -127,9 +127,9 @@ def plot_response_time():
     width = 0.12
     ax = fig.add_subplot(1, 1, 1)
     plt.bar([i-2*width for i in x], t1, width=width,
-            label='QJoin-EO', color='y')
+            label='SieveJoin-EO', color='y')
     plt.bar([i-1*width for i in x], t2,
-            width=width, label="QJoin-EO_parallel", color='k')
+            width=width, label="SieveJoin-EO_parallel", color='k')
     plt.bar([i+0*width for i in x], t3, width=width, label='Umbra', color='m')
     plt.bar([i+1*width for i in x], t4, width=width,
             label="Umbra_parallel", color='b')
@@ -181,5 +181,5 @@ def plot_size():
 
 if __name__ == "__main__":
 
-    # plot_response_time()
-    plot_size()
+    plot_response_time()
+    # plot_size()

@@ -27,18 +27,18 @@ def plot_response_time():
     width = 0.1
     ax = fig.add_subplot(1, 1, 1)
     plt.bar([i-3*width for i in x], t1, width=width,
-            label='QJoin-EO', color='y')
+            label='SieveJoin-EO', color='y')
     plt.bar([i-2*width for i in x], t2,
-            width=width, label="QJoin-EO_parallel", color='k')
+            width=width, label="SieveJoin-EO_parallel", color='k')
     plt.bar([i-1*width for i in x], t3, width=width, label='Umbra', color='m')
     plt.bar([i+0*width for i in x], t4, width=width,
             label="Umbra_parallel", color='b')
     plt.bar([i+1*width for i in x], t5, width=width,
             label="MonetDB_parallel", color='g')
     plt.bar([i+2*width for i in x], t6, width=width,
-            label="QJoin-multi")
+            label="SieveJoin-multi")
     plt.bar([i+3*width for i in x], t7, width=width,
-            label="QJoin-multi_parallel",)
+            label="SieveJoin-multi_parallel",)
     ax.set(xlabel='query type',
            ylabel='query response time (s)')
     ax.set_xticks(x, ('3-clique', '4-clique'))
@@ -85,5 +85,5 @@ def plot_size():
 
 if __name__ == "__main__":
 
-    # plot_response_time()
-    plot_size()
+    plot_response_time()
+#     plot_size()

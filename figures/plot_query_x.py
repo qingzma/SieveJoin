@@ -38,9 +38,9 @@ def plot_queryx():
     #      [93.8655, 170.181, 241.5, 306.047, 405.948, 510.887, 599.234, 743.272],
     #      [2.12507, 10.0493, 127.851, 218.328, 388.64, 565.314, 713.675, 847.131]]
     axs.plot(x, y[0], '-c^', label="INLJ-SF=0.1")
-    axs.plot(x, y[1], '-ms', label="Qjoin-SF=0.1")
+    axs.plot(x, y[1], '-ms', label="SieveJoin-SF=0.1")
     axs.plot(x, y[2], '-b^', label="INLJ-SF=1")
-    axs.plot(x, y[3], '-r+', label="Qjoin-SF=1")
+    axs.plot(x, y[3], '-r+', label="SieveJoin-SF=1")
 
     axs.legend()  # loc='upper left'
 
@@ -90,14 +90,14 @@ def plot_queryx_comparison(sf=0.1):
          [0.0297303, 0.574212, 18.3214, 53.2559, 183.026, 372.901, 532.084, 606.438]]
     if sf == 0.1:
         axs.plot(x, y[0], '-gH', label="INL")
-        axs.plot(x, y[1], '-yp', label="QJoin")
+        axs.plot(x, y[1], '-yp', label="SieveJoin")
         axs.plot(x, y[4], '-ms', label="Umbra")
-        axs.plot(x, y[5], '-c^', label="QJoin-EO")
+        axs.plot(x, y[5], '-c^', label="SieveJoin-EO")
     if sf == 1:
         axs.plot(x, y[2], '-gH', label="INL")
-        axs.plot(x, y[3], '-yp', label="QJoin-SO")
+        axs.plot(x, y[3], '-yp', label="SieveJoin-SO")
         axs.plot(x, y[6], '-ms', label="Umbra")
-        axs.plot(x, y[7], '-c^', label="QJoin-EO")
+        axs.plot(x, y[7], '-c^', label="SieveJoin-EO")
 
     axs.legend()  # loc='upper left'
 
