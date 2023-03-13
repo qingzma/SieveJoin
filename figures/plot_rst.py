@@ -76,7 +76,7 @@ def plot_rst():
              0.0199562, 0.0259782, 0.0310069, 0.04169, 0.0483575],
          [0.012743, 0.0285731, 0.0497722, 0.0736743, 0.120383,
              0.145708, 0.172175, 0.237443, 0.295016, 0.390122],
-         [0.127651, 0.304785, 0.623084, 0.772751, 1.10117, 1.61639, 2.23422, 2.77625, 3.54992, 4.51862,]]
+         [0.127651, 0.304785, 0.623084, 0.772751, 1.10117, 1.61639, 2.23422, 2.77625, 3.54992, 4.51862, ]]
     yq = [[0.0025264, 0.00390939, 0.00806264, 0.0135874, 0.0244933, 0.0308965, 0.0419365, 0.0530391, 0.0740668, 0.0917784],
           [0.0147791, 0.0405832, 0.0901201, 0.141017, 0.226754,
               0.306729, 0.419618, 0.540697, 0.738217, 0.913077],
@@ -100,39 +100,39 @@ def plot_rst():
              [0.056090, 0.143893, 0.315960, 0.604172, 1.04219,
                  1.682680, 2.582645, 4.376749, 6.874695, 9.093795],
              [0.119949, 0.753584, 1.988712, 4.613389, 8.819586, 16.346233, 32.676958, 62.190009]]
-    axs[0, 0].plot(x, so[0], '-yp', label="QJoin-SO")
-    axs[0, 0].plot(x, y[0], '-kx', label="QJoin-EO_parallel")
-    axs[0, 0].plot(x, yq[0], '-c^', label="QJoin-EO")
+    axs[0, 0].plot(x, so[0], '-yp', label="SieveJoin-SO")
+    axs[0, 0].plot(x, y[0], '-kx', label="SieveJoin-EO_parallel")
+    axs[0, 0].plot(x, yq[0], '-c^', label="SieveJoin-EO")
     axs[0, 0].plot(x, ya[0], '-ms', label="Umbra")
     axs[0, 0].plot(x, pg[0], '-b+', label="Postgres")
     axs[0, 0].plot(x, monet[0], '-gH', label="Monetdb_parallel")
-    # axs[0, 0].plot(x, y[1], '-ms', label="qjoin")
+    # axs[0, 0].plot(x, y[1], '-ms', label="SieveJoin")
     # axs[0, 0].plot(x, y[2], '-b^', label="haha")
     # axs[0, 0].plot(x, y[3], '-r+', label="kaka")
     axs[0, 0].set_title('$r=10^4$', y=0.98, x=0.18, pad=-14)
-    axs[0, 1].plot(x, so[1], '-yp', label="QJoin-SO")
-    axs[0, 1].plot(x, y[1], '-kx', label="QJoin-EO_parallel")
-    axs[0, 1].plot(x, yq[1], '-c^', label="QJoin-EO")  # 'tab:orange'
+    axs[0, 1].plot(x, so[1], '-yp', label="SieveJoin-SO")
+    axs[0, 1].plot(x, y[1], '-kx', label="SieveJoin-EO_parallel")
+    axs[0, 1].plot(x, yq[1], '-c^', label="SieveJoin-EO")  # 'tab:orange'
     axs[0, 1].plot(x, ya[1], '-ms', label="Umbra")  # 'tab:orange'
     axs[0, 1].plot(x, pg[1], '-b+', label="Postgres")
     axs[0, 1].plot(x, monet[1], '-gH', label="Monetdb_parallel")
     axs[0, 1].set_title('$r=10^5$', y=0.98, x=0.18, pad=-14)
-    axs[1, 0].plot(x, so[2], '-yp', label="QJoin-SO")
-    axs[1, 0].plot(x, y[2], '-kx', label="QJoin-EO_parallel")
-    axs[1, 0].plot(x, yq[2], '-c^', label="QJoin-EO")  # , 'tab:green'
+    axs[1, 0].plot(x, so[2], '-yp', label="SieveJoin-SO")
+    axs[1, 0].plot(x, y[2], '-kx', label="SieveJoin-EO_parallel")
+    axs[1, 0].plot(x, yq[2], '-c^', label="SieveJoin-EO")  # , 'tab:green'
     axs[1, 0].plot(x, ya[2], '-ms', label="Umbra")  # , 'tab:green'
     axs[1, 0].plot(x[:8], pg[2][:8], '-b+', label="Postgres")
     axs[1, 0].plot(x, monet[2], '-gH', label="Monetdb_parallel")
     axs[1, 0].set_title('$r=10^6$', y=0.98, x=0.18, pad=-14)
-    axs[1, 1].plot(x, so[3], '-yp', label="QJoin-SO")
-    axs[1, 1].plot(x, y[3], '-kx', label="QJoin-EO_parallel")
-    axs[1, 1].plot(x, yq[3], '-c^', label="QJoin-EO")  # , 'tab:red'
+    axs[1, 1].plot(x, so[3], '-yp', label="SieveJoin-SO")
+    axs[1, 1].plot(x, y[3], '-kx', label="SieveJoin-EO_parallel")
+    axs[1, 1].plot(x, yq[3], '-c^', label="SieveJoin-EO")  # , 'tab:red'
     axs[1, 1].plot(x, ya[3], '-ms', label="Umbra")  # , 'tab:red'
     axs[1, 1].plot(x[:4]+x[5:], pg[3][:4]+pg[3][5:], '-b+', label="Postgres")
     axs[1, 1].plot(x[:8], monet[3], '-gH', label="Monetdb_parallel")
     axs[1, 1].set_title('$r=10^7$', y=0.98, x=0.18, pad=-14)
 
-    # plt.plot([1, 2, 3, 4], 'o-', label='QJoin')
+    # plt.plot([1, 2, 3, 4], 'o-', label='SieveJoin')
     # plt.ylabel('some numbers')
 
     axs[0, 0].legend(loc='upper left', bbox_to_anchor=(
@@ -162,7 +162,7 @@ def plot_rst():
 
     for ax in axs.flat:
         ax.set(xlabel='duplicates d',
-               ylabel='response time (s)')
+               ylabel='response time(s)')
 
     # Hide x labels and tick labels for top plots and y ticks for right plots.
     for ax in axs.flat:
