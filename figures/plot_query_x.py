@@ -38,9 +38,9 @@ def plot_queryx():
     #      [93.8655, 170.181, 241.5, 306.047, 405.948, 510.887, 599.234, 743.272],
     #      [2.12507, 10.0493, 127.851, 218.328, 388.64, 565.314, 713.675, 847.131]]
     axs.plot(x, y[0], '-c^', label="INLJ-SF=0.1")
-    axs.plot(x, y[1], '-ms', label="Qjoin-SF=0.1")
+    axs.plot(x, y[1], '-ms', label="SieveJoin-SF=0.1")
     axs.plot(x, y[2], '-b^', label="INLJ-SF=1")
-    axs.plot(x, y[3], '-r+', label="Qjoin-SF=1")
+    axs.plot(x, y[3], '-r+', label="SieveJoin-SF=1")
 
     axs.legend()  # loc='upper left'
 
@@ -152,7 +152,7 @@ def plot_size_reduction():
 
 
 if __name__ == "__main__":
-    plot_queryx_comparison(sf=0.1)
-    plot_queryx_comparison(sf=1)
-    # plot_queryx()
+    #plot_queryx_comparison(sf=0.1)
+    #plot_queryx_comparison(sf=1)
+    plot_queryx()
     # plot_size_reduction()
